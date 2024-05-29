@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-TW" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>「Spring Security」前后端分离权限控制-指令级权限 | My New Hugo Site！！！</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+
+
+      <script src="/js/main.js"></script>
+
+
+</head>
+<body class="baseof">
+  <header>
+    <h1>My New Hugo Site！！！</h1>
+
+  <nav>
+    <ul>
+    <li>
+      <a href="/">首页</a>
+    </li>
+    <li>
+      <a aria-current="true" class="ancestor" href="/posts/">列表</a>
+    </li>
+    <li>
+      <a href="/tags/">标签</a>
+    </li>
+    </ul>
+  </nav>
+
+
+  </header>
+  <main>
+    
+  <h1>最新文章 测试Single：「Spring Security」前后端分离权限控制-指令级权限</h1>
+
+  
+  
+  <time datetime="2021-12-30T12:28:00&#43;00:00">December 30, 2021</time>
+
+  <p>实现按钮级别的权限控制，基于上一篇<a href="https://my.oschina.net/chaoo/blog/5380267">Spring Secuirty（六）前后端分离菜单权限控制-前端动态路由</a>的扩展。
+前端部分还是基于<a href="https://panjiachen.github.io/vue-element-admin-site/zh/">vue-element-admin</a>模板来演示。</p>
+<p>这里实现按钮级别的权限判断的逻辑：每个按钮对应一个<code>权限标识</code>，后台根据用户角色计算出当前用户可访问的<code>权限标识</code>列表，前端登录后得到<code>权限标识</code>列表存入全局，通过单个按钮的<code>权限标识</code>去匹配列表里的。来实现按钮级别的权限判断。<!-- raw HTML omitted --></p>
+<h3 id="1-数据库添加权限表">1. 数据库添加权限表</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 系统权限表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>system_permission<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>system_permission<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>menu_id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>name<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;权限标识&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>title<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;权限名称&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span> ) ENGINE<span style="color:#f92672">=</span>INNODB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>UTF8MB4 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统权限表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">-- 权限&amp;角色 关联表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>system_role_permission<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>system_role_permission<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>permission_id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;权限ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>INNODB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>UTF8MB4 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统角色权限关联表&#39;</span>;
+</span></span></code></pre></div><h3 id="2-前端代码改造">2. 前端代码改造</h3>
+<p>登录后通过接口直接返回用户可访问指令级权限列表：
+<img src="up-584b8affd5e003dbb50e53f100779ae49c9.webp" alt=""></p>
+<p><a href="https://panjiachen.github.io/vue-element-admin-site/zh/">vue-element-admin</a>模板已经封装了一个通过角色来判断的指令权限：<a href="https://github.com/PanJiaChen/vue-element-admin/tree/master/src/directive/permission">v-permission</a>。</p>
+<p>这里需要修改其逻辑：</p>
+<h4 id="21-全局state中添加permissions列表">2.1 全局<code>state</code>中添加<code>permissions</code>列表</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">// ---------------- state 中添加 permissions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * src\store\modules\user.js
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span> 
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ... other code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">state</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">token</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">getToken</span>(),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">username</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;&#39;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">roles</span><span style="color:#f92672">:</span> [],
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">menus</span><span style="color:#f92672">:</span> [],
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">permissions</span><span style="color:#f92672">:</span> [],
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ... other code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">mutations</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">SET_TOKEN</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">state</span>, <span style="color:#a6e22e">token</span>) =&gt; {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">token</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">token</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">SET_PERMISSIONS</span><span style="color:#f92672">:</span> (<span style="color:#a6e22e">state</span>, <span style="color:#a6e22e">permissions</span>) =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">permissions</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">permissions</span>
+</span></span><span style="display:flex;"><span>    },
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ... other code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">actions</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// user login
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">login</span>({ <span style="color:#a6e22e">commit</span> }, <span style="color:#a6e22e">userInfo</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ... other code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// get user info
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">getInfo</span>({ <span style="color:#a6e22e">commit</span>, <span style="color:#a6e22e">state</span> }) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Promise((<span style="color:#a6e22e">resolve</span>, <span style="color:#a6e22e">reject</span>) =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">getInfo</span>()
+</span></span><span style="display:flex;"><span>        .<span style="color:#a6e22e">then</span>(<span style="color:#a6e22e">response</span> =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">data</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">response</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">data</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">reject</span>(<span style="color:#e6db74">&#39;Verification failed, please Login again.&#39;</span>)
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">roles</span>, <span style="color:#a6e22e">menus</span>, <span style="color:#a6e22e">permissions</span>, <span style="color:#a6e22e">id</span>, <span style="color:#a6e22e">username</span>, <span style="color:#a6e22e">avatar</span>, <span style="color:#a6e22e">roleDesc</span>, <span style="color:#a6e22e">fullName</span>, <span style="color:#a6e22e">phone</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">data</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#75715e">// roles must be a non-empty array
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">roles</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">roles</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">reject</span>(<span style="color:#e6db74">&#39;getInfo: roles must be a non-null array!&#39;</span>)
+</span></span><span style="display:flex;"><span>          }
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;SET_ROLES&#39;</span>, <span style="color:#a6e22e">roles</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;SET_MENUS&#39;</span>, <span style="color:#a6e22e">menus</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;SET_PERMISSIONS&#39;</span>, <span style="color:#a6e22e">permissions</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;SET_USERID&#39;</span>, <span style="color:#a6e22e">id</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;SET_USERNAME&#39;</span>, <span style="color:#a6e22e">username</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;SET_AVATAR&#39;</span>, <span style="color:#a6e22e">avatar</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;SET_ROLEDESC&#39;</span>, <span style="color:#a6e22e">roleDesc</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;SET_FULLNAME&#39;</span>, <span style="color:#a6e22e">fullName</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">commit</span>(<span style="color:#e6db74">&#39;SET_PHONE&#39;</span>, <span style="color:#a6e22e">phone</span>)
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">resolve</span>(<span style="color:#a6e22e">data</span>)
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>        .<span style="color:#66d9ef">catch</span>(<span style="color:#a6e22e">error</span> =&gt; {
+</span></span><span style="display:flex;"><span>          <span style="color:#a6e22e">reject</span>(<span style="color:#a6e22e">error</span>)
+</span></span><span style="display:flex;"><span>        })
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// user logout
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">logout</span>({ <span style="color:#a6e22e">commit</span>, <span style="color:#a6e22e">state</span>, <span style="color:#a6e22e">dispatch</span> }) {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// ... other code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// ... other code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">namespaced</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">true</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">state</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">mutations</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">actions</span>
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// ---------------- getters 中添加 permissions
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * src\store\getters.js
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">getters</span> <span style="color:#f92672">=</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// ... other code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>  <span style="color:#a6e22e">permissions</span><span style="color:#f92672">:</span> <span style="color:#a6e22e">state</span> =&gt; <span style="color:#a6e22e">state</span>.<span style="color:#a6e22e">user</span>.<span style="color:#a6e22e">permissions</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">// ... other code
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#a6e22e">getters</span>
+</span></span></code></pre></div><h4 id="22-重写全局v-permission指令逻辑">2.2 重写全局<code>v-permission</code>指令逻辑</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * src\directive\permission\permission.js
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">store</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;@/store&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">checkPermission</span>(<span style="color:#a6e22e">el</span>, <span style="color:#a6e22e">binding</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">const</span> { <span style="color:#a6e22e">value</span> } <span style="color:#f92672">=</span> <span style="color:#a6e22e">binding</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">value</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">value</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">permissions</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getters</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getters</span>.<span style="color:#a6e22e">permissions</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">permissionButton</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">hasPermission</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">permissions</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">permissions</span>.<span style="color:#a6e22e">some</span>(<span style="color:#a6e22e">permission</span> =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">permission</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">permissionButton</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">hasPermission</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#a6e22e">el</span>.<span style="color:#a6e22e">parentNode</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">el</span>.<span style="color:#a6e22e">parentNode</span>.<span style="color:#a6e22e">removeChild</span>(<span style="color:#a6e22e">el</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">`need permissions! Like v-permission=&#34;sys:menu:edit&#34;`</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">inserted</span>(<span style="color:#a6e22e">el</span>, <span style="color:#a6e22e">binding</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkPermission</span>(<span style="color:#a6e22e">el</span>, <span style="color:#a6e22e">binding</span>)
+</span></span><span style="display:flex;"><span>  },
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">update</span>(<span style="color:#a6e22e">el</span>, <span style="color:#a6e22e">binding</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkPermission</span>(<span style="color:#a6e22e">el</span>, <span style="color:#a6e22e">binding</span>)
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h4 id="23-重新checkpermission权限判断函数逻辑">2.3 重新<code>checkPermission</code>权限判断函数逻辑</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * src\utils\permission.js
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">store</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;@/store&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @param {String} value
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @returns {Boolean}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> * @example see @/views/permission/directive.vue
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"> */</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">checkPermission</span>(<span style="color:#a6e22e">value</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">value</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">value</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">permissions</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getters</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">store</span>.<span style="color:#a6e22e">getters</span>.<span style="color:#a6e22e">permissions</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">permissionButton</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">value</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">hasPermission</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">permissions</span>.<span style="color:#a6e22e">length</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">permissions</span>.<span style="color:#a6e22e">some</span>(<span style="color:#a6e22e">permission</span> =&gt; {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">permission</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">permissionButton</span>
+</span></span><span style="display:flex;"><span>    })
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hasPermission</span>
+</span></span><span style="display:flex;"><span>  } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">`need permissions! Like v-permission=&#34;sys:menu:edit&#34;`</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="3-使用指令级权限">3. 使用指令级权限</h3>
+<p>使用<code>v-permission</code>指令</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- menu delete permission can see this --&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">el-tag</span> <span style="color:#a6e22e">v-permission</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#39;sys:menu:del&#39;&#34;</span>&gt;delete&lt;/<span style="color:#f92672">el-tag</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- menu edit permission can see this --&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">el-tag</span> <span style="color:#a6e22e">v-permission</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#39;sys:menu:edit&#39;&#34;</span>&gt;edit&lt;/<span style="color:#f92672">el-tag</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">permission</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;@/directive/permission/index.js&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">directives</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">permission</span> }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><p>使用<code>checkPermission</code>函数</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-html" data-lang="html"><span style="display:flex;"><span>&lt;<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- menu delete permission can see this --&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">el-tag</span> <span style="color:#a6e22e">v-if</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;checkPermission(&#39;sys:menu:del&#39;)&#34;</span>&gt;delete&lt;/<span style="color:#f92672">el-tag</span>&gt;
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e">&lt;!-- menu edit permission can see this --&gt;</span>
+</span></span><span style="display:flex;"><span>  &lt;<span style="color:#f92672">el-tag</span> <span style="color:#a6e22e">v-if</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;checkPermission(&#39;sys:menu:edit&#39;)&#34;</span>&gt;edit&lt;/<span style="color:#f92672">el-tag</span>&gt;
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">template</span>&gt;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>&lt;<span style="color:#f92672">script</span>&gt;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">import</span> <span style="color:#a6e22e">checkPermission</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#39;@/utils/permission&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">default</span>{
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">methods</span><span style="color:#f92672">:</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">checkPermission</span>
+</span></span><span style="display:flex;"><span>   }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>&lt;/<span style="color:#f92672">script</span>&gt;
+</span></span></code></pre></div><h3 id="4-添加按钮权限与菜单按钮对角色授权演示">4. 添加按钮权限，与菜单/按钮对角色授权演示</h3>
+<p>菜单中添加按钮的权限演示
+<img src="up-3304cdd327e2f4f01862531203ae17bfa62.webp" alt=""></p>
+<p>菜单/按钮对角色授权演示
+<img src="up-dde01457a309a26fc04f512830e18e71485.webp" alt=""></p>
+<p>完整代码请查看源码：</p>
+<blockquote>
+<p>源码地址：<a href="https://github.com/chaooo/spring-security-jwt.git">https://github.com/chaooo/spring-security-jwt.git</a>,
+这里我将本文的前后端分离后台菜单权限控制放在github源码tag的V5.0中，防止后续修改后代码对不上。</p>
+</blockquote>
+<h3 id="附当前实例完整sql">附：当前实例完整SQL</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 系统用户表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_user<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_user<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;用户ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>username<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">255</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;用户名&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>password<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">255</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;密码&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>avatar<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">255</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif&#39;</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;头像&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>fullName<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;姓名&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>phone<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">20</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;电话&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>login_flag<span style="color:#f92672">`</span> char(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;是否阻止登录：0否，其他是&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>create_time<span style="color:#f92672">`</span> datetime <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;创建时间&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>update_time<span style="color:#f92672">`</span> datetime <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;更新时间&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>del_flag<span style="color:#f92672">`</span> char(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;删除标记：0未删，其他删除&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>),
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">UNIQUE</span> <span style="color:#66d9ef">KEY</span> <span style="color:#f92672">`</span>username<span style="color:#f92672">`</span> (<span style="color:#f92672">`</span>username<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>InnoDB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>utf8 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统用户表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 系统角色表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_role<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_role<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_name<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">50</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色名称&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_desc<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">255</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;描述&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>create_time<span style="color:#f92672">`</span> datetime <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;创建时间&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>update_time<span style="color:#f92672">`</span> datetime <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;更新时间&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>del_flag<span style="color:#f92672">`</span> char(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;删除标记：0未删，其他删除&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>),
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">UNIQUE</span> <span style="color:#66d9ef">KEY</span> <span style="color:#f92672">`</span>role_name<span style="color:#f92672">`</span> (<span style="color:#f92672">`</span>role_name<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>InnoDB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>utf8 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统角色表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 系统菜单表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_menu<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_menu<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>title<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单名称&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>name<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;路由名称(前端匹配路由用)&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>icon<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">50</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;图标&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>parent_id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;父级菜单Id&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>hidden<span style="color:#f92672">`</span> char(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;隐藏状态：0显示，1隐藏&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>status<span style="color:#f92672">`</span> char(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;状态：0启用，1停用&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>sort<span style="color:#f92672">`</span> int <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;排序&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>create_time<span style="color:#f92672">`</span> datetime <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;创建时间&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>update_time<span style="color:#f92672">`</span> datetime <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;更新时间&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>del_flag<span style="color:#f92672">`</span> char(<span style="color:#ae81ff">1</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">DEFAULT</span> <span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;删除标记：0未删，其他删除&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>),
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">UNIQUE</span> <span style="color:#66d9ef">KEY</span> <span style="color:#f92672">`</span>name<span style="color:#f92672">`</span> (<span style="color:#f92672">`</span>name<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>InnoDB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>utf8 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统菜单表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 系统权限表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_permission<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_permission<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>menu_id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>name<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;权限标识&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>title<span style="color:#f92672">`</span> varchar(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;权限名称&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>InnoDB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>utf8mb4 <span style="color:#66d9ef">COLLATE</span><span style="color:#f92672">=</span>utf8mb4_0900_ai_ci <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统权限表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#75715e">-- 权限&amp;角色 关联表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_role_permission<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_role_permission<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>permission_id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;权限ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>INNODB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>UTF8MB4 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统角色权限关联表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 用户&amp;角色 关联表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_role_user<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_role_user<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>user_id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;用户ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>INNODB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>UTF8MB4 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统用户角色关联表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 菜单&amp;角色 关联表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_role_menu<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_role_menu<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>menu_id<span style="color:#f92672">`</span> bigint <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>INNODB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>UTF8MB4 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统角色菜单关联表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 初始数据
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span>  <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_user<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>username<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>password<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>create_time<span style="color:#f92672">`</span>) <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#39;sysadmin&#39;</span>,<span style="color:#e6db74">&#39;$2a$10$Ml/uEJ5BnUSdKspYM4vkneUHM0piXyAVU0aueWya/v7FBauz6XWE6&#39;</span>,NOW());
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span>  <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_role<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>role_name<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>role_desc<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>create_time<span style="color:#f92672">`</span>) <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#39;admin&#39;</span>,<span style="color:#e6db74">&#39;管理员&#39;</span>,NOW());
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_menu<span style="color:#f92672">`</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>title<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>name<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>icon<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>parent_id<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>hidden<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>create_time<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">VALUES</span>  (<span style="color:#e6db74">&#39;1&#39;</span>,<span style="color:#e6db74">&#39;系统设置&#39;</span>,<span style="color:#e6db74">&#39;SysSetting&#39;</span>,<span style="color:#e6db74">&#39;el-icon-s-tools&#39;</span>,<span style="color:#e6db74">&#39;0&#39;</span>,<span style="color:#e6db74">&#39;0&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;2&#39;</span>,<span style="color:#e6db74">&#39;菜单管理&#39;</span>,<span style="color:#e6db74">&#39;SysMenus&#39;</span>,<span style="color:#e6db74">&#39;el-icon-menu&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,<span style="color:#e6db74">&#39;0&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;3&#39;</span>,<span style="color:#e6db74">&#39;角色管理&#39;</span>,<span style="color:#e6db74">&#39;SysRoles&#39;</span>,<span style="color:#e6db74">&#39;peoples&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,<span style="color:#e6db74">&#39;0&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;4&#39;</span>,<span style="color:#e6db74">&#39;用户管理&#39;</span>,<span style="color:#e6db74">&#39;SysUsers&#39;</span>,<span style="color:#e6db74">&#39;user&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,<span style="color:#e6db74">&#39;0&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;5&#39;</span>,<span style="color:#e6db74">&#39;系统图标&#39;</span>,<span style="color:#e6db74">&#39;SysIcons&#39;</span>,<span style="color:#e6db74">&#39;el-icon-picture&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,<span style="color:#e6db74">&#39;0&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;6&#39;</span>,<span style="color:#e6db74">&#39;菜单列表&#39;</span>,<span style="color:#e6db74">&#39;SysMenuList&#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>,<span style="color:#e6db74">&#39;2&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;7&#39;</span>,<span style="color:#e6db74">&#39;菜单编辑&#39;</span>,<span style="color:#e6db74">&#39;SysMenuEdit&#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>,<span style="color:#e6db74">&#39;2&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;8&#39;</span>,<span style="color:#e6db74">&#39;角色列表&#39;</span>,<span style="color:#e6db74">&#39;SysRoleList&#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>,<span style="color:#e6db74">&#39;3&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;9&#39;</span>,<span style="color:#e6db74">&#39;角色编辑&#39;</span>,<span style="color:#e6db74">&#39;SysRoleEdit&#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>,<span style="color:#e6db74">&#39;3&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;10&#39;</span>,<span style="color:#e6db74">&#39;用户列表&#39;</span>,<span style="color:#e6db74">&#39;SysUserList&#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>,<span style="color:#e6db74">&#39;4&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;11&#39;</span>,<span style="color:#e6db74">&#39;用户编辑&#39;</span>,<span style="color:#e6db74">&#39;SysUserEdit&#39;</span>,<span style="color:#e6db74">&#39;&#39;</span>,<span style="color:#e6db74">&#39;4&#39;</span>,<span style="color:#e6db74">&#39;1&#39;</span>,NOW()),
+</span></span><span style="display:flex;"><span>        (<span style="color:#e6db74">&#39;12&#39;</span>,<span style="color:#e6db74">&#39;其他菜单&#39;</span>,<span style="color:#e6db74">&#39;Other&#39;</span>,<span style="color:#e6db74">&#39;bug&#39;</span>,<span style="color:#ae81ff">0</span>,<span style="color:#e6db74">&#39;0&#39;</span>,NOW());
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span>  <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_permission<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>menu_id<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>name<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>title<span style="color:#f92672">`</span>) <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">6</span>,<span style="color:#e6db74">&#39;sys:menu:edit&#39;</span>,<span style="color:#e6db74">&#39;编辑&#39;</span>),(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">6</span>,<span style="color:#e6db74">&#39;sys:menu:del&#39;</span>,<span style="color:#e6db74">&#39;删除&#39;</span>),(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">8</span>,<span style="color:#e6db74">&#39;sys:role:edit&#39;</span>,<span style="color:#e6db74">&#39;编辑&#39;</span>),(<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">8</span>,<span style="color:#e6db74">&#39;sys:role:del&#39;</span>,<span style="color:#e6db74">&#39;删除&#39;</span>),(<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">10</span>,<span style="color:#e6db74">&#39;sys:user:edit&#39;</span>,<span style="color:#e6db74">&#39;编辑&#39;</span>),(<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">10</span>,<span style="color:#e6db74">&#39;sys:user:del&#39;</span>,<span style="color:#e6db74">&#39;删除&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_role_user<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>user_id<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span>) <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_role_menu<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>menu_id<span style="color:#f92672">`</span>) <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">5</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">6</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">7</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">8</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">9</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">10</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">11</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">12</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span>  <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_role_permission<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>permission_id<span style="color:#f92672">`</span>) <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>),(<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>),(<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">3</span>),(<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">4</span>),(<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">5</span>),(<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">6</span>);
+</span></span></code></pre></div>
+  
+  <div>
+    <div>Tags:</div>
+    <ul>
+        <li><a href="/tags/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/">后端开发</a></li>
+        <li><a href="/tags/springsecurity/">SpringSecurity</a></li>
+        <li><a href="/tags/%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/">安全认证</a></li>
+        <li><a href="/tags/permissions/">Permissions</a></li>
+    </ul>
+  </div>
+
+
+  </main>
+  <footer>
+    <p>Copyright 2024. All rights reserved.</p>
+
+  </footer>
+</body>
+</html>

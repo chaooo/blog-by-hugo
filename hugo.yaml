@@ -1,0 +1,23 @@
+baseURL: https://example.org/
+defaultContentLanguage: zh-tw
+languageCode: zh-TW
+title: My New Hugo Site！！！
+theme: blueLake
+
+menu:
+  main:
+  - name: 首页
+    pageRef: /
+    weight: 10
+  - name: 列表
+    pageRef: /posts
+    weight: 20
+  - name: 标签
+    pageRef: /tags
+    weight: 30
+
+module:
+  hugoVersion:
+    extended: false
+    min: 0.116.0
+

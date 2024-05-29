@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Permissions on My New Hugo Site！！！</title>
+    <link>http://localhost:1313/tags/permissions/</link>
+    <description>Recent content in Permissions on My New Hugo Site！！！</description>
+    <generator>Hugo</generator>
+    <language>zh-TW</language>
+    <lastBuildDate>Thu, 30 Dec 2021 12:28:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/permissions/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>「Spring Security」前后端分离权限控制-指令级权限</title>
+      <link>http://localhost:1313/posts/spring-security-permission/</link>
+      <pubDate>Thu, 30 Dec 2021 12:28:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/spring-security-permission/</guid>
+      <description>实现按钮级别的权限控制，基于上一篇Spring Secuirty（六）前后端分离菜单权限控制-前端动态路由的扩展。 前端部分还是基于vue-element-admin模板来演示。&#xA;这里实现按钮级别的权限判断的逻辑：每个按钮对应一个权限标识，后台根据用户角色计算出当前用户可访问的权限标识列表，前端登录后得到权限标识列表存入全局，通过单个按钮的权限标识去匹配列表里的。来实现按钮级别的权限判断。&#xA;1. 数据库添加权限表 -- 系统权限表 DROP TABLE IF EXISTS `system_permission`; CREATE TABLE `system_permission` ( `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT &amp;#39;ID&amp;#39;, `menu_id` BIGINT NOT NULL COMMENT &amp;#39;菜单ID&amp;#39;, `name` VARCHAR(100) DEFAULT NULL COMMENT &amp;#39;权限标识&amp;#39;, `title` VARCHAR(100) NOT NULL COMMENT &amp;#39;权限名称&amp;#39;, PRIMARY KEY (`id`) ) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COMMENT=&amp;#39;系统权限表&amp;#39;; -- 权限&amp;amp;角色 关联表 DROP TABLE IF EXISTS `system_role_permission`; CREATE TABLE `system_role_permission` ( `id` BIGINT NOT NULL AUTO_INCREMENT, `role_id` BIGINT DEFAULT NULL COMMENT &amp;#39;角色ID&amp;#39;, `permission_id` BIGINT DEFAULT NULL COMMENT &amp;#39;权限ID&amp;#39;, PRIMARY KEY (`id`) ) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COMMENT=&amp;#39;系统角色权限关联表&amp;#39;; 2.</description>
+    </item>
+  </channel>
+</rss>

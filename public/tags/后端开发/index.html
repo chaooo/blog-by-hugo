@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-TW" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>后端开发 | My New Hugo Site！！！</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+
+
+      <script src="/js/main.js"></script>
+
+
+</head>
+<body class="baseof">
+  <header>
+    <h1>My New Hugo Site！！！</h1>
+
+  <nav>
+    <ul>
+    <li>
+      <a href="/">首页</a>
+    </li>
+    <li>
+      <a href="/posts/">列表</a>
+    </li>
+    <li>
+      <a href="/tags/">标签</a>
+    </li>
+    </ul>
+  </nav>
+
+
+  </header>
+  <main>
+    
+  <h1>测试LIST： 后端开发</h1>
+  
+  
+    <h2><a href="/posts/spring-security-permission/">「Spring Security」前后端分离权限控制-指令级权限</a></h2>
+    实现按钮级别的权限控制，基于上一篇Spring Secuirty（六）前后端分离菜单权限控制-前端动态路由的扩展。 前端部分还是基于vue-element-admin模板来演示。
+这里实现按钮级别的权限判断的逻辑：每个按钮对应一个权限标识，后台根据用户角色计算出当前用户可访问的权限标识列表，前端登录后得到权限标识列表存入全局，通过单个按钮的权限标识去匹配列表里的。来实现按钮级别的权限判断。
+1. 数据库添加权限表 -- 系统权限表 DROP TABLE IF EXISTS `system_permission`; CREATE TABLE `system_permission` ( `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT &#39;ID&#39;, `menu_id` BIGINT NOT NULL COMMENT &#39;菜单ID&#39;, `name` VARCHAR(100) DEFAULT NULL COMMENT &#39;权限标识&#39;, `title` VARCHAR(100) NOT NULL COMMENT &#39;权限名称&#39;, PRIMARY KEY (`id`) ) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COMMENT=&#39;系统权限表&#39;; -- 权限&amp;角色 关联表 DROP TABLE IF EXISTS `system_role_permission`; CREATE TABLE `system_role_permission` ( `id` BIGINT NOT NULL AUTO_INCREMENT, `role_id` BIGINT DEFAULT NULL COMMENT &#39;角色ID&#39;, `permission_id` BIGINT DEFAULT NULL COMMENT &#39;权限ID&#39;, PRIMARY KEY (`id`) ) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COMMENT=&#39;系统角色权限关联表&#39;; 2.
+  
+    <h2><a href="/posts/spring-security-vue/">「Spring Security」前后端分离菜单权限控制-前端动态路由</a></h2>
+    前端部分，这里基于vue-element-admin模板来演示， vue-element-admin是一个后台前端解决方案，它基于vue和element-ui实现。
+1. 安装 vue-element-admin # 克隆项目 git clone https://github.com/PanJiaChen/vue-element-admin.git # 进入项目目录 cd vue-element-admin # 安装依赖， 建议不要用 cnpm 安装 会有各种诡异的bug 可以通过如下操作解决 npm 下载速度慢的问题 npm install --registry=https://registry.npm.taobao.org # 本地开发 启动项目 npm run dev 2. 改造前端路由挂载方式 vue-element-admin中权限的实现方式是：通过获取当前用户的权限去比对路由表，生成当前用户具有的权限可访问的路由表，通过router.addRoutes动态挂载到router上。
+这里改造得更灵活一点，后台根据用户计算出可访问得菜单列表，直接返回用户可访问得菜单列表，前端也需要保存一份全的路由表，用户登录后得到可访问菜单，匹配前端保存的路由表然后动态挂载。
+用户登录成功之后，在全局钩子router.beforeEach中拦截路由，判断是否已获得token，在获得token之后我们就要去获取用户的基本信息及可访问菜单，然后动态挂载路由。
+/** * src/permission.js */ // router.beforeEach const hasRoles = store.getters.roles &amp;&amp; store.getters.roles.length &gt; 0 if (hasRoles) { next() } else { // get user info const { menus } = await store.dispatch(&#39;user/getInfo&#39;) // generate accessible routes map based on menus const accessRoutes = await store.
+  
+    <h2><a href="/posts/spring-security-rbac/">「Spring Security」前后端分离后台菜单权限控制</a></h2>
+    1. RBAC权限控制模型 RBAC（Role-based access control）是一种以角色为基础的访问控制（Role-based access control，RBAC），它是一种较新且广为使用的权限控制机制，这种机制不是直接给用户赋予权限，而是将权限赋予角色。
+RBAC 权限模型将用户按角色进行归类，通过用户的角色来确定用户对某项资源是否具备操作权限。RBAC 简化了用户与权限的管理，它将用户与角色关联、角色与权限关联、权限与资源关联，这种模式使得用户的授权管理变得非常简单和易于维护。
+2. 数据库设计 -- 用户表 DROP TABLE IF EXISTS `sys_user`; CREATE TABLE `sys_user` ( `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT &#39;用户ID&#39;, `username` VARCHAR(255) DEFAULT NULL COMMENT &#39;用户名&#39;, `password` VARCHAR(255) DEFAULT NULL COMMENT &#39;密码&#39;, PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=&#39;用户表&#39;; -- 角色表 DROP TABLE IF EXISTS `sys_role`; CREATE TABLE `sys_role` ( `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT &#39;角色ID&#39;, `role_name` VARCHAR(50) DEFAULT NULL COMMENT &#39;角色名称&#39;, `role_desc` VARCHAR(255) DEFAULT NULL COMMENT &#39;描述&#39;, PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=&#39;角色表&#39;; -- 菜单表 DROP TABLE IF EXISTS `sys_menu`; CREATE TABLE `sys_menu` ( `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT &#39;菜单ID&#39;, `menu_name` VARCHAR(100) DEFAULT NULL COMMENT &#39;菜单名称&#39;, `menu_path` VARCHAR(255) DEFAULT NULL COMMENT &#39;菜单路径&#39;, `menu_type` char DEFAULT NULL COMMENT &#39;菜单类型(1:一级菜单，2:子菜单，3:按钮)&#39;, `menu_parent_id` BIGINT DEFAULT NULL COMMENT &#39;父级菜单Id&#39;, PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=&#39;菜单表&#39;; -- 用户&amp;角色 关联表 DROP TABLE IF EXISTS `sys_role_user`; CREATE TABLE `sys_role_user` ( `id` BIGINT NOT NULL AUTO_INCREMENT, `role_id` BIGINT DEFAULT NULL COMMENT &#39;角色ID&#39;, `user_id` BIGINT DEFAULT NULL COMMENT &#39;用户ID&#39;, PRIMARY KEY (`id`) ) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COMMENT=&#39;系统用户角色关联表&#39;; -- 菜单&amp;角色 关联表 DROP TABLE IF EXISTS `sys_role_menu`; CREATE TABLE `sys_role_menu` ( `id` BIGINT NOT NULL AUTO_INCREMENT, `role_id` BIGINT DEFAULT NULL COMMENT &#39;角色ID&#39;, `menu_id` BIGINT DEFAULT NULL COMMENT &#39;菜单ID&#39;, PRIMARY KEY (`id`) ) ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COMMENT=&#39;系统角色菜单关联表&#39;; -- 初始数据： -- 管理员拥有所有菜单权限 -- 普通用户拥有查看权限 INSERT INTO `sys_role`(`id`, `role_name`, `role_desc`) VALUES (1, &#39;admin&#39;, &#39;管理员&#39;),(2, &#39;user&#39;, &#39;普通用户&#39;); INSERT INTO `sys_menu`(`id`, `menu_name`,`menu_path`,`menu_type`,`menu_parent_id`) VALUES (1, &#39;用户管理&#39;, &#39;/user&#39;, 1, null), (2, &#39;用户列表&#39;, &#39;/user/list&#39;, 2, 1), (3, &#39;新增用户&#39;, &#39;/user/add&#39;, 2, 1), (4, &#39;修改用户&#39;, &#39;/user/update&#39;, 2, 1), (5, &#39;删除用户&#39;, &#39;/user/delete&#39;, 3, 1); INSERT INTO `sys_role_user`(`user_id`, `role_id`) VALUES (1, 1); INSERT INTO `sys_role_menu`(`role_id`, `menu_id`) VALUES (1, 1),(1, 2),(1, 3),(1, 4),(1, 5), (2, 1),(2, 2); 3.
+  
+    <h2><a href="/posts/spring-security-token/">「Spring Security」基于Redis的Token自动续签优化</a></h2>
+    本文基于上一篇文章：《Spring Security（三）整合 JWT 实现无状态登录示例》。
+在 SpringSecurity 整合 JWT 实现无状态登录示例中，我们在 JwtAuthenticationFilter (自定义JWT认证过滤器) 解析 Token 成功后，提供了续签逻辑：
+/** * 刷新Token的时机： * 1. 当前时间 &lt; token过期时间 * 2. 当前时间 &gt; (签发时间 + (token过期时间 - token签发时间)/2) */ private void refreshToken(HttpServletResponse response, Claims claims) { // 当前时间 long current = System.currentTimeMillis(); // token签发时间 long issuedAt = claims.getIssuedAt().getTime(); // token过期时间 long expiration = claims.getExpiration().getTime(); // (当前时间 &lt; token过期时间) &amp;&amp; (当前时间 &gt; (签发时间 + (token过期时间 - token签发时间)/2)) if ((current &lt; expiration) &amp;&amp; (current &gt; (issuedAt + ((expiration - issuedAt) / 2)))) { /* * 重新生成token */ Calendar calendar = Calendar.
+  
+    <h2><a href="/posts/spring-security-jwt/">「Spring Security」整合 JWT 实现无状态登录示例</a></h2>
+    JSON Web Token（缩写 JWT）基于JSON格式信息一种Token令牌，是目前最流行的跨域认证解决方案。
+JWT 的原理是，服务器认证以后，生成一个 JSON 对象，发回给用户。 此后，用户与服务端通信的时候，都要发回这个 JSON 对象。服务器完全只靠这个对象认定用户身份。为了防止用户篡改数据，服务器在生成这个对象的时候，会加上签名。 服务器就不保存任何 session 数据了，也就是说，服务器变成无状态了，从而比较容易实现扩展。 1. 依赖与配置文件 在 pom.xml 中引入依赖： &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt; &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt; &lt;version&gt;2.2.0&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;mysql&lt;/groupId&gt; &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt; &lt;scope&gt;runtime&lt;/scope&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;org.projectlombok&lt;/groupId&gt; &lt;artifactId&gt;lombok&lt;/artifactId&gt; &lt;optional&gt;true&lt;/optional&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt; &lt;artifactId&gt;jjwt&lt;/artifactId&gt; &lt;version&gt;0.9.1&lt;/version&gt; &lt;/dependency&gt; &lt;dependency&gt; &lt;groupId&gt;com.alibaba&lt;/groupId&gt; &lt;artifactId&gt;fastjson&lt;/artifactId&gt; &lt;version&gt;1.2.78&lt;/version&gt; &lt;/dependency&gt; 用户信息从数据库中获取，在 application.yml 配置文件中配置： server: port: 8080 spring: datasource: url: jdbc:mysql://192.168.2.100:3306/security?characterEncoding=UTF8&amp;serverTimezone=Asia/Shanghai username: developer password: 05bZ/OxTB:X+yd%1 mybatis: mapper-locations: classpath:mapper/*.xml 2. 自定义Security策略 2.
+  
+    <h2><a href="/posts/spring-security-filter/">「Spring Security」安全架构与认证鉴权原理</a></h2>
+    1. Spring Security Servlet 安全架构 Spring Security 设计的 Servlet 安全从架构上分为三个层次，分别是「认证」、「鉴权」、「入侵防护」。通过过滤器机制将安全逻辑应用到 Servlet 项目。
+请求的接收和处理是通过一个一个的过滤器顺序执行实现的，过滤器是 Servlet 项目处理请求的基础。
+Spring 将自己体系内的过滤器交由「过滤器代理FilterChainProxy」管理，FilterChainProxy 同样也是一个过滤器，被封装在 Spring 的「过滤器委托代理DelegatingFilterProxy」中。 Spring Security 在 FilterChainProxy 中加入了「安全过滤器链SecurityFilterChain」实现安全保护功能。
+其过程如图： 安全过滤器链（SecurityFilterChain）的特点：
+为所有 Spring Security 支持的 Servlet 指明了起点； 对于一些后台操作，可以提升执行效率； 在 Servlet 容器中，过滤器的选择是由 URL 决定的，如此便可针对不同 URL 指定相互独立的安全策略。 1.1 安全过滤器 Filter Spring Security 内置了 33 种安全过滤器，每个过滤器有固定的顺序及应用场景；内置过滤器的参数设置通过 HttpSecurity 类相应的配置方法完成。
+在认证与授权中关键的三个过滤器：
+UsernamePasswordAuthenticationFilter：该过滤器用于拦截我们表单提交的请求（默认为/login），进行用户的认证过程。 FilterSecurityInterceptor：该过滤器主要用来进行授权判断。 ExceptionTranslationFilter：该过滤器主要用来捕获处理spring security抛出的异常，异常主要来源于FilterSecurityInterceptor。 Spring Security 的认证、授权异常在过滤器校验过程中产生，并在 ExceptionTranslationFilter 中接收并进行处理，
+ExceptionTranslationFilter 过滤器首先像其他过滤器一样，调用过滤器链的执行方法 FilterChain.doFilter(request, response) 启动过滤处理； 如果当前的用户没有通过认证或者因为其他原因在执行过程中抛出了 AuthenticationException 异常，此时将开启「认证流程」： 清空 SecurityContextHolder 对象； 并将原始请求信息「request」保存到 RequestCache 对象中； 使用 AuthenticationEntryPoint 对象存储的认证地址，向客户端索要身份证明。例如，使用浏览器登录的用户，将浏览器地址重定向到 /login 或者回传一个 WWW-Authenticate 认证请求头。 如果当前用户身份信息已确认，但是没有访问权限，则会产生 AccessDeniedException 异常，然后访问被拒绝。继续执行拒绝处理 AccessDeniedHandler。 1.
+  
+    <h2><a href="/posts/spring-security-base/">「Spring Security」Spring Security 基础入门示例</a></h2>
+    Spring Security 是一个功能强大且高度可定制的身份验证和访问控制的安全框架。它是 Spring 应用程序在安全框架方面的公认标准。
+其核心特性包括：认证和授权、常规攻击防范、与 Servlet 接口集成、与 Spring MVC 集成等。
+常规攻击防范在 Spring Security 安全框架中是默认开启的，常见的威胁抵御方式有：防止伪造跨站请求（CSRF），安全响应头（HTTP Response headers），HTTP通讯安全等
+1. 入门示例 新建 SpringBoot 项目，在 pom.xml 中增加 Spring Security 依赖：
+&lt;dependency&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt; &lt;/dependency&gt; 只要加入依赖，项目的所有接口都会被自动保护起来。
+创建一个 Controller：
+@RestController public class HelloApi { @GetMapping(&#34;/hello&#34;) public String hello() { return &#34;hello&#34;; } } 导入spring-boot-starter-security启动后，Spring Security已经生效，默认拦截全部请求，如果用户没有登录，跳转到内置登录页面。
+访问/hello接口 ，需要登录之后才能访问。
+默认配置下，会自动生成一个 user 用户，并分配其随机密码，密码可以从控制台的日志信息中找到：
+2. Spring Security默认配置项 Spring Boot 引入 Spring Security 启动后，将会自动开启如下配置项：
+默认开启一系列基于 springSecurityFilterChain 的 Servlet 过滤器，包含了几乎所有的安全功能，例如：保护系统 URL、验证用户名、密码表单、重定向到登录界面等； 创建 UserDetailsService 实例，并生成随机密码，用于获取登录用户的信息详情； 将安全过滤器应用到每一个请求上。 除此之外，Spring Security 还有一些其他可配置的功能：
+  
+    <h2><a href="/posts/spring-cloud-config/">「SpringCloud」Config配置中心</a></h2>
+    1. Spring Cloud Config简介 Spring Cloud Config可以为微服务架构中的应用提供集中化的外部配置支持，它分为服务端和客户端两个部分。 服务端被称为分布式配置中心，它是个独立的应用，可以从配置仓库获取配置信息并提供给客户端使用。 客户端可以通过配置中心来获取配置信息，在启动时加载配置。 Spring Cloud Config默认采用Git来存储配置信息，所以天然就支持配置信息的版本管理，并且可以使用Git客户端来方便地管理和访问配置信息。
+2. 准备工作 因为config server是需要到git上拉取配置文件的，所以还需要在远程的git上新建一个存放配置文件的仓库， 如下仓库中存放客户端配置文件：
+application-beta.yml application-dev.yml application-prod.yml 3. 配置中心服务端搭建 搭建服务端配置中心（config-server），在pom.xml文件中添加依赖： &lt;!--配置服务--&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt; &lt;artifactId&gt;spring-cloud-config-server&lt;/artifactId&gt; &lt;/dependency&gt; &lt;!--注册到注册中心--&gt; &lt;dependency&gt; &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt; &lt;artifactId&gt;spring-cloud-starter-netflix-eureka-client&lt;/artifactId&gt; &lt;/dependency&gt; 在服务端编辑application.yml配置文件内容如下： server: port: 8009 # 指定当前服务的名称，这个名称会注册到注册中心 spring: application: name: config-server cloud: config: server: git: #配置存储配置信息的Git仓库 uri: http://git.xxx.com/config-files.git # 远程git仓库的地址 username: username # git账户名 password: password # git密码 clone-on-start: true # 开启启动时直接从git获取配置 search-paths: /** # 指定搜索根路径下的目录，若有多个路径使用逗号隔开 # 指定服务注册中心的地址 eureka: instance: prefer-ip-address: true # 是否使用 ip 地址注册 instance-id: ${spring.
+  
+
+  </main>
+  <footer>
+    <p>Copyright 2024. All rights reserved.</p>
+
+  </footer>
+</body>
+</html>

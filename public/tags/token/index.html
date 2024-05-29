@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Token | My New Hugo Site！！！</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+
+
+      <script src="/js/main.js"></script>
+
+
+</head>
+<body class="baseof">
+  <header>
+    <h1>My New Hugo Site！！！</h1>
+
+  <nav>
+    <ul>
+    <li>
+      <a href="/">首页</a>
+    </li>
+    <li>
+      <a href="/posts/">列表</a>
+    </li>
+    <li>
+      <a href="/tags/">标签</a>
+    </li>
+    </ul>
+  </nav>
+
+
+  </header>
+  <main>
+    
+  <h1>测试LIST： Token</h1>
+  
+  
+    <h2><a href="/posts/spring-security-token/">「Spring Security」基于Redis的Token自动续签优化</a></h2>
+    本文基于上一篇文章：《Spring Security（三）整合 JWT 实现无状态登录示例》。
+在 SpringSecurity 整合 JWT 实现无状态登录示例中，我们在 JwtAuthenticationFilter (自定义JWT认证过滤器) 解析 Token 成功后，提供了续签逻辑：
+/** * 刷新Token的时机： * 1. 当前时间 &lt; token过期时间 * 2. 当前时间 &gt; (签发时间 + (token过期时间 - token签发时间)/2) */ private void refreshToken(HttpServletResponse response, Claims claims) { // 当前时间 long current = System.currentTimeMillis(); // token签发时间 long issuedAt = claims.getIssuedAt().getTime(); // token过期时间 long expiration = claims.getExpiration().getTime(); // (当前时间 &lt; token过期时间) &amp;&amp; (当前时间 &gt; (签发时间 + (token过期时间 - token签发时间)/2)) if ((current &lt; expiration) &amp;&amp; (current &gt; (issuedAt + ((expiration - issuedAt) / 2)))) { /* * 重新生成token */ Calendar calendar = Calendar.
+  
+
+  </main>
+  <footer>
+    <p>Copyright 2024. All rights reserved.</p>
+
+  </footer>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-TW" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>「Spring Security」前后端分离后台菜单权限控制 | My New Hugo Site！！！</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+
+
+      <script src="/js/main.js"></script>
+
+
+</head>
+<body class="baseof">
+  <header>
+    <h1>My New Hugo Site！！！</h1>
+
+  <nav>
+    <ul>
+    <li>
+      <a href="/">首页</a>
+    </li>
+    <li>
+      <a aria-current="true" class="ancestor" href="/posts/">列表</a>
+    </li>
+    <li>
+      <a href="/tags/">标签</a>
+    </li>
+    </ul>
+  </nav>
+
+
+  </header>
+  <main>
+    
+  <h1>最新文章 测试Single：「Spring Security」前后端分离后台菜单权限控制</h1>
+
+  
+  
+  <time datetime="2021-12-13T14:35:00&#43;00:00">December 13, 2021</time>
+
+  <h3 id="1-rbac权限控制模型">1. RBAC权限控制模型</h3>
+<p>RBAC（Role-based access control）是一种以角色为基础的访问控制（Role-based access control，RBAC），它是一种较新且广为使用的权限控制机制，这种机制不是直接给用户赋予权限，而是将权限赋予角色。</p>
+<p>RBAC 权限模型将用户按角色进行归类，通过用户的角色来确定用户对某项资源是否具备操作权限。RBAC 简化了用户与权限的管理，它将用户与角色关联、角色与权限关联、权限与资源关联，这种模式使得用户的授权管理变得非常简单和易于维护。<!-- raw HTML omitted --></p>
+<h3 id="2-数据库设计">2. 数据库设计</h3>
+<p><img src="up-fbcbfd800689ec7a2a799e6db4b0bbb84e6.webp" alt=""></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#75715e">-- 用户表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_user<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_user<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;用户ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>username<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">255</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;用户名&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>password<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">255</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;密码&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>InnoDB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>utf8 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;用户表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 角色表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_role<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_role<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_name<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">50</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色名称&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_desc<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">255</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;描述&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>InnoDB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>utf8 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;角色表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 菜单表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_menu<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_menu<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>menu_name<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">100</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单名称&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>menu_path<span style="color:#f92672">`</span> VARCHAR(<span style="color:#ae81ff">255</span>) <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单路径&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>menu_type<span style="color:#f92672">`</span> char <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单类型(1:一级菜单，2:子菜单，3:按钮)&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>menu_parent_id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;父级菜单Id&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>InnoDB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>utf8 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;菜单表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 用户&amp;角色 关联表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_role_user<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_role_user<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>user_id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;用户ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>INNODB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>UTF8MB4 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统用户角色关联表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 菜单&amp;角色 关联表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">IF</span> <span style="color:#66d9ef">EXISTS</span> <span style="color:#f92672">`</span>sys_role_menu<span style="color:#f92672">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> <span style="color:#f92672">`</span>sys_role_menu<span style="color:#f92672">`</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">NOT</span> <span style="color:#66d9ef">NULL</span> AUTO_INCREMENT,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;角色ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">`</span>menu_id<span style="color:#f92672">`</span> BIGINT <span style="color:#66d9ef">DEFAULT</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">COMMENT</span> <span style="color:#e6db74">&#39;菜单ID&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">PRIMARY</span> <span style="color:#66d9ef">KEY</span> (<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>) ENGINE<span style="color:#f92672">=</span>INNODB <span style="color:#66d9ef">DEFAULT</span> CHARSET<span style="color:#f92672">=</span>UTF8MB4 <span style="color:#66d9ef">COMMENT</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;系统角色菜单关联表&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- 初始数据：
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- 管理员拥有所有菜单权限
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- 普通用户拥有查看权限
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_role<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>role_name<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>role_desc<span style="color:#f92672">`</span>) <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;admin&#39;</span>, <span style="color:#e6db74">&#39;管理员&#39;</span>),(<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;user&#39;</span>, <span style="color:#e6db74">&#39;普通用户&#39;</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_menu<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>id<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>menu_name<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>menu_path<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>menu_type<span style="color:#f92672">`</span>,<span style="color:#f92672">`</span>menu_parent_id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">VALUES</span>  (<span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;用户管理&#39;</span>, <span style="color:#e6db74">&#39;/user&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">null</span>),
+</span></span><span style="display:flex;"><span>            (<span style="color:#ae81ff">2</span>, <span style="color:#e6db74">&#39;用户列表&#39;</span>, <span style="color:#e6db74">&#39;/user/list&#39;</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>            (<span style="color:#ae81ff">3</span>, <span style="color:#e6db74">&#39;新增用户&#39;</span>, <span style="color:#e6db74">&#39;/user/add&#39;</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>            (<span style="color:#ae81ff">4</span>, <span style="color:#e6db74">&#39;修改用户&#39;</span>, <span style="color:#e6db74">&#39;/user/update&#39;</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>),
+</span></span><span style="display:flex;"><span>            (<span style="color:#ae81ff">5</span>, <span style="color:#e6db74">&#39;删除用户&#39;</span>, <span style="color:#e6db74">&#39;/user/delete&#39;</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_role_user<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>user_id<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span>) <span style="color:#66d9ef">VALUES</span> (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> <span style="color:#f92672">`</span>sys_role_menu<span style="color:#f92672">`</span>(<span style="color:#f92672">`</span>role_id<span style="color:#f92672">`</span>, <span style="color:#f92672">`</span>menu_id<span style="color:#f92672">`</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">VALUES</span>  (<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">4</span>),(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">5</span>),
+</span></span><span style="display:flex;"><span>            (<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>),(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>);
+</span></span></code></pre></div><h3 id="3-代码进化">3. 代码进化</h3>
+<ol>
+<li>修改注册逻辑，注册时添加用户权限</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> ResponseJson<span style="color:#f92672">&lt;</span>SysUser<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">register</span>(SysUser sysUser) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (StringUtils.<span style="color:#a6e22e">hasLength</span>(sysUser.<span style="color:#a6e22e">getUsername</span>()) <span style="color:#f92672">&amp;&amp;</span> StringUtils.<span style="color:#a6e22e">hasLength</span>(sysUser.<span style="color:#a6e22e">getPassword</span>())) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 密码加密</span>
+</span></span><span style="display:flex;"><span>        String encodePassword <span style="color:#f92672">=</span> passwordEncoder.<span style="color:#a6e22e">encode</span>(sysUser.<span style="color:#a6e22e">getPassword</span>());
+</span></span><span style="display:flex;"><span>        sysUser.<span style="color:#a6e22e">setPassword</span>(encodePassword);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 新增用户</span>
+</span></span><span style="display:flex;"><span>        sysUserDao.<span style="color:#a6e22e">insertSysUser</span>(sysUser);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 角色Ids，用&#34;,&#34;隔开</span>
+</span></span><span style="display:flex;"><span>        String roleIds <span style="color:#f92672">=</span> sysUser.<span style="color:#a6e22e">getRoleIds</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (StringUtils.<span style="color:#a6e22e">hasLength</span>(roleIds)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">// 设置用户角色</span>
+</span></span><span style="display:flex;"><span>            String<span style="color:#f92672">[]</span> split <span style="color:#f92672">=</span> roleIds.<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#34;,&#34;</span>);
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> (String s : split) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">if</span> (StringUtils.<span style="color:#a6e22e">hasLength</span>(s)) {
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 保存用户角色关系</span>
+</span></span><span style="display:flex;"><span>                    sysUserDao.<span style="color:#a6e22e">insertUserRoleRelation</span>(sysUser.<span style="color:#a6e22e">getId</span>(), Long.<span style="color:#a6e22e">valueOf</span>(s));
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> ResponseJson.<span style="color:#a6e22e">success</span>(<span style="color:#e6db74">&#34;注册成功&#34;</span>, sysUser);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ResponseJson.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#34;用户名或密码不能为空&#34;</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="2">
+<li>封装JWT服务工具类</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Slf4j</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">JwtService</span> {
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Resource</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> RedisService redisService;
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 生成token
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param username 用户名
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * @param roleList 角色列表
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">createToken</span>(String username, List<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> roleList) {
+</span></span><span style="display:flex;"><span>        Calendar calendar <span style="color:#f92672">=</span> Calendar.<span style="color:#a6e22e">getInstance</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 设置签发时间</span>
+</span></span><span style="display:flex;"><span>        calendar.<span style="color:#a6e22e">setTime</span>(<span style="color:#66d9ef">new</span> Date());
+</span></span><span style="display:flex;"><span>        Date now <span style="color:#f92672">=</span> calendar.<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 设置过期时间</span>
+</span></span><span style="display:flex;"><span>        calendar.<span style="color:#a6e22e">add</span>(Calendar.<span style="color:#a6e22e">MINUTE</span>, ConstantKey.<span style="color:#a6e22e">TOKEN_EXPIRE</span>);
+</span></span><span style="display:flex;"><span>        Date time <span style="color:#f92672">=</span> calendar.<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span>        String token <span style="color:#f92672">=</span> Jwts.<span style="color:#a6e22e">builder</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setSubject</span>(username <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;-&#34;</span> <span style="color:#f92672">+</span> roleList)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 签发时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setIssuedAt</span>(now)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 过期时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setExpiration</span>(time)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 自定义算法与签名：这里算法采用HS512，常量中定义签名key</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">signWith</span>(SignatureAlgorithm.<span style="color:#a6e22e">HS512</span>, ConstantKey.<span style="color:#a6e22e">SIGNING_KEY</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">compact</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将token存入redis,并设置超时时间为token过期时间</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> expire <span style="color:#f92672">=</span> time.<span style="color:#a6e22e">getTime</span>() <span style="color:#f92672">-</span> now.<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span>        redisService.<span style="color:#a6e22e">set</span>(token, token, expire);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> token;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 解析Token
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">parseToken</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>        String userinfo <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>        String token <span style="color:#f92672">=</span> request.<span style="color:#a6e22e">getHeader</span>(ConstantKey.<span style="color:#a6e22e">TOKEN_NAME</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (StringUtils.<span style="color:#a6e22e">hasLength</span>(token)) {
+</span></span><span style="display:flex;"><span>            String cacheToken <span style="color:#f92672">=</span> String.<span style="color:#a6e22e">valueOf</span>(redisService.<span style="color:#a6e22e">get</span>(token));
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (StringUtils.<span style="color:#a6e22e">hasLength</span>(cacheToken) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span><span style="color:#e6db74">&#34;null&#34;</span>.<span style="color:#a6e22e">equals</span>(cacheToken)) {
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>                    Claims claims <span style="color:#f92672">=</span> Jwts.<span style="color:#a6e22e">parser</span>()
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 设置生成token的签名key</span>
+</span></span><span style="display:flex;"><span>                            .<span style="color:#a6e22e">setSigningKey</span>(ConstantKey.<span style="color:#a6e22e">SIGNING_KEY</span>)
+</span></span><span style="display:flex;"><span>                            <span style="color:#75715e">// 解析token</span>
+</span></span><span style="display:flex;"><span>                            .<span style="color:#a6e22e">parseClaimsJws</span>(cacheToken).<span style="color:#a6e22e">getBody</span>();
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 取出用户信息</span>
+</span></span><span style="display:flex;"><span>                    userinfo <span style="color:#f92672">=</span> claims.<span style="color:#a6e22e">getSubject</span>();
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 重设Redis超时时间</span>
+</span></span><span style="display:flex;"><span>                    resetRedisExpire(token, claims);
+</span></span><span style="display:flex;"><span>                } <span style="color:#66d9ef">catch</span> (ExpiredJwtException e) {
+</span></span><span style="display:flex;"><span>                    log.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">&#34;Token过期续签，ExpiredJwtException={}&#34;</span>, e.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>                    Claims claims <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">getClaims</span>();
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 取出用户信息</span>
+</span></span><span style="display:flex;"><span>                    userinfo <span style="color:#f92672">=</span> claims.<span style="color:#a6e22e">getSubject</span>();
+</span></span><span style="display:flex;"><span>                    <span style="color:#75715e">// 刷新Token</span>
+</span></span><span style="display:flex;"><span>                    refreshToken(token, claims);
+</span></span><span style="display:flex;"><span>                } <span style="color:#66d9ef">catch</span> (UnsupportedJwtException e) {
+</span></span><span style="display:flex;"><span>                    log.<span style="color:#a6e22e">warn</span>(<span style="color:#e6db74">&#34;访问[{}]失败，UnsupportedJwtException={}&#34;</span>, request.<span style="color:#a6e22e">getRequestURI</span>(), e.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>                } <span style="color:#66d9ef">catch</span> (MalformedJwtException e) {
+</span></span><span style="display:flex;"><span>                    log.<span style="color:#a6e22e">warn</span>(<span style="color:#e6db74">&#34;访问[{}]失败，MalformedJwtException={}&#34;</span>, request.<span style="color:#a6e22e">getRequestURI</span>(), e.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>                } <span style="color:#66d9ef">catch</span> (SignatureException e) {
+</span></span><span style="display:flex;"><span>                    log.<span style="color:#a6e22e">warn</span>(<span style="color:#e6db74">&#34;访问[{}]失败，SignatureException={}&#34;</span>, request.<span style="color:#a6e22e">getRequestURI</span>(), e.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>                } <span style="color:#66d9ef">catch</span> (IllegalArgumentException e) {
+</span></span><span style="display:flex;"><span>                    log.<span style="color:#a6e22e">warn</span>(<span style="color:#e6db74">&#34;访问[{}]失败，IllegalArgumentException={}&#34;</span>, request.<span style="color:#a6e22e">getRequestURI</span>(), e.<span style="color:#a6e22e">getMessage</span>());
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> userinfo;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 解析Token,取出用户名（Token过期仍取出用户名）
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> String <span style="color:#a6e22e">getUsername</span>(HttpServletRequest request){
+</span></span><span style="display:flex;"><span>        String username <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>        String token <span style="color:#f92672">=</span> request.<span style="color:#a6e22e">getHeader</span>(ConstantKey.<span style="color:#a6e22e">TOKEN_NAME</span>);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (StringUtils.<span style="color:#a6e22e">hasLength</span>(token)) {
+</span></span><span style="display:flex;"><span>            String userinfo <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">try</span> {
+</span></span><span style="display:flex;"><span>                Claims claims <span style="color:#f92672">=</span> Jwts.<span style="color:#a6e22e">parser</span>()
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 设置生成token的签名key</span>
+</span></span><span style="display:flex;"><span>                        .<span style="color:#a6e22e">setSigningKey</span>(ConstantKey.<span style="color:#a6e22e">SIGNING_KEY</span>)
+</span></span><span style="display:flex;"><span>                        <span style="color:#75715e">// 解析token</span>
+</span></span><span style="display:flex;"><span>                        .<span style="color:#a6e22e">parseClaimsJws</span>(token).<span style="color:#a6e22e">getBody</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 取出用户信息</span>
+</span></span><span style="display:flex;"><span>                userinfo <span style="color:#f92672">=</span> claims.<span style="color:#a6e22e">getSubject</span>();
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">catch</span> (ExpiredJwtException e) {
+</span></span><span style="display:flex;"><span>                Claims claims <span style="color:#f92672">=</span> e.<span style="color:#a6e22e">getClaims</span>();
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 取出用户信息</span>
+</span></span><span style="display:flex;"><span>                userinfo <span style="color:#f92672">=</span> claims.<span style="color:#a6e22e">getSubject</span>();
+</span></span><span style="display:flex;"><span>            } <span style="color:#66d9ef">catch</span> (Exception ignored){}
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> (StringUtils.<span style="color:#a6e22e">hasLength</span>(userinfo)){
+</span></span><span style="display:flex;"><span>                username <span style="color:#f92672">=</span> userinfo.<span style="color:#a6e22e">split</span>(<span style="color:#e6db74">&#34;-&#34;</span>)<span style="color:#f92672">[</span>0<span style="color:#f92672">]</span>;
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> username;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 重设Redis超时时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 当前时间 + (`cacheToken`过期时间 - `cacheToken`签发时间)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">resetRedisExpire</span>(String token, Claims claims) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 当前时间</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> current <span style="color:#f92672">=</span> System.<span style="color:#a6e22e">currentTimeMillis</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// token签发时间</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> issuedAt <span style="color:#f92672">=</span> claims.<span style="color:#a6e22e">getIssuedAt</span>().<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// token过期时间</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> expiration <span style="color:#f92672">=</span> claims.<span style="color:#a6e22e">getExpiration</span>().<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 当前时间 + (`cacheToken`过期时间 - `cacheToken`签发时间)</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> expireAt <span style="color:#f92672">=</span> current <span style="color:#f92672">+</span> (expiration <span style="color:#f92672">-</span> issuedAt);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 重设Redis超时时间</span>
+</span></span><span style="display:flex;"><span>        redisService.<span style="color:#a6e22e">expire</span>(token, expireAt);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/**
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 刷新Token
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 刷新Token的时机： 当cacheToken已过期 并且Redis在有效期内
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     * 重新生成Token并覆盖Redis的v值(这时候k、v值不一样了)，然后设置Redis过期时间为：新Token过期时间
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">     */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">refreshToken</span>(String token, Claims claims) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 当前时间</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> current <span style="color:#f92672">=</span> System.<span style="color:#a6e22e">currentTimeMillis</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">/*
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         * 重新生成token
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">         */</span>
+</span></span><span style="display:flex;"><span>        Calendar calendar <span style="color:#f92672">=</span> Calendar.<span style="color:#a6e22e">getInstance</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 设置签发时间</span>
+</span></span><span style="display:flex;"><span>        calendar.<span style="color:#a6e22e">setTime</span>(<span style="color:#66d9ef">new</span> Date());
+</span></span><span style="display:flex;"><span>        Date now <span style="color:#f92672">=</span> calendar.<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 设置过期时间: TOKEN_EXPIRE分钟</span>
+</span></span><span style="display:flex;"><span>        calendar.<span style="color:#a6e22e">add</span>(Calendar.<span style="color:#a6e22e">MINUTE</span>, ConstantKey.<span style="color:#a6e22e">TOKEN_EXPIRE</span>);
+</span></span><span style="display:flex;"><span>        Date time <span style="color:#f92672">=</span> calendar.<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span>        String refreshToken <span style="color:#f92672">=</span> Jwts.<span style="color:#a6e22e">builder</span>()
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setSubject</span>(claims.<span style="color:#a6e22e">getSubject</span>())
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 签发时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setIssuedAt</span>(now)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 过期时间</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">setExpiration</span>(time)
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e">// 算法与签名(同生成token)：这里算法采用HS512，常量中定义签名key</span>
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">signWith</span>(SignatureAlgorithm.<span style="color:#a6e22e">HS512</span>, ConstantKey.<span style="color:#a6e22e">SIGNING_KEY</span>)
+</span></span><span style="display:flex;"><span>                .<span style="color:#a6e22e">compact</span>();
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 将refreshToken覆盖Redis的v值,并设置超时时间为refreshToken过期时间</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">long</span> expire <span style="color:#f92672">=</span> time.<span style="color:#a6e22e">getTime</span>() <span style="color:#f92672">-</span> now.<span style="color:#a6e22e">getTime</span>();
+</span></span><span style="display:flex;"><span>        redisService.<span style="color:#a6e22e">set</span>(token, token, expire);
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 打印日志</span>
+</span></span><span style="display:flex;"><span>        log.<span style="color:#a6e22e">info</span>(<span style="color:#e6db74">&#34;刷新token执行时间: {}&#34;</span>, (System.<span style="color:#a6e22e">currentTimeMillis</span>() <span style="color:#f92672">-</span> current) <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34; 毫秒&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><ol start="3">
+<li>编写获取用户可访问菜单接口（用户登录后，携带Token去获取用户角色，根据角色计算出用户可访问菜单）</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@GetMapping</span>(<span style="color:#e6db74">&#34;/menu&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> ResponseJson<span style="color:#f92672">&lt;</span>List<span style="color:#f92672">&lt;</span>SysMenu<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">menuList</span>(HttpServletRequest request) {
+</span></span><span style="display:flex;"><span>    String username <span style="color:#f92672">=</span> jwtService.<span style="color:#a6e22e">getUsername</span>(request);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sysUserService.<span style="color:#a6e22e">menuList</span>(username);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> ResponseJson<span style="color:#f92672">&lt;</span>List<span style="color:#f92672">&lt;</span>SysMenu<span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">menuList</span>(String username) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>StringUtils.<span style="color:#a6e22e">hasLength</span>(username)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> ResponseJson.<span style="color:#a6e22e">error</span>(<span style="color:#e6db74">&#34;用户信息异常&#34;</span>, <span style="color:#66d9ef">null</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// 获取用户角色Id</span>
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>Long<span style="color:#f92672">&gt;</span> roleIds <span style="color:#f92672">=</span> sysUserDao.<span style="color:#a6e22e">getRoleIdsByUserId</span>(username);
+</span></span><span style="display:flex;"><span>    List<span style="color:#f92672">&lt;</span>SysMenu<span style="color:#f92672">&gt;</span> menus <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>CollectionUtils.<span style="color:#a6e22e">isEmpty</span>(roleIds)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// 根据角色Id获取菜单列表</span>
+</span></span><span style="display:flex;"><span>        menus <span style="color:#f92672">=</span> sysUserDao.<span style="color:#a6e22e">getMenuListByRoleIds</span>(roleIds);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> ResponseJson.<span style="color:#a6e22e">success</span>(menus);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;select</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;getRoleIdsByUserId&#34;</span> <span style="color:#a6e22e">resultType=</span><span style="color:#e6db74">&#34;java.lang.Long&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    SELECT DISTINCT ru.role_id FROM sys_role_user ru
+</span></span><span style="display:flex;"><span>    LEFT JOIN sys_user u ON ru.user_id = u.id
+</span></span><span style="display:flex;"><span>    WHERE u.username=#{username}
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/select&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;select</span> <span style="color:#a6e22e">id=</span><span style="color:#e6db74">&#34;getMenuListByRoleIds&#34;</span> <span style="color:#a6e22e">resultType=</span><span style="color:#e6db74">&#34;com.example.jwt.entity.SysMenu&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    SELECT m.id, m.menu_name AS menuName, m.menu_path AS menuPath, m.menu_type AS menuType, m.menu_parent_id AS parentId
+</span></span><span style="display:flex;"><span>    FROM sys_menu m
+</span></span><span style="display:flex;"><span>             LEFT JOIN sys_role_menu rm ON m.id = rm.menu_id
+</span></span><span style="display:flex;"><span>    WHERE rm.role_id IN
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;foreach</span> <span style="color:#a6e22e">item=</span><span style="color:#e6db74">&#34;roleId&#34;</span> <span style="color:#a6e22e">collection=</span><span style="color:#e6db74">&#34;roleIds&#34;</span> <span style="color:#a6e22e">open=</span><span style="color:#e6db74">&#34;(&#34;</span> <span style="color:#a6e22e">separator=</span><span style="color:#e6db74">&#34;,&#34;</span> <span style="color:#a6e22e">close=</span><span style="color:#e6db74">&#34;)&#34;</span><span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        #{roleId}
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&lt;/foreach&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">&lt;/select&gt;</span>
+</span></span></code></pre></div><h3 id="4测试">4.测试</h3>
+<ol>
+<li>普通用户可访问菜单：</li>
+</ol>
+<p><img src="up-2368413a1b85f66e78676578c3592e42076.webp" alt=""></p>
+<ol start="2">
+<li>管理员可访问菜单：</li>
+</ol>
+<p><img src="up-f0af2cb0f3d7a9221a95ddb78fd9f01cfd9.webp" alt=""></p>
+<blockquote>
+<p>源码地址：<a href="https://github.com/chaooo/spring-security-jwt.git">https://github.com/chaooo/spring-security-jwt.git</a>,
+这里我将本文的前后端分离后台菜单权限控制放在github源码tag的V3.0中，防止后续修改后代码对不上。</p>
+</blockquote>
+
+  
+  <div>
+    <div>Tags:</div>
+    <ul>
+        <li><a href="/tags/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/">后端开发</a></li>
+        <li><a href="/tags/springsecurity/">SpringSecurity</a></li>
+        <li><a href="/tags/%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81/">安全认证</a></li>
+        <li><a href="/tags/rbac/">RBAC</a></li>
+    </ul>
+  </div>
+
+
+  </main>
+  <footer>
+    <p>Copyright 2024. All rights reserved.</p>
+
+  </footer>
+</body>
+</html>
