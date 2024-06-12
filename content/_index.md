@@ -1,9 +1,5 @@
 +++
-title = 'Home'
-date = 2023-01-01T08:00:00-07:00
-draft = false
+author = "Hugo Authors"
+description = "A theme based on VMware's Clarity Design System for publishing technical blogs with Hugo." # Set your site's meta tag (SEO) description here. This overrides any description set in your site configuration.
+keywords = ["design", "clarity", "hugo theme"] # Set your site's meta tag (SEO) keywords here. These override any keywords set in your site configuration.
 +++
-
-Laborum voluptate pariatur ex culpa magna nostrud est incididunt fugiat
-pariatur do dolor ipsum enim. Consequat tempor do dolor eu. Non id id anim anim
-excepteur excepteur pariatur nostrud qui irure ullamco.

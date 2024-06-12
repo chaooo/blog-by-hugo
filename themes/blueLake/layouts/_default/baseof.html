@@ -1,17 +1,46 @@
+{{- $s := site.Params }}
+{{- $p := .Params }}
+{{- $codeBlockConfig := partial "func/getCodeBlockSettings" . }}
 <!DOCTYPE html>
-<html lang="{{ or site.Language.LanguageCode }}" dir="{{ or site.Language.LanguageDirection `ltr` }}">
-<head>
-  {{ partial "head.html" . }}
-</head>
-<body class="baseof">
-  <header>
-    {{ partial "header.html" . }}
-  </header>
-  <main>
-    {{ block "main" . }}{{ end }}
-  </main>
-  <footer>
-    {{ partial "footer.html" . }}
-  </footer>
-</body>
+<html
+  lang="{{ .Lang }}"
+  data-figures="{{ $p.figurePositionShow }}"
+  {{ if .IsPage }}
+    class="page"
+  {{ else if .IsHome }}
+    class="home"
+  {{ end }}
+  {{ with $s.enforceLightMode }}
+    data-mode="lit"
+  {{ end }}
+  {{ with $s.enforceDarkMode }}
+    data-mode="dim"
+  {{ end -}}
+>
+  <head>
+    {{- partial "head/index" . }}
+    {{- partial "hooks/head-end" . }}
+  </head>
+  <body
+    data-code="{{ $codeBlockConfig.max }}"
+    data-lines="{{ $codeBlockConfig.lines }}"
+    id="documentTop"
+    data-lang="{{ .Lang }}"
+  >
+    {{- partialCached "scripts/google/tag-manager" (dict "noscript" true) }}
+    {{- partial "header/index" . }}
+    <main>
+      <div class="grid-inverse wrap content">
+      {{- block "main" . }}{{ end }}
+
+      {{- if ( ne $p.sidebar false ) }}
+        {{- partial "sidebar/index" . }}
+      {{ end }}
+      </div>
+    </main>
+    {{- partialCached "common/icons" . }}
+    {{- partialCached "footer/index" . }}
+    {{- partialCached "scripts/index" . }}
+    {{- partialCached "hooks/body-end" . }}
+  </body>
 </html>

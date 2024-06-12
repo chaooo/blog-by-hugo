@@ -1,0 +1,25 @@
+{{- $params := .Site.Params }}
+{{- $centerLogo := $params.centerLogo }}
+{{ $logo := $params.logo }}
+<header class="nav_header" >
+    <nav class="nav">
+        {{- if $centerLogo }}
+            {{- partialCached "header/component/logo" (dict "logo" $logo "class" "nav_hide") }}
+        {{- else }}
+            {{- partialCached "header/component/logo" (dict "logo" $logo) }}
+        {{- end }}
+        <div class='nav_body nav_body_{{ default "left" $params.mobileNavigation }}'>
+            {{ $context := . }}
+            {{ $menuData := .Site.Data.menu }}
+            {{ with $menuData }}
+                {{ partial "header/component/nav" (dict "context" $context "menu" $menuData) }}
+            {{- else }}
+                {{ partial "header/component/nav" (dict "context" . "menu" .Site.Menus.main) }}
+            {{- end }}
+            {{- if $centerLogo }}
+                {{- partial "header/component/logo" (dict "logo" $logo "class" "nav_center") }}
+            {{- end }}
+            {{- partialCached "header/component/follow" . }}
+        </div>
+    </nav>
+</header>

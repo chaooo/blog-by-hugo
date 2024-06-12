@@ -1,31 +1,16 @@
-name = 'Theme name'
-license = 'MIT'
-licenselink = 'https://github.com/owner/repo/LICENSE'
-description = 'Theme description'
-
-# The home page of the theme, where the source can be found
-homepage = 'https://github.com/owner/repo'
-
-# If you have a running demo of the theme
-demosite = 'https://owner.github.io/repo'
-
-# Taxonomy terms
-tags = ['blog', 'company']
-features = ['some', 'awesome', 'features']
+name = "BlueLake"
+license = "MIT"
+licenselink = "https://github.com/chipzoller/hugo-clarity/blob/master/LICENSE.md"
+description = "A theme based on VMware's Clarity Design System for publishing technical blogs with Hugo."
+homepage = "https://github.com/chipzoller/hugo-clarity"
+demosite = "https://neonmirrors.net/"
+tags = ["blog", "technical", "simple", "dark", "syntax highlighting"]
+features = ["blog", "technical", "simple", "dark", "syntax highlighting"]
+min_version = "0.91.0"
 
 # If the theme has multiple authors
 authors = [
-  {name = 'Name of author', homepage = 'Website of author'},
-  {name = 'Name of author', homepage = 'Website of author'}
+  {name = "Chip Zoller", homepage = "https://neonmirrors.net"},
+  {name = "Dan Weru", homepage = "https://github.com/onweru"},
+  {name = "Ivan Boothe", homepage = "https://rootwork.org"},
 ]
-
-# If the theme has a single author
-[author]
-  name = 'Your name'
-  homepage = 'Your website'
-
-# If porting an existing theme
-[original]
-  author = 'Name of original author'
-  homepage = 'Website of original author'
-  repo = 'https://github.com/owner/repo'
