@@ -1,7 +1,7 @@
 baseURL: https://example.org/
 defaultContentLanguage: zh-tw
 languageCode: zh-TW
-title: My New Hugo Site！！！
+title: My New Hugo Site
 theme: blueLake
 
 menu:
