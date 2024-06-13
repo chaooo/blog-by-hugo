@@ -91,7 +91,7 @@ Params:
   codeMaxLines: 7
 
   # disable showing line numbers by default. Switch to `true` if you'd rather have them on.
-  codeLineNumbers: false
+  codeLineNumbers: true
 
   # enable math notation. Switch to `true` to enable mathjax in your site.
   enableMathNotation: false
