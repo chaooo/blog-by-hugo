@@ -9,6 +9,7 @@
     {{- $simple = false }}
   {{ end }}
   <div class="search">
+
     <input type="search" class="search_field form_field" placeholder='{{ $placeholder }}' id="find" autocomplete="off" data-scope='{{ .Section }}'>
     <label for="find" class="search_label">
       {{- partial "common/sprite" (dict "icon" "search") }}

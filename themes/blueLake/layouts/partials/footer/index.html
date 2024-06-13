@@ -5,8 +5,11 @@
 {{- end }}
 <footer class="footer">
     <div class="footer_inner wrap pale">
-        <img src='{{ absURL (default $s.logo $s.footerLogo) }}' class="icon icon_2 transparent" alt="{{ $c }}">
-        <p>{{ T "copyright" | markdownify }}&nbsp;©&nbsp;<span class="year"></span>&nbsp;{{ upper $c }}. {{ T "all_rights" | markdownify }}</p>
+        <p>
+            {{- with $s.footerLogo }}<img src='{{ absURL ($s.footerLogo) }}' class="icon icon_2" alt="{{ $c }}">{{- end }}
+            {{- with $s.ICP }}备案号：<a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow">{{ $s.ICP }}</a>{{- end }}
+            {{ T "copyright" | markdownify }}&nbsp;©&nbsp;<span class="year"></span>&nbsp;{{ upper $c }} · {{ T "all_rights" | markdownify }}
+        </p>
         {{- partialCached "footer/component/top" .}}
     </div>
 </footer>
