@@ -325,8 +325,6 @@ function fileClosure(){
       // Persist modified alt to image element
       image.alt = alt
     });
-
-    hljs.initHighlightingOnLoad();
   }
 
   function largeImages(baseParent, images = []) {

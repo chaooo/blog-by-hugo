@@ -187,3 +187,13 @@ hexo g == hexo generate
 hexo s == hexo server
 hexo d == hexo deploy
 ```
+
+
+打开`根_config.yml`，找到：
+``` yml 根_config.yml https://hexo.io/zh-cn/docs/configuration.html _config.yml
+title:     # 标题，如：秋过冬漫长
+subtitle:  # 副标题，如：没有比脚更长的路，走过去，前面是个天！
+description: # 网站关键字，如：key, key1, key2, key3
+keywords:
+author:
+```

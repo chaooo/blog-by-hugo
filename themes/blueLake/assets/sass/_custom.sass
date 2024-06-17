@@ -2,3 +2,28 @@
 // due to the cascading nature of css, if you try to override theme css variables in this file, those changes will not apply. Instead, override css variables in the `override.sass` file
 // we recommend not editing this file directly. Instead, create an `assets/sass/_custom.sass` file at the root level of your site.
 // if you edit this file directly, you will have to resolve git conflicts when and if you decide to pull changes we make on the theme
+.highlight
+  display: grid
+  width: 100%
+  position: relative
+  pre
+    overflow-x: auto
+    background: var(--code-bg) !important
+    border-radius: 4px
+    font-family: 'Monaco', monospace
+    padding: 1.5rem .5rem .5rem .5rem
+  .lang
+    position: absolute
+    top: .5rem
+    left: .5rem
+    font-style: italic
+    text-transform: uppercase
+    font-size: 67%
+    opacity: .5
+    color: var(--light)
+  .copy
+    position: absolute
+    top: .5rem
+    right: .5rem
+    width: 1rem
+    height: 1rem
