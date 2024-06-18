@@ -12,7 +12,7 @@ series: JVM
 2. 本地方法栈（Native Method Stack）
 3. Java 虚拟机栈（VM Stack）
 4. Java 堆（Heap）（线程共享）
-5. 方法区（Method Area）（线程共享）<!-- more -->
+5. 方法区（Method Area）（线程共享）
 
 ![](JVM.png)
 

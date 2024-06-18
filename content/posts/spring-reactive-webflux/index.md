@@ -10,7 +10,7 @@ series: SpringReactive
 
 `Spring WebFlux`是`Spring Framework 5.0`中引入的以`Reactor`为基础的响应式编程`Web`框架。
 
-**WebFlux** 的异步处理是基于`Reactor`实现的，是将输入流适配成`Mono`或`Flux`进行统一处理。<!-- more -->
+**WebFlux** 的异步处理是基于`Reactor`实现的，是将输入流适配成`Mono`或`Flux`进行统一处理。
 
 ### 1. 响应式流(Reactive Streams)
 + **Reactor** 是一个响应式流，它有对应的发布者(`Publisher`)，用两个类来表示：

@@ -286,6 +286,10 @@
         padding-top: 0.25rem
     ol
       list-style: decimal
+  &_end
+    text-align: center
+    opacity: .8
+    margin-top: 1em
 
 .scrollable
   display: grid
@@ -486,8 +490,8 @@
     padding: 0.2rem
     &.disabled
       opacity: 0.7
-    &:first-child, &:last-child
-      display: none
+    //&:first-child, &:last-child
+    //  display: none
     &.active a
       background-color: darken($theme, 20%)
   &-link

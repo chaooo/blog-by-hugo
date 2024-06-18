@@ -13,7 +13,7 @@ series: hexo
 所以，我利用工作之余抽了些时间进行了大改版，主题模板引擎由Jade(Pug)换成了EJS，以landscape为原型进行二次开发；保留BlueLake主题老版本的其他功能，如原生JS实现站内搜索功能，本地分享等；新添加了一些新的功能，如打赏模块，集成新的三方评论等等。
 
 说了这么多不如你亲自体验来的直接，BlueLake主题地址：https://github.com/chaooo/hexo-theme-BlueLake。
-<!-- more -->
+
 在阅读本文之前，假定您已经成功安装了[Hexo](https://hexo.io/zh-cn/)，并使用 Hexo 提供的命令创建了一个静态博客。Hexo是一个快速、简洁且高效的博客框架。Hexo基于Node.js ，使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。
 
 ![](BlueLake.jpg)

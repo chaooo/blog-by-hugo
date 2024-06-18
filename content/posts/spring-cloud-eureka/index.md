@@ -9,7 +9,7 @@ series: SpringCloud
 ### 1. Eureka简介
 Eureka是一种RESTful服务，主要用于AWS云中间层服务器的发现、负载平衡和故障转移。
 
-Eureka包含两个组件：服务注册中心Eureka Server 和 服务客户端Eureka Client。<!-- more -->
+Eureka包含两个组件：服务注册中心Eureka Server 和 服务客户端Eureka Client。
 
 #### 1.1 注册中心 Eureka Server
 Eureka Server提供注册服务，各个节点启动后，会在Eureka Server中进行注册，这样Eureka Server中的服务注册表中将会存储所有可用服务节点的信息。

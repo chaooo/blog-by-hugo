@@ -11,7 +11,7 @@ CentOS 8 所需的最低硬件配置:
 - 2GB RAM
 - 64位x86 / 2GHz或以上的 CPU
 - 20GB 硬盘空间
-<!-- more -->
+
 
 ### 1. 下载 CentOS 8 ISO 文件
 在 CentOS 官方网站 https://www.centos.org/download/ 下载 CentOS 8 ISO 文件。

@@ -8,7 +8,7 @@ series: CentOS
 
 ### 1. 创建gogs用户
 
-为Gogs创建一个MySQL用户`gogs` <!-- more -->
+为Gogs创建一个MySQL用户`gogs` 
 ``` shell
 #先创建一个MySQL用户
 use mysql;

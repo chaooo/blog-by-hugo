@@ -12,7 +12,7 @@ series: SpringSecurity
 请求的接收和处理是通过一个一个的过滤器顺序执行实现的，过滤器是 `Servlet` 项目处理请求的基础。
 
 `Spring` 将自己体系内的过滤器交由「过滤器代理`FilterChainProxy`」管理，`FilterChainProxy` 同样也是一个过滤器，被封装在 `Spring` 的「过滤器委托代理`DelegatingFilterProxy`」中。
-`Spring Security` 在 `FilterChainProxy` 中加入了「安全过滤器链`SecurityFilterChain`」实现安全保护功能。<!-- more -->
+`Spring Security` 在 `FilterChainProxy` 中加入了「安全过滤器链`SecurityFilterChain`」实现安全保护功能。
 
 其过程如图：
 ![](up-0190e15403889a4a54ded3892f2a2d7cd18.webp)

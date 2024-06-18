@@ -12,7 +12,7 @@ series: ElasticStack
 2. **`LogStash`**: 数据处理
 3. **`ElasticSearch`**(核心引擎): 数据存储、查询和分析
 4. **`Kibana`**: 数据探索与可视化分析
-<!-- more -->
+
 
 ![](elastic-stream.jpg)
 

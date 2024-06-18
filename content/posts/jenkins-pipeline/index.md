@@ -12,7 +12,7 @@ series: Linux
 `Jenkins Pipeline`（或简称为"Pipeline"）是一套插件，将持续交付的实现和实施集成到Jenkins中。
 持续交付`Pipeline`自动化的表达了这样一种流程：将基于版本控制管理的软件持续的交付。
 Jenkins Pipeline 的定义通常被写入到一个`Jenkinsfile`文本文件中，该文件可以被放入项目的源代码控制库中。
-<!-- more -->
+
 
 ### 2.Jenkinsfile 基础语法
 ``` json

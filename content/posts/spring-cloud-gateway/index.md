@@ -10,7 +10,7 @@ series: SpringCloud
 
 Spring Cloud Gateway 是基于 Spring5.0、SpringBoot2.0 和 Project Reactor 开发的网关，旨在提供一种简单而有效的方式来对API进行路由，基于过滤器链的方式提供：安全，监控/埋点，和限流。
 
-Spring Cloud Gateway 基于 Spring Boot2.x、Spring WebFlux 和 Project Reactor构建，属于异步非阻塞模型。<!-- more -->
+Spring Cloud Gateway 基于 Spring Boot2.x、Spring WebFlux 和 Project Reactor构建，属于异步非阻塞模型。
 
 ### 1.1 核心概念
 

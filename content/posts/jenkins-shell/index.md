@@ -7,7 +7,7 @@ series: Linux
 ---
 
 ### 1. 配置远程服务器SSH免密登录
-1. 本地客户端生成公私钥（一路回车默认即可），会在用户目录.ssh文件夹下创建公私钥<!-- more -->
+1. 本地客户端生成公私钥（一路回车默认即可），会在用户目录.ssh文件夹下创建公私钥
 
 ``` shell
 [localuser@localhost .ssh]$ ssh-keygen

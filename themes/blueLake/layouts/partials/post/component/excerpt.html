@@ -13,7 +13,7 @@
       </div>
       {{- end }}
       <div class="pale">
-        {{- $summary := truncate 320 .Summary }}
+        {{- $summary := truncate 200 .Summary }}
         {{- if .Params.summary }}
           {{- $summary = .Params.summary }}
         {{- else if .Params.abstract }}

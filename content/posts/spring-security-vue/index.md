@@ -4,10 +4,11 @@ date: 2021-12-27 17:35:00
 tags: [后端开发, SpringSecurity, 安全认证, Vue]
 categories: [安全认证]
 series: SpringSecurity
+summary: 后台根据用户计算出可访问得菜单列表，直接返回用户可访问得菜单列表，前端也需要保存一份全的路由表，用户登录后得到可访问菜单，匹配前端保存的路由表然后动态挂载。
 ---
 
 前端部分，这里基于[vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/)模板来演示，
-[vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/)是一个后台前端解决方案，它基于[vue](https://github.com/vuejs/vue)和[element-ui](https://github.com/ElemeFE/element)实现。<!-- more -->
+[vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/)是一个后台前端解决方案，它基于[vue](https://github.com/vuejs/vue)和[element-ui](https://github.com/ElemeFE/element)实现。
 
 ### 1. 安装 vue-element-admin
 ``` bash

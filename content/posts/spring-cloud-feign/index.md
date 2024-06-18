@@ -8,7 +8,7 @@ series: SpringCloud
 
 ### 1. Spring Cloud OpenFeign简介
 `OpenFeign`是`SpringCloud`提供的一个声明式的伪`Http`客户端，它使得调用远程服务就像调用本地服务一样简单，只需要创建一个接口并添加一个注解即可。
-`OpenFeign`是`SpringCloud`在`Feign`的基础上支持了`Spring MVC`的注解，并通过动态代理的方式产生实现类来做负载均衡并进行调用其他服务。<!-- more -->
+`OpenFeign`是`SpringCloud`在`Feign`的基础上支持了`Spring MVC`的注解，并通过动态代理的方式产生实现类来做负载均衡并进行调用其他服务。
 
 #### 1.1 OpenFeign使用流程：
 1. 引入`Spring Cloud OpenFeign`的依赖

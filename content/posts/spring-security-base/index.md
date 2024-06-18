@@ -10,7 +10,7 @@ series: SpringSecurity
 
 其核心特性包括：认证和授权、常规攻击防范、与 `Servlet` 接口集成、与 `Spring MVC` 集成等。
 
-常规攻击防范在 `Spring Security` 安全框架中是默认开启的，常见的威胁抵御方式有：防止伪造跨站请求（`CSRF`），安全响应头（`HTTP Response headers`），`HTTP`通讯安全等<!-- more -->
+常规攻击防范在 `Spring Security` 安全框架中是默认开启的，常见的威胁抵御方式有：防止伪造跨站请求（`CSRF`），安全响应头（`HTTP Response headers`），`HTTP`通讯安全等
 
 ### 1. 入门示例
 新建 `SpringBoot` 项目，在 `pom.xml` 中增加 `Spring Security` 依赖：
