@@ -2,7 +2,8 @@
 title: 「Shell」Shell 函数的用法
 date: 2020-06-08 15:12:46
 tags: [环境配置, Linux, Shell]
-categories: 环境配置
+categories: [环境配置]
+series: Linux
 ---
 
 

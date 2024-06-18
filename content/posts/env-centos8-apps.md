@@ -2,7 +2,8 @@
 title: 「环境配置」CentOS 8 常用软件安装(MySQL Nginx SVN Redis)
 date: 2020-07-18 18:11:23
 tags: [环境配置, CentOS, Nginx, MySQL, Redis, SVN]
-categories: 环境配置
+categories: [环境配置]
+series: CentOS
 ---
 
 ### 1. CentOS 8 安装（MySQL8.0/MySQL5.7)

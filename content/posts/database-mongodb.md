@@ -2,7 +2,8 @@
 title: 「数据库」MongoDB学习笔记
 date: 2018-10-17 18:20:16
 tags: [数据库, mongodb]
-categories: 数据库
+categories: [数据库]
+series: 数据库基础
 ---
 
 ### 1. 安装

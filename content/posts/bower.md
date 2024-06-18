@@ -2,7 +2,7 @@
 title: 好用的Web包管理器-Bower
 date: 2016-08-12 15:32:41
 tags: [bower, 环境配置]
-categories: 环境配置
+categories: [环境配置]
 ---
 
 Bower是twitter推出的客户端包管理工具，用于命令行操作包的搜索、下载、更新、卸载(如jQuery、Bootstrap、JavaScript、HTML、CSS之类的网络资源)。Bower对包结构没有强制规范，可以很方便获取各种Web模块文件，但bower本身不存储模块文件和模块版本信息，模块发布者通过register方式将模块可访问的公开的git地址记录在bower的数据库中，而所有版本都是通过代码库的tag来决定的。

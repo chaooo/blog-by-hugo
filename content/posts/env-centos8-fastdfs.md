@@ -2,7 +2,8 @@
 title: 「环境配置」Centos8 安装 FastDFS 6.06
 date: 2020-08-02 18:11:23
 tags: [环境配置, CentOS, FastDFS]
-categories: 环境配置
+categories: [环境配置]
+series: CentOS
 ---
 
 

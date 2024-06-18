@@ -1,8 +1,9 @@
 ---
-title: 「Spring Security」安全架构与认证鉴权原理
+title: Spring Security（二）安全架构与认证鉴权原理
 date: 2021-11-29 14:01:00
 tags: [后端开发, SpringSecurity, 安全认证]
-categories: 安全认证
+categories: [安全认证]
+series: SpringSecurity
 ---
 
 ### 1. Spring Security Servlet 安全架构

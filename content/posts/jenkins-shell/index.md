@@ -2,7 +2,8 @@
 title: 「Jenkins」Jenkins自动部署Jar到远程服务器
 date: 2020-04-10 19:30:53
 tags: [Jenkins, 环境配置, Linux]
-categories: 环境配置
+categories: [环境配置]
+series: Linux
 ---
 
 ### 1. 配置远程服务器SSH免密登录

@@ -1,8 +1,9 @@
 ---
-title: 「Spring Security」前后端分离菜单权限控制-前端动态路由
+title: Spring Security（六）前后端分离菜单权限控制-前端动态路由
 date: 2021-12-27 17:35:00
 tags: [后端开发, SpringSecurity, 安全认证, Vue]
-categories: 安全认证
+categories: [安全认证]
+series: SpringSecurity
 ---
 
 前端部分，这里基于[vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/)模板来演示，

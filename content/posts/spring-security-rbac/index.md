@@ -1,8 +1,9 @@
 ---
-title: 「Spring Security」前后端分离后台菜单权限控制
+title: Spring Security（五）前后端分离后台菜单权限控制
 date: 2021-12-13 14:35:00
 tags: [后端开发, SpringSecurity, 安全认证, RBAC]
-categories: 安全认证
+categories: [安全认证]
+series: SpringSecurity
 ---
 
 ### 1. RBAC权限控制模型
@@ -291,7 +292,7 @@ public ResponseJson<List<SysMenu>> menuList(String username) {
 }
 ```
 
-```xml
+``` xml
 <select id="getRoleIdsByUserId" resultType="java.lang.Long">
     SELECT DISTINCT ru.role_id FROM sys_role_user ru
     LEFT JOIN sys_user u ON ru.user_id = u.id

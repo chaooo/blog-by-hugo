@@ -1,8 +1,8 @@
 ---
-title: 「Java教程」核心工具类
+title: 「Java基础」核心工具类
 date: 2017-04-12 16:42:47
-tags: [Java, 后端开发]
-categories: Java教程
+categories: [Java基础]
+series: Java
 ---
 
 

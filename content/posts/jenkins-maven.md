@@ -2,7 +2,8 @@
 title: 「Jenkins」使用Maven构建Java应用程序
 date: 2020-04-08 12:30:53
 tags: [Jenkins, 环境配置, Linux]
-categories: 环境配置
+categories: [环境配置]
+series: Linux
 ---
 
 ### 1. 添加git凭据

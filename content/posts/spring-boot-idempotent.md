@@ -1,8 +1,9 @@
 ---
-title: Java接口幂等性设计及实例
+title: 「SpringBoot」Java接口幂等性设计及实例
 date: 2021-02-17 14:12:42
-tags: [后端开发, Spring, 幂等, SpringBoot]
-categories: Spring
+tags: [后端开发, 幂等, SpringBoot]
+categories: [SpringBoot]
+series: SpringBoot
 ---
 
 

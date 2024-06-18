@@ -2,7 +2,8 @@
 title: 「数据库」数据库语言SQL
 date: 2018-08-27 19:36:31
 tags: [数据库, 后端开发]
-categories: 数据库
+categories: [数据库]
+series: 数据库基础
 ---
 
 ### SQL语言概述

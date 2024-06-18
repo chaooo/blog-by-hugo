@@ -1,8 +1,9 @@
 ---
-title: 「Spring Security」整合 JWT 实现无状态登录示例
+title: Spring Security（三）整合JWT实现无状态登录示例
 date: 2021-12-09 16:35:00
 tags: [后端开发, SpringSecurity, 安全认证, JWT]
-categories: 安全认证
+categories: [安全认证]
+series: SpringSecurity
 ---
 
 JSON Web Token（缩写 JWT）基于JSON格式信息一种Token令牌，是目前最流行的跨域认证解决方案。
@@ -14,7 +15,7 @@ JSON Web Token（缩写 JWT）基于JSON格式信息一种Token令牌，是目�
 ### 1. 依赖与配置文件
 1. 在 `pom.xml` 中引入依赖：
 
-```xml
+``` xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-security</artifactId>
@@ -573,7 +574,7 @@ public interface SysUserDao {
     void insertSysUser(SysUser sysUser);
 }
 ```
-```xml
+``` xml
 <insert id="insertSysUser" keyProperty="id" keyColumn="id" useGeneratedKeys="true">
 INSERT INTO sys_user(username, password) VALUES(#{username}, #{password})
 </insert>

@@ -1,12 +1,13 @@
 ---
-title: 「Spring Security」前后端分离权限控制-指令级权限
+title: Spring Security（七）前后端分离权限控制-指令级权限
 date: 2021-12-30 12:28:00
 tags: [后端开发, SpringSecurity, 安全认证, Permissions]
-categories: 安全认证
+categories: [安全认证]
+series: SpringSecurity
 ---
 
 
-实现按钮级别的权限控制，基于上一篇[Spring Secuirty（六）前后端分离菜单权限控制-前端动态路由](https://my.oschina.net/chaoo/blog/5380267)的扩展。
+实现按钮级别的权限控制，基于上一篇[Spring Security（六）前后端分离菜单权限控制-前端动态路由](/posts/spring-security-vue/)的扩展。
 前端部分还是基于[vue-element-admin](https://panjiachen.github.io/vue-element-admin-site/zh/)模板来演示。
 
 这里实现按钮级别的权限判断的逻辑：每个按钮对应一个`权限标识`，后台根据用户角色计算出当前用户可访问的`权限标识`列表，前端登录后得到`权限标识`列表存入全局，通过单个按钮的`权限标识`去匹配列表里的。来实现按钮级别的权限判断。<!-- more -->

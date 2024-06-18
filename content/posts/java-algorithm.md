@@ -1,8 +1,9 @@
 ---
-title: 「Java教程」数据结构与算法入门
+title: 「Java基础」数据结构与算法入门
 date: 2017-06-05 18:12:38
 tags: [Java, 后端开发]
-categories: Java教程
+categories: [Java基础]
+series: Java
 ---
 
 数据结构，它是储存数据的一种结构体，在此结构中储存一些数据，而这些数据之间有一定的关系。

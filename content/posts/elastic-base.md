@@ -1,8 +1,9 @@
 ---
-title: 「ElasticStack」ElasticSearch入门
+title: ElasticStack（一）ElasticSearch入门
 date: 2018-11-12 20:42:59
 tags: [ElasticSearch, Kibana, ElasticStack, LogStash]
-categories: ElasticStack
+categories: [ElasticStack]
+series: ElasticStack
 ---
 
 

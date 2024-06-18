@@ -1,8 +1,9 @@
 ---
-title: 「Spring」SpringBoot Thymeleaf页面静态化实现
+title: 「SpringBoot」Thymeleaf页面静态化实现
 date: 2021-05-11 14:12:42
-tags: [后端开发, Spring, Thymeleaf, SpringBoot]
-categories: Spring
+tags: [后端开发, Thymeleaf, SpringBoot]
+categories: [SpringBoot]
+series: SpringBoot
 ---
 
 页面静态化是指把动态生成的HTML页面变为静态文件保存，当请求到来，直接访问静态文件，而不需要经过项目服务器的渲染。<!-- more -->

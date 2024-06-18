@@ -2,7 +2,8 @@
 title: 自定义HEXO站内搜索Javascript+json
 date: 2016-11-09 09:24:56
 tags: [Javascript, hexo, BlueLake]
-categories: Hexo博客
+categories: [hexo]
+series: hexo
 ---
 
 ### 开始之前

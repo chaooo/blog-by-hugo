@@ -2,7 +2,8 @@
 title: 「数据库」嵌入式SQL语言
 date: 2018-09-01 14:32:28
 tags: [数据库, 后端开发]
-categories: 数据库
+categories: [数据库]
+series: 数据库基础
 ---
 
 ### 概述

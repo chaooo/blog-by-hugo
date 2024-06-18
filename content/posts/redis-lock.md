@@ -2,7 +2,8 @@
 title: 「Redis」基于Redis的分布式锁实现
 date: 2019-04-08 16:04:23
 tags: [后端开发, Redis]
-categories: Redis
+categories: [数据库]
+series: Redis
 ---
 
 

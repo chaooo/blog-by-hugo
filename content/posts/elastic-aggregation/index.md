@@ -1,8 +1,9 @@
 ---
-title: 「ElasticStack」ElasticSearch聚合分析与数据建模
+title: ElasticStack（三）ElasticSearch聚合分析与数据建模
 date: 2018-11-21 22:30:47
 tags: [ElasticSearch, Kibana, ElasticStack, LogStash]
-categories: ElasticStack
+categories: [ElasticStack]
+series: ElasticStack
 ---
 
 ### 1. ElasticSearch 中的聚合分析

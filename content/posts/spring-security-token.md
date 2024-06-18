@@ -1,8 +1,9 @@
 ---
-title: 「Spring Security」基于Redis的Token自动续签优化
+title: Spring Security（四）基于Redis的Token自动续签优化
 date: 2021-12-10 11:35:00
 tags: [后端开发, SpringSecurity, 安全认证, Token]
-categories: 安全认证
+categories: [安全认证]
+series: SpringSecurity
 ---
 
 本文基于上一篇文章：《Spring Security（三）整合 JWT 实现无状态登录示例》。
@@ -63,7 +64,7 @@ private void refreshToken(HttpServletResponse response, Claims claims) {
 #### 具体实现
 ##### 1. 在 `pom.xml` 中引入 `Redis` 依赖：
 
-```xml
+``` xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-redis</artifactId>

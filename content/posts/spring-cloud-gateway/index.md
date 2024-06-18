@@ -2,7 +2,8 @@
 title: 「SpringCloud」Gateway网关
 date: 2021-10-29 15:26:23
 tags: [后端开发, SpringCloud, Gateway]
-categories: SpringCloud
+categories: [SpringCloud]
+series: SpringCloud
 ---
 
 ### 1. Gateway简介
@@ -30,7 +31,7 @@ Spring Cloud Gateway 基于 Spring Boot2.x、Spring WebFlux 和 Project Reactor�
 1.  在Spring Cloud父工程中创建module
 2.  导入依赖
 
-```xml
+``` xml
 <!-- 引入spring cloud gateway依赖 -->
 <dependency>
     <groupId>org.springframework.cloud</groupId>
@@ -235,7 +236,7 @@ Spring Cloud Gateway官方提供了基于令牌桶的限流支持。 基于其�
 
 1.  首先引入Redis依赖：
 
-```xml
+``` xml
 <!-- reactive redis依赖包（包含Lettuce客户端） -->
 <dependency>
     <groupId>org.springframework.boot</groupId>

@@ -1,8 +1,9 @@
 ---
-title: 「Spring」SpringBoot使用RocketMQ实战样例
+title: 「SpringBoot」使用RocketMQ实战样例
 date: 2021-06-11 22:11:23
-tags: [后端开发, Spring, RocketMQ, SpringBoot]
-categories: Spring
+tags: [后端开发, RocketMQ, SpringBoot]
+categories: [SpringBoot]
+series: SpringBoot
 ---
 
 通过`rocketmq-spring-boot-starte`r可以快速的搭建`RocketMQ`生产者和消费者服务。<!-- more -->
@@ -200,7 +201,7 @@ public class OrderListener implements RocketMQListener<String> {
 
 
 ### 6. 异步消息
-`producer`向`broker`发送消息时指定消息发送成功及发送异常的回调方法，调用`API`后立即返回，`producer`发送消息线程不阻塞 ，消息发送成功或失败的回调任务在一个新的线程中执行。
+`producer`向`broker`发送消息时指定消息发送成功及发送异常时的回调方法，调用`API`后立即返回，`producer`发送消息线程不阻塞 ，消息发送成功或失败的回调任务在一个新的线程中执行。
 
 发送消息测试接口：`http://localhost:8080/send/async`
 ``` java

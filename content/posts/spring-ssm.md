@@ -2,7 +2,8 @@
 title: 「Spring」SSM框架整合(Spring+SpringMVC+MyBatis)
 date: 2018-05-11 22:52:55
 tags: [后端开发, Spring]
-categories: Spring
+categories: [Spring]
+series: Spring
 ---
 
 SSM框架是spring MVC ，spring和mybatis框架的整合，是标准的MVC模式，将整个系统划分为表现层，controller层，service层，DAO层。<!-- more -->

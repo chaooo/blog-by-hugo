@@ -1,8 +1,9 @@
 ---
-title: 「Java教程」反射机制
+title: 「Java基础」反射机制
 date: 2017-05-18 15:47:15
 tags: [Java, 后端开发]
-categories: Java教程
+categories: [Java基础]
+series: Java
 ---
 
 反射(Reflection)是Java 程序开发语言的特征之一，它允许运行中的 Java 程序获取自身的信息，并且可以操作类或对象的内部属性。

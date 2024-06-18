@@ -2,7 +2,8 @@
 title: 「MySQL」MySQL性能优化基础
 date: 2019-02-01 21:36:46
 tags: [MySQL, 数据库, 后端开发]
-categories: 数据库
+categories: [数据库]
+series: MySQL
 ---
 
 

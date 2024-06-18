@@ -2,7 +2,8 @@
 title: 「环境配置」Redis与MySQL多实例配置
 date: 2020-02-11 23:08:46
 tags: [环境配置, Redis, MySQL]
-categories: 环境配置
+categories: [环境配置]
+series: Linux
 ---
 
 最近由于工作的需要，需要在同一台服务器上搭建两个`Redis`与`MySQL`的实例。

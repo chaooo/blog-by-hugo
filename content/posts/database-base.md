@@ -2,7 +2,8 @@
 title: 「数据库」数据库系统基础
 date: 2018-08-22 20:20:19
 tags: [数据库, 后端开发]
-categories: 数据库
+categories: [数据库]
+series: 数据库基础
 ---
 
 ### 概述

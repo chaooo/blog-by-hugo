@@ -1,8 +1,9 @@
 ---
-title: 「安全认证」基于Shiro前后端分离的认证与授权(一.认证篇)
+title: 安全认证（四）基于Shiro前后端分离的认证与授权(上.认证篇)
 date: 2020-01-18 23:26:02
-tags: [后端开发, 安全认证]
-categories: 安全认证
+tags: [后端开发, 安全认证, Shiro]
+categories: [安全认证]
+series: authenticate
 ---
 
 ### 1. 开始之前
@@ -51,7 +52,7 @@ COMMIT;
 
 2. pom.xml
 
-```xml
+``` xml
 <!-- JWT -->
 <dependency>
     <groupId>com.auth0</groupId>

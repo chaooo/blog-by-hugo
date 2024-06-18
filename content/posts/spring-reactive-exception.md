@@ -1,8 +1,9 @@
 ---
 title: 「Spring Reactive Stack」Reactor异常处理
 date: 2021-03-02 20:12:42
-tags: [后端开发, Spring, SpringReactive, Reactor]
-categories: SpringReactive
+tags: [后端开发, SpringReactive, Reactor]
+categories: [SpringReactive]
+series: SpringReactive
 ---
 
 不管是在响应式编程还是普通的程序设计中，异常处理都是一个非常重要的方面。

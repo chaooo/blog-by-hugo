@@ -2,7 +2,8 @@
 title: 「环境配置」物理机安装CentOS 8
 date: 2020-03-15 23:08:46
 tags: [环境配置, CentOS]
-categories: 环境配置
+categories: [环境配置]
+series: CentOS
 ---
 
 

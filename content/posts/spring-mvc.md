@@ -1,8 +1,9 @@
 ---
-title: 「Spring」Spring MVC框架
+title: 「Spring」 MVC 框架
 date: 2018-04-27 22:50:22
 tags: [后端开发, Spring]
-categories: Spring
+categories: [Spring]
+series: Spring
 ---
 
 Spring MVC是Spring提供的一个强大而灵活的web框架。借助于注解，Spring MVC提供了几乎是POJO的开发模式，使得控制器的开发和测试更加简单。这些控制器一般不直接处理请求，而是将其委托给Spring上下文中的其他bean，通过Spring的依赖注入功能，这些bean被注入到控制器中。

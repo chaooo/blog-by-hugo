@@ -1,8 +1,9 @@
 ---
-title: 「Java教程」常用设计模式
+title: 「Java基础」常用设计模式
 date: 2017-05-30 08:34:55
 tags: [Java, 后端开发]
-categories: Java教程
+categories: [Java基础]
+series: Java
 ---
 
 

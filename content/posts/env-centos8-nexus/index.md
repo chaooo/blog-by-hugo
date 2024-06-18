@@ -2,7 +2,8 @@
 title: 「环境配置」使用Nexus搭建Maven私服（CentOS 8）
 date: 2020-11-25 18:11:23
 tags: [环境配置, CentOS, Nexus, Maven]
-categories: 环境配置
+categories: [环境配置]
+series: CentOS
 ---
 
 **Maven私服** 就是在内网架设一个`Maven仓库服务器`，在代理远程仓库的同时维护本地仓库。

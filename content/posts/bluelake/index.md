@@ -2,9 +2,10 @@
 title: BlueLake博客主题的详细配置
 date: 2016-12-29 11:25:33
 tags: [hexo, BlueLake]
-categories: Hexo博客
-top: true
+categories: [hexo]
+series: hexo
 ---
+
 ### 2021年2月3日更新：
 
 [BlueLake主题](https://github.com/chaooo/hexo-theme-BlueLake)主题写了有些年头了，随着Hexo升级到5.X，BlueLake很多配置已经过时，在使用中难免出现问题。

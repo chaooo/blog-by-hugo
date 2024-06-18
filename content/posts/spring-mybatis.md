@@ -2,7 +2,8 @@
 title: 「Spring」持久层框架Mybatis
 date: 2018-05-06 22:51:34
 tags: [后端开发, Spring]
-categories: Spring
+categories: [Spring]
+series: Spring
 ---
 
 Mybatis支持普通sql操作，存储过程的调用，它是一个高级的ORM框架(Object Relation Mapping对象关系映射--以面向对象思想访问数据库)，是一个基于Java的持久层框架。

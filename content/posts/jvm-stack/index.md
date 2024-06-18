@@ -1,8 +1,9 @@
 ---
-title: 「深入JVM」 运行时数据区 与 垃圾回收机制
+title: 「深入JVM」运行时数据区 与 垃圾回收机制
 date: 2019-08-23 23:15:19
 tags: [java, 后端开发, JVM]
-categories: JVM
+categories: [Java基础]
+series: JVM
 ---
 
 ### Java 虚拟机运行时数据区

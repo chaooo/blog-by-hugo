@@ -1,8 +1,9 @@
 ---
-title: 「安全认证」基于Shiro前后端分离的认证与授权(二.授权篇)
+title: 安全认证（五）基于Shiro前后端分离的认证与授权(中.授权篇)
 date: 2020-01-21 18:10:55
-tags: [后端开发, 安全认证]
-categories: 安全认证
+tags: [后端开发, 安全认证, Shiro]
+categories: [安全认证]
+series: authenticate
 ---
 
 前面我们整合了`SpringBoot+Shiro+JWT`实现了登录认证，但还没有实现权限控制，这是接下来的工作。<!-- more -->

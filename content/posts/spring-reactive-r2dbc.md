@@ -1,8 +1,9 @@
 ---
 title: 「Spring Reactive Stack」使用R2DBC访问MySQL
 date: 2021-03-03 21:01:42
-tags: [后端开发, Spring, SpringReactive, MySQL]
-categories: SpringReactive
+tags: [后端开发, SpringReactive, MySQL]
+categories: [SpringReactive]
+series: SpringReactive
 ---
 
 `MySQL`等一系列的关系型数据库也在`R2DBC`等包的帮助下支持响应式。

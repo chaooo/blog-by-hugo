@@ -2,7 +2,8 @@
 title: 「SpringCloud」OpenFeign服务间调用
 date: 2021-11-12 16:01:00
 tags: [后端开发, SpringCloud, OpenFeign]
-categories: SpringCloud
+categories: [SpringCloud]
+series: SpringCloud
 ---
 
 ### 1. Spring Cloud OpenFeign简介

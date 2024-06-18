@@ -2,7 +2,8 @@
 title: 「环境配置」Centos 8 私人Git服务器搭建(Gogs)
 date: 2020-11-25 18:11:23
 tags: [环境配置, CentOS, Git, Gogs]
-categories: 环境配置
+categories: [环境配置]
+series: CentOS
 ---
 
 ### 1. 创建gogs用户

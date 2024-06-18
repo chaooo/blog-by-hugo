@@ -2,7 +2,8 @@
 title: 「环境配置」Tomcat9安装及多实例多应用配置(CentOS 8)
 date: 2020-11-20 18:11:23
 tags: [环境配置, CentOS, Tomcat9]
-categories: 环境配置
+categories: [环境配置]
+series: CentOS
 ---
 
 ### 1. Tomcat9安装

@@ -2,7 +2,8 @@
 title: 「Spring」面向切面编程(AOP模块)
 date: 2018-04-21 22:48:36
 tags: [后端开发, Spring]
-categories: Spring
+categories: [Spring]
+series: Spring
 ---
 
 AOP（Aspect Oriented Programming）：面向切面编程，

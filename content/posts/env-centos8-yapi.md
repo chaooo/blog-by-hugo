@@ -2,7 +2,8 @@
 title: 「环境配置」Centos8安装部署Node+MongDB+YApi(接口管理)
 date: 2020-07-15 18:11:23
 tags: [环境配置, CentOS, YApi]
-categories: 环境配置
+categories: [环境配置]
+series: CentOS
 ---
 
 YApi:权限管理、Mock服务、可视化接口管理、数据导入（支持postman），其依赖NodeJS+MongDB。<!-- more -->

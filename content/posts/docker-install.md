@@ -2,7 +2,8 @@
 title: 「Docker」Docker简介与安装（Linux环境centos）
 date: 2020-05-06 11:56:53
 tags: [Docker, 环境配置, Linux]
-categories: 环境配置
+categories: [环境配置]
+series: Docker
 ---
 
 Docker 是一个开源的应用容器引擎，基于Go语言并遵从Apache2.0协议开源。

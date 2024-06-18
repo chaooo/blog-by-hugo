@@ -2,7 +2,8 @@
 title: 「Redis」Redis穿透、击穿、雪崩和数据一致性
 date: 2019-03-27 19:15:31
 tags: [后端开发, Redis]
-categories: Redis
+categories: [数据库]
+series: Redis
 ---
 
 ### 1. 缓存穿透

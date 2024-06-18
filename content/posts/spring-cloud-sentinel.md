@@ -1,8 +1,9 @@
 ---
 title: 「SpringCloud」OpenFeign整合Sentinel实现熔断降级
 date: 2021-11-23 17:01:00
-tags: [后端开发, SpringCloud, Sentinel]
-categories: SpringCloud
+tags: [后端开发, SpringCloud]
+categories: [SpringCloud]
+series: SpringCloud
 ---
 
 ### 1. Sentinel简介

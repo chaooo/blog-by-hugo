@@ -2,7 +2,8 @@
 title: 「环境配置」RocketMQ安装并整合SpringBoot
 date: 2021-06-10 18:11:23
 tags: [环境配置, CentOS, RocketMQ]
-categories: 环境配置
+categories: [环境配置]
+series: Linux
 ---
 
 **RocketMQ** 是阿里巴巴团队使用`Java`语言开发的一个分布式、队列模型的消息中间件，后开源给`Apache`基金会成为了`Apache`的顶级开源项目，具有高性能、高可靠、高实时、分布式特点。

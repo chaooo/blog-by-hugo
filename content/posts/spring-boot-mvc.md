@@ -1,8 +1,9 @@
 ---
-title: 「Spring」SpringBoot MVC应用
+title: 「SpringBoot」MVC 应用
 date: 2018-06-20 17:31:30
-tags: [后端开发, Spring, SpringBoot]
-categories: Spring
+tags: [后端开发, SpringBoot]
+categories: [SpringBoot]
+series: SpringBoot
 ---
 
 对Spring Web MVC封装，简化MVC结构web应用开发。

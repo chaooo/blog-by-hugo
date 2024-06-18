@@ -1,8 +1,9 @@
 ---
-title: 「安全认证」JSON Web Token 入门
+title: 安全认证（二）JSON Web Token 入门
 date: 2019-11-18 15:50:53
 tags: [后端开发, 安全认证]
-categories: 安全认证
+categories: [安全认证]
+series: authenticate
 ---
 
 

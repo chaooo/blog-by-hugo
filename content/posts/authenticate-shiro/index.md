@@ -1,8 +1,9 @@
 ---
-title: 「安全认证」Shiro安全框架入门
+title: 安全认证（三）Shiro安全框架入门
 date: 2019-12-22 20:44:40
-tags: [后端开发, 安全认证]
-categories: 安全认证
+tags: [后端开发, 安全认证, Shiro]
+categories: [安全认证]
+series: authenticate
 ---
 
 ### 1. 初识 Shiro
@@ -120,7 +121,7 @@ public ModelAndView home(HttpServletRequest req) {
 
 3. 在 JSP 页面中还可以直接使用 jsp 标签
 
-```xml
+``` xml
 <!-- 使用shiro标签 -->
 <shiro:hasPermission name="log:manage:*">
 　　<a href="<%=request.getContextPath()%>/user/home">操作日志审计</a><br/>
@@ -267,7 +268,7 @@ public class Quickstart {
 
 #### 4.1 配置 Maven 依赖
 
-```xml
+``` xml
 <!-- shiro配置 -->
 <dependency>
 　　<groupId>org.apache.shiro</groupId>
@@ -303,7 +304,7 @@ public class Quickstart {
 - `Shiro`使用了日志框架`slf4j`，因此需要对应配置指定的日志实现组件，如：`log4j`，`logback`等。
     - 在此，以使用`log4j`为日志实现为例：
 
-```xml
+``` xml
 <!--
 shiro使用slf4j作为日志框架，所以必需配置slf4j。
 同时，使用log4j作为底层的日志实现框架。
@@ -366,7 +367,7 @@ shiro使用slf4j作为日志框架，所以必需配置slf4j。
     - /\*\*=filter3
     - 如果请求的 url 是“/bb/aa”，因为按照声明顺序进行匹配，那么将使用 filter1 进行拦截，所以通配符一般写在靠后。
 
-```xml
+``` xml
 <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
   <property name="securityManager" ref="securityManager"/>
   <property name="loginUrl" value="/index"/>
@@ -419,7 +420,7 @@ shiro使用slf4j作为日志框架，所以必需配置slf4j。
 
 - 跟在普通`Java Web`应用中使用`Shiro`一样，集成`Shiro`到`Spring MVC`时，实际上就是通过在`web.xml`中添加指定`Filter`实现。配置如下：
 
-```xml
+``` xml
 <!-- The filter-name matches name of a 'shiroFilter' bean inside applicationContext.xml -->
 <!-- DelegatingFilterProxy作用是自动到Spring 容器查找名字为shiroFilter（filter-name）的bean并把所有Filter 的操作委托给它。 -->
 <filter>
@@ -524,7 +525,7 @@ Shiro 作为权限框架，仅仅只能控制对资源的操作权限，并不�
 9. **`<shiro:hasPermission></shiro:hasPermission>`**：如果当前 Subject 有权限将显示 body 体内容
 10. `<shiro:lacksPermission></shiro:lacksPermission>`：如果当前 Subject 没有权限将显示 body 体内容
 
-```xml
+``` xml
 <!-- 在jsp页面中引入shiro标签库 -->
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <!-- 权限控制 -->

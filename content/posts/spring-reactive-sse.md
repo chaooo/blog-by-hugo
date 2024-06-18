@@ -1,8 +1,9 @@
 ---
 title: 「Spring Reactive Stack」服务端事件推送Server-Sent Events
 date: 2021-03-12 17:01:42
-tags: [后端开发, Spring, SpringReactive, SSE]
-categories: SpringReactive
+tags: [后端开发, SpringReactive, SSE]
+categories: [SpringReactive]
+series: SpringReactive
 ---
 
 **SSE**：`Server-Sent Events`服务器推送事件，是一种仅发送文本消息的技术。`SSE`基于`HTTP`协议中的持久连接。`SSE`是`HTML5`标准协议中的一部分。

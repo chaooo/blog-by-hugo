@@ -1,8 +1,9 @@
 ---
-title: 「Java教程」语法基础
+title: 「Java基础」语法基础
 date: 2017-04-07 17:33:54
 tags: [Java, 后端开发]
-categories: Java教程
+categories: [Java基础]
+series: Java
 ---
 
 这是**Java教程**的第一篇，梳理Java基础知识是学习其他专业知识的第一步阶梯；要想精通编程必须通过大量的编程训练，在实践中掌握编程知识，培养编程能力，并逐步理解和掌握程序设计的思想和方法。
