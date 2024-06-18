@@ -4,7 +4,7 @@ defaultContentLanguage: zh-cn
 languageCode: zh-CN
 title: 知行 - 大道至简，知易行难
 theme: blueLake
-paginate: 4
+paginate: 10
 copyright: 郑超(Charles·Zheng)
 
 # 主菜单
