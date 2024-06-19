@@ -55,8 +55,8 @@ Params:
   author:
     show: true
     name: "Charles Zheng"
-    photo: "images/logo_stroke.png" #include this if you would like to show the author photo on the sidebar
-    intro: "大道至简，知易行难。"
+    photo: "images/author.jpg" #include this if you would like to show the author photo on the sidebar
+    intro: "「知行」 -- 大道至简，知易行难。"
   # 免责声明
   disclaimerTitle: "免责声明"
   disclaimerText: "本网站上表达的意见是我个人的意见，如自行使用本网资料发生偏差，本站概不负责，亦不负任何法律责任。"
