@@ -1,24 +1,3 @@
-(function backtoTop(){
-  const backToTopButton = elem('.to_top');
-  let scrollPos = 0;
-  // let backToTopButton = document.getElementById("toTop");
-  document.addEventListener("scroll", (event) => {
-    scrollPos = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
-    if (scrollPos >= 100) {
-      pushClass(backToTopButton, "show");
-    } else {
-      deleteClass(backToTopButton, "show");
-      deleteClass(backToTopButton, "launch");
-    }
-  });
-
-  backToTopButton.addEventListener('click', function(event) {
-    scrollPos = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
-    gotoTop(scrollPos, 0.1, 20);
-    pushClass(backToTopButton, "launch");
-  });
-})();
-
 (function toggleColorModes(){
   const light = 'lit';
   const dark = 'dim';
@@ -500,6 +479,29 @@ function fileClosure(){
         })
       }
     })
+  })();
+
+  (function backtoTop(){
+    const backToTopButton = elem('.to_top');
+    let scrollPos = 0;
+    const scrollSpeed = 1.1;
+    document.addEventListener("scroll", (event) => {
+      scrollPos = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
+      if (scrollPos >= 100) {
+        pushClass(backToTopButton, "show");
+      } else {
+        deleteClass(backToTopButton, "show");
+        deleteClass(backToTopButton, "launch");
+      }
+    });
+    backToTopButton.addEventListener('click', function(event) {
+      scrollPos = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
+      window.scrollTo(0, Math.floor(scrollPos / scrollSpeed));
+      pushClass(backToTopButton, "launch");
+      setTimeout(()=>{
+        deleteClass(backToTopButton, "launch");
+      },1000)
+    });
   })();
 
   (function shareWechatCode() {

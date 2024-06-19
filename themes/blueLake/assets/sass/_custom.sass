@@ -2,6 +2,42 @@
 // due to the cascading nature of css, if you try to override theme css variables in this file, those changes will not apply. Instead, override css variables in the `override.sass` file
 // we recommend not editing this file directly. Instead, create an `assets/sass/_custom.sass` file at the root level of your site.
 // if you edit this file directly, you will have to resolve git conflicts when and if you decide to pull changes we make on the theme
+.sidebar
+  li
+    font-size: 1rem
+.to_top
+  width: 4rem
+  height: 4rem
+  display: flex
+  justify-content: center
+  align-items: center
+  cursor: pointer
+  border-radius: 50%
+  position: fixed
+  bottom: 1.5rem
+  right: 1.5rem
+  z-index: 99
+  visibility: hidden
+  opacity: 0
+  transition: visibility 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335), opacity 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335), transform 0.6s cubic-bezier(0.6, 0.04, 0.98, 0.335)
+  &.ios
+    position: absolute
+    bottom: 0.75rem
+    right: 0
+  svg
+    fill: $theme
+    width: 100%
+    height: 100%
+  &:hover
+    opacity: 1
+  &.launch
+    opacity: 0
+    transform: translateY(-50px)
+    pointer-events: none
+  &.show
+    visibility: visible
+    opacity: .8
+
 .highlight
   display: grid
   width: 100%
@@ -27,6 +63,7 @@
     right: .5rem
     width: 1rem
     height: 1rem
+
 .share-wechat
   position: relative
 .wechat-qrcode

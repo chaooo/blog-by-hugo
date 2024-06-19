@@ -69,18 +69,6 @@ function containsClass(el, targetClass) {
   }
 }
 
-function gotoTop(speed, time) {
-  let pos = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
-  speed = speed || 0.1;
-  time = time || 10;
-  let speeding = 1 + speed;
-  window.scrollTo(0, Math.floor(pos / speeding));
-  if (pos > 0) {
-    let run = "gotoTop(" + pos + ", " +  speed + ", " + time + ")";
-    window.setTimeout(run, time);
-  }
-}
-
 function elemAttribute(elem, attr, value = null) {
   if (value) {
     elem.setAttribute(attr, value);
