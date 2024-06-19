@@ -2,6 +2,9 @@
 {{ $variablesScriptPath := "js/variables.js" }}
 {{ $variables := resources.Get $variablesScriptPath | resources.ExecuteAsTemplate (printf "%s/js/variables.js" .Lang) . }}
 
+{{ $qrcodeScriptPath := "js/qrcode.js" }}
+{{ $qrcode := resources.Get $qrcodeScriptPath | resources.ExecuteAsTemplate (printf "%s/js/qrcode.js" .Lang) . }}
+
 {{ $functionsScriptPath := "js/functions.js" }}
 {{ $functions := resources.Get $functionsScriptPath | resources.ExecuteAsTemplate $functionsScriptPath . }}
 
@@ -15,6 +18,6 @@
 {{ $main := resources.Get $mainScriptPath | resources.ExecuteAsTemplate $mainScriptPath . }}
 
 {{ $bundlePath := (printf "%s/js/bundle.js" .Lang ) }}
-{{ $bundle := slice $variables $functions $main $custom | resources.Concat $bundlePath | resources.Fingerprint "sha512" }}
+{{ $bundle := slice $variables $qrcode $functions $main $custom | resources.Concat $bundlePath | resources.Fingerprint "sha512" }}
 
 {{ return $bundle }}

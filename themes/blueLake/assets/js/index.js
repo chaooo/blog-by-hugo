@@ -502,17 +502,43 @@ function fileClosure(){
     })
   })();
 
-  (function shareViaLinkedin() {
+  (function shareWechatCode() {
+    function isItem(target, id) {
+      return target.matches(`.${id}`) || target.closest(`.${id}`);
+    }
+    let hadCreatedQr = false;
     doc.addEventListener('click', function(event){
-      const linkedin = '.linkedin';
       const target = event.target;
-      if(target.matches(linkedin) || target.closest(linkedin)) {
-        window.open('http://www.linkedin.com/shareArticle?mini=true&url='+encodeURIComponent(window.location.href), '', 'left=0,top=0,width=650,height=420,personalbar=0,toolbar=0,scrollbars=0,resizable=0');
+      const shareWechat = isItem(target, 'share-wechat');
+      if(shareWechat) {
+        event.preventDefault();
+        if (!hadCreatedQr) {
+          const data = {
+            url: location.href,
+            wechatQrcodeTitle: '微信扫一扫：分享',
+            wechatQrcodeHelper: '微信里点“发现”，扫一下<br/>二维码便可将本文分享至朋友圈',
+            wechatQrcodeSize: 100,
+          };
+          const qrcodeEle = document.createElement('div');
+          qrcodeEle.innerHTML = '<h4>' + data.wechatQrcodeTitle + '</h4><div class="qrcode"></div><div class="help">' + data.wechatQrcodeHelper + '</div>';
+          qrcodeEle.classList.add('wechat-qrcode');
+          shareWechat.appendChild(qrcodeEle);
+          const qrcodeImg = elem('.qrcode', qrcodeEle);
+          new QRCode(qrcodeImg, {text: data.url, width: data.wechatQrcodeSize, height: data.wechatQrcodeSize});
+          hadCreatedQr = true;
+        } else {
+          const qrcodeEle = elem('.wechat-qrcode');
+          deleteClass(qrcodeEle, 'hide');
+        }
+      } else {
+        if (hadCreatedQr) {
+          const qrcodeEle = elem('.wechat-qrcode');
+          pushClass(qrcodeEle, 'hide');
+        }
       }
     });
   })();
 
-  // add new code above this line
 }
 
 window.addEventListener(pageHasLoaded, fileClosure());

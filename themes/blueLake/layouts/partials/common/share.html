@@ -1,11 +1,13 @@
   {{- $s := T "share_on" }}
   <div class="post_share">
     {{ $s }}:
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="{{ $s }} LinkedIn" rel="nofollow">
-      {{ partial "common/sprite" (dict "icon" "linkedin") }}
+    <a href="https://service.weibo.com/share/share.php?url={{ .Permalink }}&title={{ .Title }}" class="weibo" title="{{ $s }} 微博" target="_blank" rel="nofollow">
+      {{ partial "common/sprite" (dict "icon" "weibo") }}
+    </a>
+    <a class="share-wechat" href="javascript:">
+      {{ partial "common/sprite" (dict "icon" "wechat") }}
     </a>
     <a href="{{ .Permalink }}" title="Copy Link" class="link link_yank">
       {{ partial "common/sprite" (dict "icon" "copy") }}
     </a>
   </div>
-  
