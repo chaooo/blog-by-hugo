@@ -45,6 +45,22 @@ Params:
   imagesDir: "images/" # without a leading forward slash
   # Icons:
   iconsDir: "icons/" # without a leading forward slash
+  # Logo image
+  logo: "images/logo_white.png"
+  # center logo on navbar
+  centerLogo: false # Set to "true" for centering or "false" for left aligned.
+  # customize footer icon. see issue https://github.com/chipzoller/hugo-clarity/issues/77
+  footerLogo: "images/logo_stroke.png"
+  # show the author photo on the sidebar
+  author:
+    show: true
+    name: "Charles Zheng"
+    photo: "images/logo_stroke.png" #include this if you would like to show the author photo on the sidebar
+    intro: "大道至简，知易行难。"
+  # 免责声明
+  disclaimerTitle: "免责声明"
+  disclaimerText: "本网站上表达的意见是我个人的意见，如自行使用本网资料发生偏差，本站概不负责，亦不负任何法律责任。"
+
 
   # Google analytics Id
   ga_analytics: ""
@@ -74,18 +90,9 @@ Params:
   # the originals to get the files included with Hugo Clarity.
   #
 
-
   # Social media sharing image: Will be used on Twitter, Facebook, LinkedIn, etc.
   # when a given page has no other image present.
   fallBackOgImage: "images/thumbnail.png"
-
-  # Logo image
-  logo: "images/logo_white.png"
-  # center logo on navbar
-  centerLogo: false # Set to "true" for centering or "false" for left aligned.
-
-  # customize footer icon. see issue https://github.com/chipzoller/hugo-clarity/issues/77
-  footerLogo: "images/logo_stroke.png"
 
   # sets the maximum number of lines per codeblock. The codeblock will however be scrollable and expandable.
   codeMaxLines: 7
@@ -112,14 +119,6 @@ Params:
 
   enforceLightMode: false
   # enforceDarkMode: false
-
-
-
-  # Customize Sidebar Disclaimer Text
-  # sidebardisclaimer: true
-  # disclaimerText: "The opinions expressed on this site are my own personal opinions and do not represent my employer’s view in any way."
-
-
 
   # Title separator, default to |.
   # titleSeparator: "|"
@@ -156,11 +155,6 @@ Params:
   # Show related content at the end of an article based on the 'series' taxonomy. Can be set in post front matter.
   showRelatedInArticle: true
   showRelatedInSidebar: true
-
-  # website author
-  author:
-    name: "Jane Doe"
-  # photo: "images/jane-doe.png" #include this if you would like to show the author photo on the sidebar
 
   plausible_analytics:
     enable: false # to enable plausible analytics set to true.
