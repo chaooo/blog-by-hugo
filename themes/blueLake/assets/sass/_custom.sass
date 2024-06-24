@@ -112,3 +112,22 @@
     font-size: .8rem
     padding: 0
     margin: 0
+
+// 修改waline暗色评论样式
+html[data-mode="dim"]
+  [data-waline]
+    p
+      color: $light
+    .wl-panel
+      background: var(--post-bg)
+      border-color: var(--post-bg)
+      .wl-header
+        border-color: var(--post-bg)
+    .wl-editor,.wl-input
+      color: $light
+      &:focus
+        background: var(--choice-bg)
+    .wl-card
+      border-color: var(--post-bg)
+      .wl-meta>span
+        background: var(--post-bg)

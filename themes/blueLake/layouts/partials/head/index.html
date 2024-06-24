@@ -28,6 +28,16 @@
     {{ printf `<link rel="%s" type="%s" href="%s" title="%s" />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
 {{ end -}}
 
+{{- $showComments := true }}
+{{- if eq $params.comments false }}
+    {{- $showComments = false }}
+{{- else if eq .Params.comments false }}
+    {{- $showComments = false }}
+{{- end }}
+{{- if ne $showComments false }}
+    <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
+{{- end }}
+
 <!-- preload assets declaration -->
 <!-- preload main css file -->
 {{ $styles := partialCached "func/getStylesBundle" . }}

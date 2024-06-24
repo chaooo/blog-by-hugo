@@ -27,7 +27,17 @@
   <div class="post_body">
     {{- .Content }}
   </div>
-  <div class="post_end">—— END ——</div>
+  <div class="post_end">END .</div>
+
+  {{- $showComments := true }}
+  {{- if eq $s.comments false }}
+    {{- $showComments = false }}
+  {{- else if eq $p.comments false }}
+    {{- $showComments = false }}
+  {{- end }}
+  {{- if ne $showComments false }}
+    {{- partial "post/component/comments" . }}
+  {{- end }}
 
   {{- $showRelatedInArticle := true }}
   {{- if eq $s.showRelatedInArticle false }}
@@ -39,14 +49,5 @@
     {{- partial "post/component/related" . }}
   {{- end }}
 
-  {{- $showComments := true }}
-  {{- if eq $s.comments false }}
-    {{- $showComments = false }}
-  {{- else if eq $p.comments false }}
-    {{- $showComments = false }}
-  {{- end }}
-  {{- if ne $showComments false }}
-    {{- partial "post/component/comments" . }}
-  {{- end }}
 </article>
 {{- end }}
