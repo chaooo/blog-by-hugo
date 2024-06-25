@@ -3,7 +3,7 @@ title: Spring Security（一）基础入门示例
 date: 2021-11-25 15:01:00
 tags: [后端开发, SpringSecurity, 安全认证]
 categories: [安全认证]
-series: SpringSecurity
+series: 'Spring Security'
 ---
 
 `Spring Security` 是一个功能强大且高度可定制的身份验证和访问控制的安全框架。它是 `Spring` 应用程序在安全框架方面的公认标准。

@@ -3,7 +3,7 @@ title: 安全认证（一）MD5算法加盐实现用户密码加密
 date: 2019-11-15 21:49:28
 tags: [后端开发, 安全认证]
 categories: [安全认证]
-series: authenticate
+series: 安全认证
 ---
 
 

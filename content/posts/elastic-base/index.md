@@ -3,7 +3,7 @@ title: ElasticStack（一）ElasticSearch入门
 date: 2018-11-12 20:42:59
 tags: [ElasticSearch, Kibana, ElasticStack, LogStash]
 categories: [ElasticStack]
-series: ElasticStack
+series: 'Elastic Stack'
 ---
 
 

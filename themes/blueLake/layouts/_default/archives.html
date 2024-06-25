@@ -8,7 +8,7 @@
             <h3>{{ $year }}</h3>
             <ul class="post_archives">
                 {{ range $posts }}
-                    <li><a href="{{ .RelPermalink }}"><time class="post_tag">{{ .PublishDate.Format "2006-01-02" }}</time> | <span>{{ .Title }}</span></a></li>
+                    <li><a href="{{ .RelPermalink }}"><time class="time">{{ .PublishDate.Format "2006-01-02" }}</time><span class="title">{{ .Title }}</span></a></li>
                 {{ end }}
             </ul>
         {{ end }}

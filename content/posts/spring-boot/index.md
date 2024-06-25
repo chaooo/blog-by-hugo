@@ -2,8 +2,8 @@
 title: 「SpringBoot」入门
 date: 2018-06-06 23:06:01
 tags: [后端开发, SpringBoot]
-categories: [SpringBoot]
-series: SpringBoot
+categories: [Spring]
+series: 'Spring Boot'
 ---
 
 Spring Boot 是由 Pivotal 团队提供的全新框架。Spring Boot 是所有基于 Spring Framework 5.0 开发的项目的起点。Spring Boot 的设计是为了简化新 Spring 应用的初始搭建以及开发过程，并且尽可能减少你的配置文件。

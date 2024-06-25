@@ -1,9 +1,9 @@
 ---
-title: 「SpringCloud」Config配置中心
+title: SpringCloud（三）Config配置中心
 date: 2021-11-09 18:01:00
 tags: [后端开发, SpringCloud]
-categories: [SpringCloud]
-series: SpringCloud
+categories: [Spring]
+series: 'Spring Cloud'
 ---
 
 ### 1. Spring Cloud Config简介

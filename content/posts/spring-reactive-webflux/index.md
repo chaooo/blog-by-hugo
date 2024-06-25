@@ -1,9 +1,9 @@
 ---
-title: 「Spring Reactive Stack」Spring WebFlux响应式Web框架入门
+title: Spring Reactive Stack（一）Spring WebFlux响应式Web框架入门
 date: 2021-02-25 15:50:42
 tags: [后端开发, SpringReactive, WebFlux]
-categories: [SpringReactive]
-series: SpringReactive
+categories: [Spring]
+series: 'Spring Reactive Stack'
 ---
 
 ![](up-ee8803006ea5a4169467074917d6fdd0b12.webp)

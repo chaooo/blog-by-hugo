@@ -1,5 +1,5 @@
 ---
-title: "搜索结果"
+title: "Search"
 type: "search"
 searchPage: true
 ---

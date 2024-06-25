@@ -3,7 +3,7 @@ title: 安全认证（三）Shiro安全框架入门
 date: 2019-12-22 20:44:40
 tags: [后端开发, 安全认证, Shiro]
 categories: [安全认证]
-series: authenticate
+series: 安全认证
 ---
 
 ### 1. 初识 Shiro

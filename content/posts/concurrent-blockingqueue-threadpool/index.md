@@ -3,7 +3,7 @@ title: 「并发编程」阻塞队列 与 线程池
 date: 2019-10-14 23:04:54
 tags: [java, 后端开发, 并发编程]
 categories: [Java基础]
-series: Concurrent
+series: 并发编程
 ---
 
 

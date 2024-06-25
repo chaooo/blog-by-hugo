@@ -3,7 +3,7 @@ title: Spring Security（四）基于Redis的Token自动续签优化
 date: 2021-12-10 11:35:00
 tags: [后端开发, SpringSecurity, 安全认证, Token]
 categories: [安全认证]
-series: SpringSecurity
+series: 'Spring Security'
 ---
 
 本文基于上一篇文章：《Spring Security（三）整合 JWT 实现无状态登录示例》。

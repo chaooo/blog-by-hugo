@@ -3,7 +3,7 @@ title: 「Spring」JDBC详解
 date: 2018-04-09 22:46:07
 tags: [后端开发, Spring]
 categories: [Spring]
-series: Spring
+series: Spring基础
 ---
 
 Spring对JDBC做了简化和封装；简化了DAO实现类编写；提供了基于AOP的**声明式**事务管理；对JDBC中异常做了封装，把原来检查异常封装成了继承自RuntimeException的异常（DataAcessException）。

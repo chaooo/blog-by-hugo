@@ -3,7 +3,7 @@ title: 「并发编程」JUC并发容器类
 date: 2019-10-06 23:04:22
 tags: [java, 后端开发, 并发编程]
 categories: [Java基础]
-series: Concurrent
+series: 并发编程
 ---
 
 

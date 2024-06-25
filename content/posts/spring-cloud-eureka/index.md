@@ -1,9 +1,9 @@
 ---
-title: 「SpringCloud」Eureka注册中心
+title: SpringCloud（一）Eureka注册中心
 date: 2021-10-26 11:11:23
 tags: [后端开发, SpringCloud, Eureka]
-categories: [SpringCloud]
-series: SpringCloud
+categories: [Spring]
+series: 'Spring Cloud'
 ---
 
 ### 1. Eureka简介

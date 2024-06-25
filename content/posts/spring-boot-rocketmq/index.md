@@ -2,8 +2,8 @@
 title: 「SpringBoot」使用RocketMQ实战样例
 date: 2021-06-11 22:11:23
 tags: [后端开发, RocketMQ, SpringBoot]
-categories: [SpringBoot]
-series: SpringBoot
+categories: [Spring]
+series: 'Spring Boot'
 ---
 
 通过`rocketmq-spring-boot-starte`r可以快速的搭建`RocketMQ`生产者和消费者服务。

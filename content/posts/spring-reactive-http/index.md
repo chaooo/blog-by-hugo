@@ -1,9 +1,9 @@
 ---
-title: 「Spring Reactive Stack」响应式 HTTP 请求客户端 WebClient
+title: Spring Reactive Stack（六）响应式 HTTP 请求客户端 WebClient
 date: 2021-03-20 12:01:42
 tags: [后端开发, SpringReactive, WebClient]
-categories: [SpringReactive]
-series: SpringReactive
+categories: [Spring]
+series: 'Spring Reactive Stack'
 ---
 
 **WebClient**是`Spring WebFlux`模块提供的一个非阻塞的基于响应式编程的进行`HTTP`请求的客户端工具。

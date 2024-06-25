@@ -3,7 +3,7 @@ title: 「Java基础」多线程
 date: 2017-05-12 18:07:41
 tags: [Java, 后端开发]
 categories: [Java基础]
-series: Java
+series: Java基础
 ---
 
 多线程的存在，不是提高程序的执行速度。其实是为了提高应用程序的使用率。

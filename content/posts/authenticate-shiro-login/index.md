@@ -3,7 +3,7 @@ title: 安全认证（四）基于Shiro前后端分离的认证与授权(上.认
 date: 2020-01-18 23:26:02
 tags: [后端开发, 安全认证, Shiro]
 categories: [安全认证]
-series: authenticate
+series: 安全认证
 ---
 
 ### 1. 开始之前

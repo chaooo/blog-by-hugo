@@ -2,8 +2,8 @@
 title: 「SpringBoot」数据库访问
 date: 2018-06-14 17:29:31
 tags: [后端开发, SpringBoot]
-categories: [SpringBoot]
-series: SpringBoot
+categories: [Spring]
+series: 'Spring Boot'
 ---
 
 

@@ -3,7 +3,7 @@ title: ElasticStack（四）Beats+Logstash+Elasticsearch+Kibana基础整合
 date: 2018-11-28 22:29:59
 tags: [ElasticSearch, Kibana, ElasticStack, LogStash]
 categories: [ElasticStack]
-series: ElasticStack
+series: 'Elastic Stack'
 ---
 
 ### 1. ElasticStack 的组成

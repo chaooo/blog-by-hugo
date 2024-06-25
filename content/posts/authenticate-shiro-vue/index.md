@@ -3,7 +3,7 @@ title: 安全认证（六）基于Shiro前后端分离的认证与授权(下.前
 date: 2020-02-07 02:10:46
 tags: [后端开发, 安全认证, Shiro]
 categories: [安全认证]
-series: authenticate
+series: 安全认证
 ---
 
 前两篇我们整合了`SpringBoot+Shiro+JWT+Redis`实现了登录认证，接口权限控制，接下来将要实现前端 Vue 的动态路由控制。

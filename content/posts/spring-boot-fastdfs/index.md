@@ -2,8 +2,8 @@
 title: 「SpringBoot」整合 FastDFS
 date: 2020-08-02 20:25:23
 tags: [后端开发, SpringBoot, FastDFS]
-categories: [SpringBoot]
-series: SpringBoot
+categories: [Spring]
+series: 'Spring Boot'
 ---
 
 

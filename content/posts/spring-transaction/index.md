@@ -3,7 +3,7 @@ title: 「Spring」事务管理
 date: 2018-04-15 22:47:30
 tags: [后端开发, Spring]
 categories: [Spring]
-series: Spring
+series: Spring基础
 ---
 
 事务的基本概念：事务指的是逻辑上的一组操作，这组操作要么全部成功，要么全部失败。

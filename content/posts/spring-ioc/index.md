@@ -3,7 +3,7 @@ title: 「Spring」IoC控制反转
 date: 2018-03-27 22:38:23
 tags: [后端开发, Spring]
 categories: [Spring]
-series: Spring
+series: Spring基础
 ---
 
 Spring是一个开源的轻量级控制反转(IOC)和面向切面(AOP)的容器框架，它主要是为了解决企业应用开发的复杂性而诞生的，但现在已不止应用于企业服务。

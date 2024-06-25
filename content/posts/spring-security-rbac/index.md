@@ -3,7 +3,7 @@ title: Spring Security（五）前后端分离后台菜单权限控制
 date: 2021-12-13 14:35:00
 tags: [后端开发, SpringSecurity, 安全认证, RBAC]
 categories: [安全认证]
-series: SpringSecurity
+series: 'Spring Security'
 ---
 
 ### 1. RBAC权限控制模型

@@ -3,7 +3,7 @@ title: Spring Security（三）整合JWT实现无状态登录示例
 date: 2021-12-09 16:35:00
 tags: [后端开发, SpringSecurity, 安全认证, JWT]
 categories: [安全认证]
-series: SpringSecurity
+series: 'Spring Security'
 ---
 
 JSON Web Token（缩写 JWT）基于JSON格式信息一种Token令牌，是目前最流行的跨域认证解决方案。

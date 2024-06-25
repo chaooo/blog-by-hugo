@@ -3,7 +3,7 @@ title: 「Java基础」面向对象
 date: 2017-04-10 18:50:47
 tags: [Java, 后端开发]
 categories: [Java基础]
-series: Java
+series: Java基础
 ---
 
 面向对象是相对于面向过程而言，过程其实就是函数，对象是将函数和属性进行了封装。

@@ -1,9 +1,9 @@
 ---
-title: 「SpringCloud」Gateway网关
+title: SpringCloud（二）Gateway网关
 date: 2021-10-29 15:26:23
 tags: [后端开发, SpringCloud, Gateway]
-categories: [SpringCloud]
-series: SpringCloud
+categories: [Spring]
+series: 'Spring Cloud'
 ---
 
 ### 1. Gateway简介

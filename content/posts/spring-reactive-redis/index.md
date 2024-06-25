@@ -1,9 +1,9 @@
 ---
-title: 「Spring Reactive Stack」响应式方式访问Redis
+title: Spring Reactive Stack（四）响应式方式访问Redis
 date: 2021-03-04 19:01:42
 tags: [后端开发, SpringReactive, Redis]
-categories: [SpringReactive]
-series: SpringReactive
+categories: [Spring]
+series: 'Spring Reactive Stack'
 ---
 
 `Spring Data Redis`中同时支持了`Jedis`客户端和`Lettuce`客户端。但是仅`Lettuce`是支持`Reactive`方式的操作；这里选择默认的`Lettuce`客户端。

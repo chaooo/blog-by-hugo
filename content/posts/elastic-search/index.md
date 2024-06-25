@@ -3,7 +3,7 @@ title: ElasticStack（二）ElasticSearch分布式特性 与 Search机制
 date: 2018-11-17 20:44:13
 tags: [ElasticSearch, Kibana, ElasticStack, LogStash]
 categories: [ElasticStack]
-series: ElasticStack
+series: 'Elastic Stack'
 ---
 
 ### 1. ElasticSearch 的分布式特性
