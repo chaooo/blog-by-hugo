@@ -16,8 +16,8 @@ menu:
   - name: 列表
     pageRef: /posts
     weight: 20
-  - name: 标签
-    pageRef: /tags
+  - name: 归档
+    pageRef: /archives
     weight: 30
 
 # 分类体系

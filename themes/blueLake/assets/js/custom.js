@@ -33,22 +33,25 @@
     (function addLangLabel() {
         const blocks = codeBlocks();
         blocks.forEach(function(block){
-            // lang label
-            let label = block.dataset.lang;
-            label = label === 'sh' ? 'bash' : label;
-            if(label !== "fallback") {
-                const labelEl = createEl();
-                labelEl.textContent = label;
-                pushClass(labelEl, 'lang');
-                block.closest(`.${highlightWrap}`).appendChild(labelEl);
+            const codeParent = block.closest(`.${highlightWrap}`);
+            if (codeParent) {
+                // lang label
+                let label = block.dataset.lang;
+                label = label === 'sh' ? 'bash' : label;
+                if(label !== "fallback") {
+                    const labelEl = createEl();
+                    labelEl.textContent = label;
+                    pushClass(labelEl, 'lang');
+                    codeParent.appendChild(labelEl);
+                }
+                // copy button
+                const copyBtn = createEl('a');
+                copyBtn.href = '#';
+                copyBtn.title = 'Copy Code';
+                copyBtn.className = 'copy';
+                copyBtn.style.backgroundImage = `url(${baseURL}${iconsPath}copy.svg)`;
+                codeParent.appendChild(copyBtn);
             }
-            // copy button
-            const copyBtn = createEl('a');
-            copyBtn.href = '#';
-            copyBtn.title = 'Copy Code';
-            copyBtn.className = 'copy';
-            copyBtn.style.backgroundImage = `url(${baseURL}${iconsPath}copy.svg)`;
-            block.closest(`.${highlightWrap}`).appendChild(copyBtn);
         });
     })();
     doc.addEventListener('click', function(event){
