@@ -1,5 +1,5 @@
 ---
-title: 「MySQL」MySQL慢日志查询分析
+title: MySQL -- MySQL慢日志查询分析
 date: 2019-02-15 00:26:43
 tags: [数据库, 后端开发]
 categories: [数据库]

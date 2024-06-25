@@ -1,5 +1,5 @@
 ---
-title: 「Shell」Shell脚本部署Java应用
+title: Shell基础 -- Shell脚本部署Java应用
 date: 2020-06-10 15:12:46
 tags: [环境配置, Linux, Shell]
 categories: [环境配置]

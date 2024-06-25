@@ -1,5 +1,5 @@
 ---
-title: 「Shell」Shell 变量的用法与数学运算
+title: Shell基础 -- Shell 变量的用法与数学运算
 date: 2020-06-07 15:12:46
 tags: [环境配置, Linux, Shell]
 categories: [环境配置]

@@ -1,5 +1,5 @@
 ---
-title: 「Redis」深入学习Redis及集群
+title: Redis -- 深入学习Redis及集群
 date: 2019-03-20 16:19:26
 tags: [后端开发, Redis]
 categories: [数据库]

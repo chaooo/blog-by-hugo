@@ -1,5 +1,5 @@
 ---
-title: 「Jenkins」安装Jenkins（Linux环境centos）
+title: Jenkins -- 安装Jenkins（Linux环境centos）
 date: 2020-04-04 17:56:53
 tags: [Jenkins, 环境配置, Linux]
 categories: [环境配置]

@@ -1,5 +1,5 @@
 ---
-title: 「Jenkins」声明式流水线Jenkins Pipeline
+title: Jenkins -- 声明式流水线Jenkins Pipeline
 date: 2020-04-06 11:56:53
 tags: [Jenkins, 环境配置, Linux]
 categories: [环境配置]

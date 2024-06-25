@@ -1,5 +1,5 @@
 ---
-title: 「环境配置」CentOS 8 安装和配置 NFS 服务器
+title: 环境配置 -- CentOS 8 安装和配置 NFS 服务器
 date: 2020-08-10 18:11:23
 tags: [环境配置, CentOS, NFS]
 categories: [环境配置]

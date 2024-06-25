@@ -1,5 +1,5 @@
 ---
-title: 「Java基础」数据结构与算法入门
+title: Java基础 -- 数据结构与算法入门
 date: 2017-06-05 18:12:38
 tags: [Java, 后端开发]
 categories: [Java基础]

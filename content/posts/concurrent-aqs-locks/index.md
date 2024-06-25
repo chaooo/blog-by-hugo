@@ -1,5 +1,5 @@
 ---
-title: 「并发编程」AQS框架 与 锁框架（JUC.locks）
+title: 并发编程 -- AQS框架 与 锁框架（JUC.locks）
 date: 2019-10-10 23:00:24
 tags: [java, 后端开发, 并发编程]
 categories: [Java基础]

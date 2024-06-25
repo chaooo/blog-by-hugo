@@ -1,5 +1,5 @@
 ---
-title: 「Java基础」核心工具类
+title: Java基础 -- 核心工具类
 date: 2017-04-12 16:42:47
 categories: [Java基础]
 series: Java基础

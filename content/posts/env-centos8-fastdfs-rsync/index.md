@@ -1,5 +1,5 @@
 ---
-title: 「环境配置」记一次生产事故引发的FastDFS图片迁移
+title: 环境配置 -- 记一次生产事故引发的FastDFS图片迁移
 date: 2021-05-28 22:11:23
 tags: [环境配置, CentOS, FastDFS]
 categories: [环境配置]

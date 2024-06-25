@@ -1,5 +1,5 @@
 ---
-title: 「Shell」Shell 编程入门
+title: Shell基础 -- Shell 编程入门
 date: 2020-06-06 15:12:46
 tags: [环境配置, Linux, Shell]
 categories: [环境配置]

@@ -1,5 +1,5 @@
 ---
-title: 「环境配置」使用Nexus搭建Maven私服（CentOS 8）
+title: 环境配置 -- 使用Nexus搭建Maven私服（CentOS 8）
 date: 2020-11-25 18:11:23
 tags: [环境配置, CentOS, Nexus, Maven]
 categories: [环境配置]

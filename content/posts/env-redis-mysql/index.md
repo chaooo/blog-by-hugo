@@ -1,5 +1,5 @@
 ---
-title: 「环境配置」Redis与MySQL多实例配置
+title: 环境配置 -- Redis与MySQL多实例配置
 date: 2020-02-11 23:08:46
 tags: [环境配置, Redis, MySQL]
 categories: [环境配置]

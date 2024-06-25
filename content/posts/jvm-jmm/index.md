@@ -1,5 +1,5 @@
 ---
-title: 「深入JVM」内存模型JMM 与 锁机制
+title: 深入JVM -- 内存模型JMM 与 锁机制
 date: 2019-08-27 17:30:45
 tags: [java, 后端开发, JVM]
 categories: [Java基础]

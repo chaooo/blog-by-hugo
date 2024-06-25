@@ -1,5 +1,5 @@
 ---
-title: 「MySQL」MySQL事务处理与并发控制
+title: MySQL -- MySQL事务处理与并发控制
 date: 2019-02-09 23:31:48
 tags: [MySQL, 数据库, 后端开发]
 categories: [数据库]

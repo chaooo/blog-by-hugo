@@ -1,5 +1,5 @@
 ---
-title: 「Shell」Shell 文本处理
+title: Shell基础 -- Shell 文本处理
 date: 2020-06-09 15:12:46
 tags: [环境配置, Linux, Shell]
 categories: [环境配置]

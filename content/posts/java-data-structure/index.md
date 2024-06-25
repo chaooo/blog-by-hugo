@@ -1,5 +1,5 @@
 ---
-title: 「数据结构」常见JAVA集合类的数据结构分析
+title: Java基础 -- 常见JAVA集合类的数据结构分析
 date: 2019-07-28 22:53:06
 tags: [java, 后端开发, 数据结构]
 categories: [Java基础]

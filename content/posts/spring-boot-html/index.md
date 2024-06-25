@@ -1,5 +1,5 @@
 ---
-title: 「SpringBoot」Thymeleaf页面静态化实现
+title: Spring Boot -- Thymeleaf页面静态化实现
 date: 2021-05-11 14:12:42
 tags: [后端开发, Thymeleaf, SpringBoot]
 categories: [Spring]

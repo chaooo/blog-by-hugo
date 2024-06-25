@@ -1,5 +1,5 @@
 ---
-title: 「SpringBoot」使用RocketMQ实战样例
+title: Spring Boot -- 使用RocketMQ实战样例
 date: 2021-06-11 22:11:23
 tags: [后端开发, RocketMQ, SpringBoot]
 categories: [Spring]

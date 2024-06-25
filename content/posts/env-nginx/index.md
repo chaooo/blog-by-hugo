@@ -1,5 +1,5 @@
 ---
-title: 「环境配置」Nginx常用配置详解
+title: 环境配置 -- Nginx常用配置详解
 date: 2020-12-29 18:07:05
 tags: [环境配置, Nginx]
 categories: [环境配置]

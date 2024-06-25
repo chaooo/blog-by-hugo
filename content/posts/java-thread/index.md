@@ -1,5 +1,5 @@
 ---
-title: 「Java基础」多线程
+title: Java基础 -- 多线程
 date: 2017-05-12 18:07:41
 tags: [Java, 后端开发]
 categories: [Java基础]

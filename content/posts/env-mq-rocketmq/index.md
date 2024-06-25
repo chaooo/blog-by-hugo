@@ -1,5 +1,5 @@
 ---
-title: 「环境配置」RocketMQ安装并整合SpringBoot
+title: 环境配置 -- RocketMQ安装并整合SpringBoot
 date: 2021-06-10 18:11:23
 tags: [环境配置, CentOS, RocketMQ]
 categories: [环境配置]

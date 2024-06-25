@@ -1,5 +1,5 @@
 ---
-title: 「环境配置」Linux常用命令整理
+title: 环境配置 -- Linux常用命令整理
 date: 2020-06-05 20:08:46
 tags: [环境配置, Linux]
 categories: [环境配置]

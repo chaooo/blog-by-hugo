@@ -1,11 +1,11 @@
 # 基础配置
-baseURL: https://example.org/
+title: 知行 - 大道至简，知易行难
+copyright: 郑超(Charles·Zheng)
 defaultContentLanguage: zh-cn
 languageCode: zh-CN
-title: 知行 - 大道至简，知易行难
 theme: blueLake
 paginate: 10
-copyright: 郑超(Charles·Zheng)
+baseURL: https://example.org/
 
 # 主菜单
 menu:
@@ -56,7 +56,7 @@ Params:
     show: true
     name: "Charles Zheng"
     photo: "images/author.jpg" #include this if you would like to show the author photo on the sidebar
-    intro: "「知行」- 大道至简，知易行难；知行合一，悟在天成。" # 大道理往往及其简单，实践其实较难；将认识与实践结合，复杂的事情简单去做，简单的事情用心去做，坚持不懈，自然功成。
+    intro: "「知行」- 大道至简，知易行难；格物致知，知行合一。" # 大道理（指基本原理、方法和规律）是极其简单的，知道容易但做起来很难。探究事物原理，而从中获得智慧与感悟，理论与实践相结合。
 
   # 免责声明
   disclaimerTitle: "免责声明"

@@ -1,5 +1,5 @@
 ---
-title: 「Docker」Docker简介与安装（Linux环境centos）
+title: 环境配置 -- Docker简介与安装（Linux环境centos）
 date: 2020-05-06 11:56:53
 tags: [Docker, 环境配置, Linux]
 categories: [环境配置]
