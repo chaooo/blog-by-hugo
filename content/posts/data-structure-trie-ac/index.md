@@ -308,10 +308,11 @@ void testAC() {
 ```
 
 输出结果：
-```
+``` bash
 文本串“shisherhis”的匹配结果：
 she : [3]
 his : [1, 7]
 her : [4]
 he : [4]
 ```
+ 
