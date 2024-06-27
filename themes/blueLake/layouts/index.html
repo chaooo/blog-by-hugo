@@ -1,3 +1,60 @@
-{{ define "main" }}
+{{/*{{ define "main" }}
   {{- partial "post/archive" . }}
-{{ end }}
+{{ end }}*/}}
+
+{{- $s := site.Params }}
+{{- $p := .Params }}
+{{- $codeBlockConfig := partial "func/getCodeBlockSettings" . }}
+<!DOCTYPE html>
+<html
+        lang="{{ .Lang }}"
+        data-figures="{{ $p.figurePositionShow }}"
+        {{ if .IsPage }}
+          class="page"
+        {{ else if .IsHome }}
+          class="home"
+        {{ end }}
+        {{ with $s.enforceLightMode }}
+          data-mode="lit"
+        {{ end }}
+        {{ with $s.enforceDarkMode }}
+          data-mode="dim"
+        {{ end -}}
+>
+<head>
+  {{- partial "head/index" . }}
+  {{- partial "hooks/head-end" . }}
+</head>
+<body
+        data-code="{{ $codeBlockConfig.max }}"
+        data-lines="{{ $codeBlockConfig.lines }}"
+        id="documentTop"
+        data-lang="{{ .Lang }}"
+>
+<div class="home_wrap">
+    <div class="title">
+        <div>
+            {{ if $s.logo }}
+                <img src="{{ absURL $s.logo }}" alt="{{ $s.Author.name }} logo">
+            {{- end }}
+            <span>{{  $s.Author.name }}</span>
+        </div>
+        {{ if $s.Author.intro }}
+            <div class="sub">
+                {{ markdownify $s.Author.intro }}
+            </div>
+        {{- end }}
+    </div>
+    <ul class="items">
+        <li><a class="item" href='/posts'>文章列表</a></li>
+        <li><a class="item" href='/archives'>博客归档</a></li>
+        {{- if ( ne $s.introURL false ) }}
+        <li><a class="item" href='{{ absLangURL (default "about/" $s.introURL) }}'>联系作者</a></li>
+        {{- end }}
+    </ul>
+    <div class="foot">{{- with $s.ICP }}备案号：<a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow">{{ $s.ICP }}</a>{{- end }}</div>
+</div>
+{{- partialCached "scripts/index" . }}
+{{- partialCached "hooks/body-end" . }}
+</body>
+</html>

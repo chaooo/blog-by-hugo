@@ -46,17 +46,16 @@ Params:
   # Icons:
   iconsDir: "icons/" # without a leading forward slash
   # Logo image
-  logo: "images/logo_white.png"
+  logo: "images/logo.jpg"
   # center logo on navbar
   centerLogo: false # Set to "true" for centering or "false" for left aligned.
-  # customize footer icon. see issue https://github.com/chipzoller/hugo-clarity/issues/77
-  footerLogo: "images/logo_stroke.png"
+
   # show the author photo on the sidebar
   author:
     show: true
     name: "Charles Zheng"
     photo: "images/author.jpg" #include this if you would like to show the author photo on the sidebar
-    intro: "「知行」- 大道至简，知易行难；格物致知，知行合一。" # 大道理（指基本原理、方法和规律）是极其简单的，知道容易但做起来很难。探究事物原理，而从中获得智慧与感悟，理论与实践相结合。
+    intro: "「知行」- 大道至简，知易行难（Charles 的个人网站）。"
 
   # 免责声明
   disclaimerTitle: "免责声明"
@@ -67,8 +66,6 @@ Params:
 
   # Google analytics Id
   ga_analytics: ""
-  # Google tag manager
-  google_tag_manager_id: ""
   # Baidu analytics Id
   # baidu_analytics: "XXXXXXXX"
 
