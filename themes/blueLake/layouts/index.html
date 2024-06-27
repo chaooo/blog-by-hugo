@@ -46,10 +46,10 @@
         {{- end }}
     </div>
     <ul class="items">
-        <li><a class="item" href='/posts'>文章列表</a></li>
-        <li><a class="item" href='/archives'>博客归档</a></li>
+        <li><a class="item" href='/posts'>博客</a></li>
+        <li><a class="item" href='/archives'>归档</a></li>
         {{- if ( ne $s.introURL false ) }}
-        <li><a class="item" href='{{ absLangURL (default "about/" $s.introURL) }}'>联系作者</a></li>
+        <li><a class="item" href='{{ absLangURL (default "about/" $s.introURL) }}'>关于</a></li>
         {{- end }}
     </ul>
     <div class="foot">{{- with $s.ICP }}备案号：<a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow">{{ $s.ICP }}</a>{{- end }}</div>

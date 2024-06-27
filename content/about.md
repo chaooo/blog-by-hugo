@@ -1,25 +1,22 @@
-+++
-title = "About"
-description = "Hugo, the world's fastest framework for building websites"
-date = "2019-02-28"
-aliases = ["about-us", "about-hugo", "contact"]
-author = "Hugo Authors"
-+++
+---
+title: "About"
+description: "「知行」- 大道至简，知易行难（Charles 的个人网站）。"
+date: "2023-02-23"
+---
 
-Written in Go, Hugo is an open source static site generator available under the [Apache Licence 2.0.](https://github.com/gohugoio/hugo/blob/master/LICENSE) Hugo supports TOML, YAML and JSON data file types, Markdown and HTML content files and uses shortcodes to add rich content. Other notable features are taxonomies, multilingual mode, image processing, custom output formats, HTML/CSS/JS minification and support for Sass SCSS workflows.
+「知行」- 大道至简，知易行难。
 
-Hugo makes use of a variety of open source projects including:
+这句话是道学学者对《道德经》思想内涵的概括。指大道理（指基本原理、方法和规律）是极其简单的，知道容易但做起来难。真正的智慧就是洞察事物的本质和相互关系，本质的东西看起来都是很简单的，但本质的来源却是错综复杂的。
 
-* https://github.com/yuin/goldmark
-* https://github.com/alecthomas/chroma
-* https://github.com/muesli/smartcrop
-* https://github.com/spf13/cobra
-* https://github.com/spf13/viper
+看清楚了事物本质才能精准定位并快速抓住机遇，通过不断的磨炼、反省、积累、总结，才能悟出事物本质，没有大道至简的悟，怎能觉出简中的道。生活即是道，做事需要悟；认清自己，定位自己，抓住机遇，才能脱颖而出。
 
-Hugo is ideal for blogs, corporate websites, creative portfolios, online magazines, single page applications or even a website with thousands of pages.
 
-Hugo is for people who want to hand code their own website without worrying about setting up complicated runtimes, dependencies and databases.
+### 关于站长
 
-Websites built with Hugo are extremelly fast, secure and can be deployed anywhere including, AWS, GitHub Pages, Heroku, Netlify and any other hosting provider.
+![](/images/author.jpg)
 
-Learn more and contribute on [GitHub](https://github.com/gohugoio).
+- 姓名： 郑超(Charles·Zheng)
+- 邮箱：chaoles@foxmail.com
+- Github： [https://github.com/chaooo](https://github.com/chaooo)
+- Gitee：[https://gitee.com/chaoo](https://gitee.com/chaoo)
+- 微博：[http://weibo.com/zhengchaooo](https://gitee.com/chaoo)

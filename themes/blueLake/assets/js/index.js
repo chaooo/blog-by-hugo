@@ -445,19 +445,21 @@ function fileClosure(){
   (function ifiOS(){
     // modify backto top button
     const backToTopButton = elem('.to_top');
-    const thisOS = getMobileOperatingSystem();
-    const ios = 'ios';
-    if(backToTopButton && thisOS === 'iOS') {
-      pushClass(backToTopButton, ios);
-    }
-    // precisely position back to top button on large screens
-    const buttonParentWidth = backToTopButton.parentNode.offsetWidth;
-    const docWidth = doc.offsetWidth;
-    let leftOffset = (docWidth - buttonParentWidth) / 2;
-    const buttonWidth = backToTopButton.offsetWidth;
-    leftOffset = leftOffset + buttonParentWidth - buttonWidth;
-    if(!isMobileDevice()){
-      backToTopButton.style.left = `${leftOffset}px`;
+    if(backToTopButton){
+      const thisOS = getMobileOperatingSystem();
+      const ios = 'ios';
+      if(thisOS === 'iOS') {
+        pushClass(backToTopButton, ios);
+      }
+      // precisely position back to top button on large screens
+      const buttonParentWidth = backToTopButton.parentNode.offsetWidth;
+      const docWidth = doc.offsetWidth;
+      let leftOffset = (docWidth - buttonParentWidth) / 2;
+      const buttonWidth = backToTopButton.offsetWidth;
+      leftOffset = leftOffset + buttonParentWidth - buttonWidth;
+      if(!isMobileDevice()){
+        backToTopButton.style.left = `${leftOffset}px`;
+      }
     }
   })();
 
@@ -483,25 +485,27 @@ function fileClosure(){
 
   (function backtoTop(){
     const backToTopButton = elem('.to_top');
-    let scrollPos = 0;
-    const scrollSpeed = 1.1;
-    document.addEventListener("scroll", (event) => {
-      scrollPos = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
-      if (scrollPos >= 100) {
-        pushClass(backToTopButton, "show");
-      } else {
-        deleteClass(backToTopButton, "show");
-        deleteClass(backToTopButton, "launch");
-      }
-    });
-    backToTopButton.addEventListener('click', function(event) {
-      scrollPos = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
-      window.scrollTo(0, Math.floor(scrollPos / scrollSpeed));
-      pushClass(backToTopButton, "launch");
-      setTimeout(()=>{
-        deleteClass(backToTopButton, "launch");
-      },1000)
-    });
+    if(backToTopButton){
+      let scrollPos = 0;
+      const scrollSpeed = 1.1;
+      document.addEventListener("scroll", (event) => {
+        scrollPos = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
+        if (scrollPos >= 100) {
+          pushClass(backToTopButton, "show");
+        } else {
+          deleteClass(backToTopButton, "show");
+          deleteClass(backToTopButton, "launch");
+        }
+      });
+      backToTopButton.addEventListener('click', function(event) {
+        scrollPos = document.documentElement.scrollTop || document.body.scrollTop || window.scrollY || 0;
+        window.scrollTo(0, Math.floor(scrollPos / scrollSpeed));
+        pushClass(backToTopButton, "launch");
+        setTimeout(()=>{
+          deleteClass(backToTopButton, "launch");
+        },1000)
+      });
+    }
   })();
 
   (function shareWechatCode() {
