@@ -188,6 +188,5 @@ hugo
 ```
 
 # 部署网站
-1. 通过Nginx代理发布的静态网站
-2. GitHub Pages
+[托管和部署](https://hugo.opendocs.io/hosting-and-deployment/)
 

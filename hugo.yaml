@@ -5,7 +5,7 @@ defaultContentLanguage: zh-cn
 languageCode: zh-CN
 theme: blueLake
 paginate: 10
-baseURL: https://example.org/
+baseURL: https://www.itdn.top/
 
 # 主菜单
 menu:
@@ -13,7 +13,7 @@ menu:
   - name: 首页
     pageRef: /
     weight: 10
-  - name: 列表
+  - name: 博客
     pageRef: /posts
     weight: 20
   - name: 归档
