@@ -19,4 +19,4 @@ date: "2023-02-23"
 - 邮箱：chaoles@foxmail.com
 - Github： [https://github.com/chaooo](https://github.com/chaooo)
 - Gitee：[https://gitee.com/chaoo](https://gitee.com/chaoo)
-- 微博：[http://weibo.com/zhengchaooo](https://gitee.com/chaoo)
+- 微博：[http://weibo.com/zhengchaooo](http://weibo.com/zhengchaooo)
