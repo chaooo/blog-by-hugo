@@ -4,10 +4,11 @@ date: 2023-07-25 18:50:05
 tags: [Go, 后端开发]
 categories: [Golang]
 series: Golang入门
+toc: true
 ---
 
 `Golang`中的条件控制语句省去了许多不必要的附加符号，使代码更加简洁。
-### for 循环
+## for 循环
 `Golang`只有一种循环结构：**for循环**，基本形式为：
 ```
 for 初始化语句; 条件语句; 修饰语句 {}
@@ -39,7 +40,7 @@ for {
   + `continue语句`:跳过当前循环的剩余语句，然后继续进行下一轮循环。
   + `goto语句`:将控制转移到被标记的语句。
 
-### for-range 遍历
+## for-range 遍历
 数组、`string`、`slice`、`map`、`channel`等都可以使用`for-range`语句遍历。
 ```go
 slice := []int{1, 2, 3, 4, 5}
@@ -54,7 +55,7 @@ for value := range channel {
 ```
 
 
-### if 判断
+## if 判断
 `Golang`的`if`判断语句与`for`循环类似，表达式外无需小括号，而大括号`{}`则是必须的。
 ```go
 if condition1 {
@@ -86,7 +87,7 @@ func main() {
 }
 ```
 
-### switch 分支
+## switch 分支
 - `switch`语句是编写一连串`if-else`语句的简便方法。一个`case`值等于条件表达式的子句且`case`值无需为常量，且取值不限于整数。
 - `Golang`只会运行选定的`case`，与其他语言相比，相当于为每个`case`后面自动添加了`break`语句。`Golang`除非通过`fallthrough`语句继续执行后续分支的代码，否则分支会自动终止。
 - `switch`的`case`语句从上到下顺次执行，直到匹配成功时停止。
@@ -108,7 +109,7 @@ case 4
 ```
 
 
-### defer 推迟
+## defer 推迟
 - `defer`语句会将函数推迟到外层函数返回之后执行。
 - 推迟调用的函数其参数会立即求值，但直到外层函数返回前该函数都不会被调用。
 - 推迟调用的函数调用会被压入一个栈中(`LIFO`:后进先出)。
@@ -132,7 +133,7 @@ done
 ```
 
 
-### Go 错误处理
+## Go 错误处理
 `Golang`没有`try/catch`异常机制：不能执行抛异常操作。但是有一套`defer-panic-and-recover`机制，可以“捕捉”异常，也更轻量，并且只应该作为（处理错误的）最后的手段。
 - `Golang`有一个内建接口`error`类型:
 ```go

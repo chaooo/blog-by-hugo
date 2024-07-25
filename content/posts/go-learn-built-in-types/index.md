@@ -4,9 +4,10 @@ date: 2023-07-23 15:45:40
 tags: [Go, 后端开发]
 categories: [Golang]
 series: Golang入门
+toc: true
 ---
 
-### 一、指针类型
+## 一、指针类型（Pointer）
 `Golang`的取地址符是`&`，放到一个变量前使用就会返回相应变量的内存地址。 一个指针变量指向了一个值的内存地址。
 ```go
 var a int = 10
@@ -39,7 +40,7 @@ ip 变量储存的指针地址: 20818a220
 > 当声明一个指针变量未赋值时，它的值为`nil`,也称为**空指针**。一个指针变量通常缩写为 ptr。
 
 
-### 二、结构体
+## 二、结构体（Struct）
 一个`结构体（struct）`就是一组`字段（field）`。
 ```go
 type Book struct {
@@ -82,7 +83,7 @@ fmt.Println(a.name, a.author)
 > 数组可以看作是一种结构体类型，不过它使用下标而不是具名的字段。
 
 
-### 三、数组（Arrays）
+## 三、数组（Array）
 `Golang`数组声明需要指定元素类型及元素个数，语法格式：`var arrayName [size]dataType`
 ```go
 var numbers [5]int       // 声明数组，整数类型初始值为 0
@@ -97,7 +98,7 @@ var p *[3]int = &a
 ```
 
 
-### 四、切片（Slices）
+## 四、切片（Slice）
 `Golang`中`切片（slice）`是对数组一个连续片段的引用，所以切片是一个引用类型。每个数组的大小都是固定的。而切片则为数组元素提供了动态大小的、灵活的视角。
 ```go
 var a []int  // 声明切片用[]不需要说明长度, 注意 [3]int 或 [...]int 都是数组不是切片
@@ -143,7 +144,7 @@ var i int = copy(a, b)            // 2 [4 5] [4 5 6]  将 b 拷贝到 a , 返回
 ```
 
 
-### 五、字符串（Strings）
+## 五、字符串（String）
 在`Golang`中`字符串`默认使用`UTF-8`编码。字符串是一种`值类型`，且值**不可变**；更深入地讲，字符串是字节的定长数组`[...]byte`。
 ```go
 var a string = "Hello World!"
@@ -188,7 +189,7 @@ strings.Join(sl []string, sep string) string // 以 sep 衔接 sl 中元素, Spl
     + `strconv.ParseFloat(s string, bitSize int) (f float64, err error)`：将字符串转换为`float64`型。
 
 
-### 六、映射（Maps）
+## 六、映射（Map）
 `Map`映射将键映射到值，是一种无序的键值对的集合。
 - `Map`是引用类型，声明：
 ```go
@@ -212,7 +213,7 @@ fmt.Println(key, b[key])
 ```
 
 
-### 七、通道（Channels）
+## 七、通道（Channel）
 `channel`用于进行多线程管道通信与同步。`channel`也是引用数据类型，声明：`make(chan <type>, [<size>])`。
 ```go
 a := make(chan int)  // 无缓冲区的 int 通道
@@ -235,7 +236,7 @@ select {
 ```
 
 
-### 八、函数（Functions）
+## 八、函数（Function）
 `函数`是基本的代码块，用于执行一个任务。`Golang`最少有个`main()`函数。`Golang`标准库提供了多种可用的内置的函数。如`len()`、`cap()`等。
 - `Golang`有三种类型的函数：
     + 普通的带有名字的函数
@@ -343,7 +344,7 @@ func Adder() func(int) int {
 ```
 
 
-### 九、方法（Methods）
+## 九、方法（Method）
 - `Golang`方法是作用在接收者（receiver）上的一个函数，接收者是某种类型的变量。因此方法是一种特殊类型的函数。
     + 一个类型加上它的方法等价于面向对象中的一个类。
     + 因为方法是函数，所以同样不允许方法重载，但是如果基于接收者类型，是有重载的：具有同样名字的方法可以在多个不同的接收者(同一个包内)类型上存在。
@@ -380,7 +381,7 @@ func main() {
 > 方法没有和数据定义（结构体）混在一起：它们是正交的类型；表示（数据）和行为（方法）是独立的。
 
 
-### 十、接口（Interfaces）
+## 十、接口（Interface）
 `接口类型`的定义为一组方法签名。接口定义了一组方法（方法集），但是这些方法不包含（实现）代码：它们没有被实现（它们是抽象的）。接口里面也不能包含变量。
 ```go
 package main
