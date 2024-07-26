@@ -419,7 +419,7 @@ sq1.side = 5
 // 接口值
 var sq2 Shaper
 sq2 = sq1
-fmt.Printf("The square has area: %f\n", sq2.Area());
+fmt.Printf("The square has area: %f\n", sq2.Area())
 ```
 运行结果为：
 ```shell
