@@ -1,5 +1,5 @@
 # 基础配置
-title: 知行 - 大道至简，知易行难
+title: 知行 - 大道至简，知易行难；道阻且长，行则将至。
 copyright: 郑超(Charles·Zheng)
 defaultContentLanguage: zh-cn
 languageCode: zh-CN
@@ -55,7 +55,7 @@ Params:
     show: true
     name: "Charles Zheng"
     photo: "images/author.jpg" #include this if you would like to show the author photo on the sidebar
-    intro: "「知行」- 大道至简，知易行难（Charles 的个人网站）。"
+    intro: "「知行」- 大道至简，知易行难；道阻且长，行则将至。（Charles 的个人网站）。"
 
   # 免责声明
   disclaimerTitle: "免责声明"
