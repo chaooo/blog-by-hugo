@@ -6,6 +6,7 @@ languageCode: zh-CN
 theme: blueLake
 paginate: 10
 baseURL: https://www.itdn.top/
+buildFuture: true
 
 # 主菜单
 menu:
