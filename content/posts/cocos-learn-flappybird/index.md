@@ -3,7 +3,7 @@ title: Cocos Creator -- 实现《Flappy Bird》小游戏的基本功能
 date: 2024-08-02 15:25:30 +0800
 tags: [TypeScript, Cocos开发]
 categories: [CocosCreator]
-series: Cocos游戏开发
+series: Games
 toc: true
 ---
 
@@ -12,6 +12,8 @@ toc: true
 - 游戏玩法：玩家控制一个小鸟，通过点击屏幕使其飞行。游戏的核心目标是穿过一系列竖直排列的绿色管道，同时避免碰撞管道以及天花板和地面，一旦碰撞即意味着游戏结束。
 
 ## 游戏效果
+- DEMO试玩：[https://www.itdn.top/game/FlappyBird/](https://www.itdn.top/game/FlappyBird/)
+
 ![20240802141906.jpg](20240802141906.jpg)
 
 ## 实现步骤
@@ -249,5 +251,4 @@ export class Player extends Component {
 ```
 
 ## 完整代码示例
-- 完整代码示例：[https://gitee.com/chaoo/cocos-flappy-bird.git](https://gitee.com/chaoo/cocos-flappy-bird)。
-- DEMO试玩：[https://www.itdn.top/game/FlappyBird/](https://www.itdn.top/game/FlappyBird/)
+完整代码示例：[https://gitee.com/chaoo/cocos-flappy-bird.git](https://gitee.com/chaoo/cocos-flappy-bird)。

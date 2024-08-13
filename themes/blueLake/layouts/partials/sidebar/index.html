@@ -49,10 +49,16 @@
                     {{ markdownify $author.intro }}
                 </div>
             {{- end }}
-            {{- if ( ne $s.introURL false ) }}
-                {{- $r := T "read_more" }}
-                <a href='{{ absLangURL (default "about/" $s.introURL) }}' class="button mt-1" role="button" title='{{ $r }}'>{{ $r }}</a>
-            {{- end }}
+            <ul class="flex-column">
+                <li>邮箱：<a href="mailto:chaoles@foxmail.com">chaoles@foxmail.com</a></li>
+                <li><a href="https://github.com/chaooo">Github</a></li>
+                <li><a href="https://gitee.com/chaoo">Gitee</a></li>
+                <li><a href="https://weibo.com/zhengchaooo">新浪微博</a></li>
+            </ul>
+{{/*            {{- if ( ne $s.introURL false ) }}*/}}
+{{/*                {{- $r := T "read_more" }}*/}}
+{{/*                <a href='{{ absLangURL (default "about/" $s.introURL) }}' class="button mt-1" role="button" title='{{ $r }}'>{{ $r }}</a>*/}}
+{{/*            {{- end }}*/}}
         {{ end }}
 
         {{ if .Site.Params.disclaimerText }}
