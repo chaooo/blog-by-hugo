@@ -433,3 +433,7 @@ private splitPoints(points: Vec2[], jointPoint1: Vec2, jointPoint2: Vec2, splitR
 
 ## 完整代码示例
 完整代码示例：[https://gitee.com/chaoo/physical-cutting.git](https://gitee.com/chaoo/physical-cutting)。
+
+## 参考博客
+- [CocosCreator之KUOKUO带你做物理切割（第一部分）](https://www.kuokuo666.com/home/kk035.html)
+- [CocosCreator之KUOKUO带你做物理切割（第二部分）](https://www.kuokuo666.com/home/kk036.html)
