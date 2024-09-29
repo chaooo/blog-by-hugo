@@ -10,6 +10,7 @@ toc: true
 ## 游戏介绍
 - 《方块先生》是一款入门级别的跑酷小游戏，通过此雏形可以一步步做更多更强大的3D游戏。
 - 此游戏完全参照**Cocos引擎官方**的bilibili视频教程[《合集·麒麟子教你做3D跑酷游戏》](https://space.bilibili.com/491120849/channel/collectiondetail?sid=842152)。
+- COCOS CREATOR 版本：`Cocos Creator 3.8`。
 
 ## 游戏效果
 - DEMO试玩：[https://www.itdn.top/game/BoxRun/](https://www.itdn.top/game/BoxRun/)

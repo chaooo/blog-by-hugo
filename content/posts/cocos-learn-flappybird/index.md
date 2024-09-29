@@ -10,6 +10,7 @@ toc: true
 ## 游戏介绍
 - 《Flappy Bird》是一款由越南开发者 Dong Nguyen 创作并在2013年发布且暴红的像素游戏。
 - 游戏玩法：玩家控制一个小鸟，通过点击屏幕使其飞行。游戏的核心目标是穿过一系列竖直排列的绿色管道，同时避免碰撞管道以及天花板和地面，一旦碰撞即意味着游戏结束。
+- COCOS CREATOR 版本：`Cocos Creator 3.8`。
 
 ## 游戏效果
 - DEMO试玩：[https://www.itdn.top/game/FlappyBird/](https://www.itdn.top/game/FlappyBird/)
