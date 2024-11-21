@@ -289,6 +289,22 @@
         padding-top: 0.25rem
     ol
       list-style: decimal
+    .author
+      &_header
+        display: flex
+        justify-content: center
+        gap: 1rem
+        img
+          width: 48px
+          height: 48px
+          margin: 15px 0
+      &_intro
+        text-align: center
+        a
+          margin: 0 1rem
+      &_disclaimer
+        text-align: center
+
   &_end
     opacity: .8
     margin: 1em 0
@@ -475,15 +491,6 @@
       position: absolute
       left: -2rem
         // display: none
-
-.author
-  &_header
-    display: grid
-    grid-template-columns: 3rem 1fr
-    grid-gap: 1rem
-  &_bio
-    a
-      color: $theme
 
 .pagination
   display: flex
