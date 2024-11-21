@@ -69,3 +69,32 @@
         }
     });
 })();
+
+// zoom img
+(function zoomImage(){
+    // 获取模态框
+    const modal = document.getElementById("modalImage");
+    // 获取模态框中的图片元素
+    const modalImg = modal.querySelector(".image");
+    // 获取post_content所有图片
+    const images = document.querySelector(".post_content").querySelectorAll("img");
+    // 为每张图片添加点击事件监听器
+    images.forEach(function (image) {
+        image.addEventListener("click", function () {
+            modalImg.src = this.src; // 将点击的图片路径设置到模态框的图片中
+            modal.style.display = "block"; // 显示模态框
+        });
+    });
+    // 获取关闭按钮
+    const close = modal.querySelector(".close");
+    // 当用户点击关闭按钮时，隐藏模态框
+    close.addEventListener("click", function () {
+        modal.style.display = "none";
+    });
+    // 当用户点击模态框外部区域时，隐藏模态框
+    modal.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+})();

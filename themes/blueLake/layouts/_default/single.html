@@ -48,6 +48,14 @@
   {{- if ne $showRelatedInArticle false }}
     {{- partial "post/component/related" . }}
   {{- end }}
-
+  <!-- 模态框：放大查看图片时显示 -->
+  <div id="modalImage">
+    <div class="content">
+      <!-- 用于放大查看的图片 -->
+      <img class="image" alt="" src="">
+    </div>
+    <!-- 关闭按钮 -->
+    <span class="close">&times;</span>
+  </div>
 </article>
 {{- end }}
