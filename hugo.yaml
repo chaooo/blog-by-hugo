@@ -39,6 +39,10 @@ module:
   hugoVersion:
     extended: false
     min: 0.126.1
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
 
 # 网站自定义参数
 Params:

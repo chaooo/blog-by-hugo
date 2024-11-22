@@ -42,7 +42,7 @@ h1,h2,h3,h4,h5
   font-family: inherit
   font-weight: 300
   padding: 5px 0
-  margin: 15px 0
+  margin: 20px 0 5px 0
   color: var(--header-text)
   line-height: 1.35
   &:hover .link
@@ -155,8 +155,17 @@ blockquote
   + .highlight_wrap
     margin-top: 2.25rem
 p
-  padding: 0.8rem 0
+  padding: 0 0 0.8rem 0
 
 picture
   display: block
   width: 100%
+
+.flex-center
+  display: flex
+  align-items: center
+  justify-content: center
+  margin-bottom: 15px
+  img
+    margin: 2px auto
+    max-width: 100%
