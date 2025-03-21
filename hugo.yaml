@@ -40,9 +40,19 @@ module:
     extended: false
     min: 0.126.1
 markup:
+  tableOfContents:
+    endLevel: 2
+    startLevel: 2
+    ordered: true
   goldmark:
     renderer:
       unsafe: true
+    extensions: #启用markdown的扩展，然后增加一个passthrough的扩展，来处理我们想要的公式。当碰到区块的分隔符和行内分隔符（在下面定义）时，Hugo跳过不进行处理，从而能够把行间公式和行内公式留给后续的Mathjax，产生正确的公式渲染。
+      passthrough:
+        enable: true
+        delimiters:
+          block: [['\[', '\]'], ['$$', '$$']]
+          inline: [['\(', '\)'], ['$', '$']]
 
 # 网站自定义参数
 Params:

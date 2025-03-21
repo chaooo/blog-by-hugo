@@ -56,3 +56,21 @@
         <link rel="stylesheet" href="{{ relURL . }}">
     {{- end }}
 {{- end }}
+
+<!-- 需要配置中增加math参数，并开启mathjax。 可以全站设定math=true，也可以在单个页面中的头部设置-->
+{{ if or .Params.math .Site.Params.math }}
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [["$", "$"], ["$$", "$$"], ["\\$", "\\$"], ["\\(", "\\)"]],
+                displayMath: [["\\$$", "\\$$"], ["\\[", "\\]"]],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="/mathjax/es5/tex-mml-chtml.js"></script>
+{{ end }}
