@@ -41,9 +41,9 @@ module:
     min: 0.126.1
 markup:
   tableOfContents:
-    endLevel: 2
     startLevel: 2
-    ordered: true
+    endLevel: 3
+    ordered: false
   goldmark:
     renderer:
       unsafe: true
