@@ -6,6 +6,7 @@ categories: [软考]
 series: 软件设计师
 toc: true
 math: true
+draft: true
 ---
 
 掌握**程序设计语言**（Programming Languages）基础知识与基本成分，汇编语言、编译程序、解释程序的基本原理。

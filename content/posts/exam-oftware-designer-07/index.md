@@ -6,6 +6,7 @@ categories: [软考]
 series: 软件设计师
 toc: true
 math: true
+draft: true
 ---
 
 ## **一、面向对象基础概念**

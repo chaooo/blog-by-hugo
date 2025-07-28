@@ -6,6 +6,7 @@ categories: [软考]
 series: 软件设计师
 toc: true
 math: true
+draft: true
 ---
 
 数据库系统组成:

@@ -6,6 +6,7 @@ categories: [软考]
 series: 软件设计师
 toc: true
 math: true
+draft: true
 ---
 
 ## 一、考试大纲与考点分布
