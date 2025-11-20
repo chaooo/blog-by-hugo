@@ -1,6 +1,6 @@
 ---
 title: 「工程实践」Cocos Creator -- 2D物理切割
-date: 2024-09-29 15:30:06 +0800
+date: 2024-06-12 15:30:06 +0800
 tags: [TypeScript, Cocos游戏, 工程实践]
 categories: [Cocos游戏]
 series: Cocos游戏

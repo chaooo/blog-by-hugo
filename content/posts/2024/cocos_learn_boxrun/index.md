@@ -1,6 +1,6 @@
 ---
 title: 「工程实践」Cocos Creator -- 3D游戏开发入门《方块先生》
-date: 2024-08-26 18:25:30 +0800
+date: 2024-05-03 18:25:30 +0800
 tags: [TypeScript, Cocos游戏, 工程实践]
 categories: [Cocos游戏]
 series: Cocos游戏

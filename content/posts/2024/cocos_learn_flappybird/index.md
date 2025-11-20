@@ -1,6 +1,6 @@
 ---
 title: 「工程实践」Cocos Creator -- 实现《Flappy Bird》小游戏的基本功能
-date: 2024-08-02 15:25:30 +0800
+date: 2024-05-22 15:25:30 +0800
 tags: [TypeScript, Cocos游戏, 工程实践]
 categories: [Cocos游戏]
 series: Cocos游戏
