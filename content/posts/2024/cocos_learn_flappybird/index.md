@@ -1,5 +1,5 @@
 ---
-title: 「工程实践」Cocos Creator -- 实现《Flappy Bird》小游戏的基本功能
+title: 「工程实践」Cocos Creator 3.8 实现《Flappy Bird》2D小游戏
 date: 2024-05-22 15:25:30 +0800
 tags: [TypeScript, Cocos游戏, 工程实践]
 categories: [Cocos游戏]
