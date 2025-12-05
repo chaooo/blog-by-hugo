@@ -5,7 +5,6 @@ tags: [AI大模型, 学习笔记]
 categories: [AI大模型]
 series: AI大模型
 toc: true
-draft: true
 ---
 
 
@@ -20,10 +19,10 @@ draft: true
 3. **集合模式 (Schema)**：
     *   集合的结构定义，描述了集合中包含哪些字段及其数据类型。每个 Schema 包含一个或多个字段，其中一个字段必须是主键（`Primary Key`）。
 4. **实体 (Entity)**：
-    *   **一条完整的数据记录**，包含一个向量和其关联的标量数据。
+    *   一条完整的数据记录，**字段（Field）** 包含主键、向量和其关联的标量数据。
     *   例如：`{id: 1, vector: [0.1, 0.2, ..., 0.8], book_name: "深入理解Milvus", price: 99}`
 5. **向量 (Vector)**：
-    *   一组描述非结构化数据特征的数值数组（例如，由 OpenAI Embedding 模型生成的 1536 维数组）。
+    *   一组描述非结构化数据特征的**数值数组**（例如，由 OpenAI Embedding 模型生成的 1536 维数组）。
     *   是 Milvus 存储和操作的核心对象。
 6. **标量 (Scalar)**：
     *   传统的结构化数据，如 `ID`, `书名`, `价格` 等。
@@ -45,140 +44,16 @@ draft: true
 
 ## 2. 工作原理与流程
 使用 Milvus 的典型工作流分为 **写入** 和 **查询** 两部分。
+- 数据写入 (Ingestion) 流程
 
-### 2.1 数据写入 (Ingestion) 流程
 ![](20251202174921.png)
 
-### 2.2 数据查询 (Query) 流程
+- 数据查询 (Query) 流程
+
 ![](20251202175243.png)
 
 
-## 3. 快速上手：Hello Milvus (Python)
-以下是一个使用 `pymilvus` 连接 Milvus、创建集合、插入数据并进行搜索的极简示例。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### 步骤 1: 安装与连接
-```bash
-pip install pymilvus
-```
-
-```python
-from pymilvus import connections, Collection, utility
-
-# 连接到 Milvus 服务器（这里以单机版为例）
-connections.connect(alias="default", host='localhost', port='19530')
-
-# 检查服务器状态
-print(utility.get_server_version())
-```
-
-#### 步骤 2: 创建集合
-
-```python
-from pymilvus import FieldSchema, CollectionSchema, DataType, Collection
-
-# 1. 定义字段
-fields = [
-    FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
-    FieldSchema(name="book_name", dtype=DataType.VARCHAR, max_length=200),
-    FieldSchema(name="feature_vector", dtype=DataType.FLOAT_VECTOR, dim=128) # dim 必须与你生成的向量维度一致
-]
-
-# 2. 定义集合Schema
-schema = CollectionSchema(fields=fields, description="Book search demo")
-
-# 3. 创建集合
-collection_name = "book_collection"
-collection = Collection(name=collection_name, schema=schema)
-```
-
-#### 步骤 3: 创建索引
-
-```python
-# 为向量字段创建索引（以 IVF_FLAT 为例）
-index_params = {
-    "index_type": "IVF_FLAT",
-    "metric_type": "L2",
-    "params": {"nlist": 128}  # 聚类中心数，影响搜索精度和速度
-}
-
-# 指定为哪个字段创建索引
-collection.create_index(field_name="feature_vector", index_params=index_params)
-
-# 将集合加载到内存（搜索前必须步骤）
-collection.load()
-```
-
-#### 步骤 4: 插入数据
-
-假设我们有一些模拟数据。
-```python
-import random
-
-# 模拟数据：3本书的名字和对应的随机向量（128维）
-data = [
-    ["零基础入门Milvus", "Milvus权威指南", "向量数据库实战"],  # book_names
-    [[random.random() for _ in range(128)] for _ in range(3)]  # feature_vectors
-]
-
-# 准备插入的实体（注意顺序要与Schema定义的字段顺序一致）
-entities = [
-    data[0],  # book_name 字段的数据
-    data[1]   # feature_vector 字段的数据
-]
-
-# 插入数据
-insert_result = collection.insert(entities)
-
-# 插入后，建议调用flush将数据持久化
-collection.flush()
-print(insert_result.primary_keys)  # 打印自动生成的ID
-```
-
-#### 步骤 5: 搜索向量
-
-```python
-# 1. 创建一个随机向量作为查询向量
-query_vector = [[random.random() for _ in range(128)]]
-
-# 2. 定义搜索参数
-search_params = {"metric_type": "L2", "params": {"nprobe": 10}} # nprobe: 搜索的聚类中心数
-
-# 3. 执行搜索
-results = collection.search(
-    data=query_vector,
-    anns_field="feature_vector", # 在哪个字段上搜索
-    param=search_params,
-    limit=3, # 返回最相似的3个结果
-    output_fields=['book_name'] # 同时返回哪些元数据字段
-)
-
-# 4. 解析并打印结果
-for hits in results:
-    for hit in hits:
-        print(f"ID: {hit.id}, 书名: {hit.entity.get('book_name')}, 距离: {hit.distance}")
-```
-
-
-
-
-
-
+## 3. 本地部署 Milvus Lite
 - 部署与选型：从`Lite`快速验证想法，再平滑升级到`Standalone`/`Distributed`，代码无需重写。
 
 | 部署模式       | 数据规模      | 特点                              | 适用场景               |
@@ -187,32 +62,236 @@ for hits in results:
 | Standalone     | ≤1亿向量          | 单机Docker部署，HA支持                | 中小规模生产环境 |
 | Distributed    | 百亿级向量        | K8s集群部署，分片与负载均衡           | 大规模高并发场景 |
 
+1. 用`Conda`为`Milvus`项目创建独立的环境 (Python)
+   - `Conda`是一个强大的命令行工具，通过**环境隔离**和**依赖管理**彻底解决了多项目开发的版本冲突问题，已成为数据科学领域的标准工具，可在 Windows、macOS 和 Linux 上运行。
+   ```bash
+   conda create -n milvus_lite_env python=3.13
+   conda activate milvus_lite_env
+   ```
 
-### 五、部署方式
+2. 安装`Milvus Lite`
+   - `Milvus Lite`可以通过`Python`的包管理工具`pip`直接安装。
+   ```bash
+   pip install milvus
+   pip install pymilvus
+   ```
+   - 验证安装：
+   ```bash
+   python -c "import pymilvus; print('pymilvus version:', pymilvus.__version__)"
+   ```
 
-1.  **单机版 (Standalone)**：
-    *   适用于开发、测试和学习。
-    *   使用 Docker Compose 一键部署最简单。
-2.  **集群版 (Cluster)**：
-    *   适用于生产环境，具备高可用、可扩展性。
-    *   通常包含协调节点 (Coordinator Node)、工作节点 (Worker Node)、日志节点 (Log Broker) 和对象存储 (Object Storage) 等多个组件，部署复杂度高。
+3. 测试`Milvus Lite`
+   - 安装完成后，创建一个简单的`test_milvus.py`脚本来测试`Milvus Lite`是否正常工作。
+```python
+from milvus import default_server
+from pymilvus import connections, Collection, utility
 
-**对于初学者，强烈建议从 Docker Compose 启动单机版开始。**
+# 1. 启动 Milvus Lite 服务器
+print("Starting Milvus Lite server...")
+default_server.start()
 
-### 六、学习建议与资源
+# 2. 连接到服务器
+try:
+    connections.connect(alias="default", host="127.0.0.1", port=default_server.listen_port)
+    print(f"Connected to Milvus. Port: {default_server.listen_port}")
 
-1.  **官方文档**：永远是最好的资源。从 [https://milvus.io/docs](https://milvus.io/docs) 开始。
-2.  **动手实践**：按照官方文档的示例，自己敲一遍代码，感受每个步骤。
-3.  **理解概念**：务必搞懂**集合、分区、索引、度量类型**等核心概念。
-4.  **尝试不同索引**：对比 `IVF_FLAT` 和 `HNSW` 索引在速度和精度上的区别。
-5.  **探索应用场景**：尝试将其与 LangChain 等框架结合，构建一个简单的 RAG 应用。
+    # 3. 检查服务器状态
+    print(f"Server is running: {utility.get_server_version()}")
 
-希望这份笔记能为你打开 Milvus 世界的大门！
+    # 4. 创建一个简单的集合（这里只是一个示例，实际使用需要定义Schema）
+    # 注意：以下代码仅为演示连接成功，创建复杂Schema需要更多步骤。
+    if utility.has_collection("hello_milvus"):
+        utility.drop_collection("hello_milvus")
+        print("Dropped existing 'hello_milvus' collection.")
+
+    # 在实际应用中，您需要在这里定义 fields, schema 等。
+    # 此处仅用 has_collection 和 drop_collection 来演示与服务器的交互是成功的。
+
+    print("Milvus Lite is working correctly!")
+
+except Exception as e:
+    print(f"Error: {e}")
+
+finally:
+    # 5. 停止服务器 (重要!)
+    print("Stopping Milvus Lite server...")
+    default_server.stop()
+    print("Server stopped.")
+```
+在激活的`milvus_lite_env`环境中运行这个脚本：
+```bash
+python test_milvus.py
+```
+预期输出：
+```bash
+Starting Milvus Lite server...
+Connected to Milvus. Port: 19530
+Server is running: v2.2.16-lite
+Milvus Lite is working correctly!
+Stopping Milvus Lite server...
+Server stopped.
+```
 
 
+## 4. 快速上手：Hello Milvus (Python)
+创建第一个向量搜索应用：一个简单的“电影搜索”Demo。根据电影简介的 Embedding 向量，找到相似的电影。
+- 创建`demo_movies.py`文件：
 
+```python
+from milvus import default_server
+from pymilvus import connections, Collection, CollectionSchema, FieldSchema, DataType, utility
+import random
 
+# 设置基础目录和端口
+default_server.set_base_dir('./milvus_data')  # 指定数据存储目录
+default_server.cleanup()  # 清理之前的运行状态
 
+# 启动 Milvus Lite 服务器
+print("Starting Milvus Lite server...")
+default_server.start()
 
+# 连接到服务器
+try:
+    connections.connect(alias="default", host="127.0.0.1", port=default_server.listen_port)
+    print(f"Connected to Milvus. Port: {default_server.listen_port}")
+    # 检查服务器状态
+    print(f"Server is running: {utility.get_server_version()}")
 
+    # 1. 定义 Schema
+    # 我们创建三个字段：电影ID（主键）、电影名称（标量）、电影简介的向量
+    fields = [
+        FieldSchema(name="movie_id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+        FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=200),
+        FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=8) # 使用8维向量方便演示
+    ]
+    schema = CollectionSchema(fields=fields, description="Movie search demo")
+
+    # 2. 创建集合
+    collection_name = "demo_movies"
+    # 删除已存在的同名集合（如果是第一次运行，可以注释掉这几行）
+    if utility.has_collection(collection_name):
+        utility.drop_collection(collection_name)
+        print(f"Dropped existing collection: {collection_name}")
+    # 执行创建
+    collection = Collection(name=collection_name, schema=schema)
+    print(f"Collection '{collection_name}' created.")
+
+    # 3. 创建索引（在插入数据后创建效率更高，但这里先创建以演示完整流程）
+    index_params = {
+        "index_type": "AUTOINDEX", # 对于 Milvus Lite，使用 AUTOINDEX 即可
+        "metric_type": "L2",       # 使用 L2 距离（欧氏距离）
+        "params": {}
+    }
+    collection.create_index(field_name="embedding", index_params=index_params)
+    print("Index on 'embedding' field created.")
+
+    # 4. 插入数据
+    movies = [ # 模拟一些电影数据和对应的8维向量
+        {"title": "The Matrix", "embedding": [0.1, 0.3, 0.5, 0.2, 0.9, 0.1, 0.6, 0.4]},
+        {"title": "Inception", "embedding": [0.2, 0.4, 0.5, 0.3, 0.8, 0.2, 0.5, 0.3]},
+        {"title": "The Godfather", "embedding": [0.8, 0.1, 0.1, 0.9, 0.2, 0.8, 0.1, 0.9]},
+        {"title": "Pulp Fiction", "embedding": [0.7, 0.2, 0.2, 0.8, 0.3, 0.7, 0.2, 0.8]},
+        {"title": "The Dark Knight", "embedding": [0.3, 0.5, 0.6, 0.4, 0.7, 0.3, 0.4, 0.2]},
+    ]
+    # 准备插入的数据
+    titles = [movie["title"] for movie in movies]
+    embeddings = [movie["embedding"] for movie in movies]
+    # 注意：movie_id 是 auto_id，所以我们不需要提供
+    entities = [titles, embeddings]
+    # 执行插入
+    insert_result = collection.insert(entities)
+    print(f"Inserted {len(insert_result.primary_keys)} movies.")
+
+    # 5. 将集合加载到内存（搜索前必须执行此步骤）
+    collection.load()
+    print("Collection loaded into memory.")
+
+    # 6. 执行向量搜索
+    print("\n--- Starting Vector Search ---")
+    # 假设我们想找与 "Inception" 相似的电影，使用它的向量作为查询向量
+    query_embedding = [0.2, 0.4, 0.5, 0.3, 0.8, 0.2, 0.5, 0.3] # Inception 的向量
+    # 定义搜索参数
+    search_params = {
+        "metric_type": "L2",     # 使用 L2 距离（欧氏距离）
+        "params": {"nprobe": 10} # 搜索时探查的聚类数
+    }
+    # 执行搜索，返回最相似的2部电影
+    results = collection.search(
+        data=[query_embedding],
+        anns_field="embedding",
+        param=search_params,
+        limit=3,                # 返回前3个结果
+        output_fields=["title"] # 指定要返回的标量字段
+    )
+    # 处理并打印搜索结果
+    print(f"Search for movies similar to 'Inception':")
+    for i, hits in enumerate(results):
+        print(f"Query {i+1} results:")
+        for hit in hits:
+            print(f"  Title: {hit.entity.get('title')}, Distance: {hit.distance:.4f}")
+
+    # 7. 执行混合搜索（向量搜索 + 标量过滤）
+    print("\n--- Starting Hybrid Search (with filter) ---")
+    # 假设我们想找相似的电影，但标题中不能包含 "Pulp"
+    filter_expression = "title not in [\"Pulp Fiction\"]"
+    results_hybrid = collection.search(
+        data=[query_embedding],
+        anns_field="embedding",
+        param=search_params,
+        limit=3,
+        expr=filter_expression, # 这里添加过滤条件
+        output_fields=["title"]
+    )
+    # 处理并打印搜索结果
+    print(f"Hybrid search for movies similar to 'Inception' but not 'Pulp Fiction':")
+    for i, hits in enumerate(results_hybrid):
+        print(f"Query {i+1} results:")
+        for hit in hits:
+            print(f"  Title: {hit.entity.get('title')}, Distance: {hit.distance:.4f}")
+
+    # 8. 清理资源
+    print("\nCleaning up...")
+    collection.release()
+    print("Demo finished!")
+
+except Exception as e:
+    print(f"Error: {e}")
+
+finally:
+    # 停止服务器 (重要!)
+    print("Stopping Milvus Lite server...")
+    default_server.stop()
+    print("Server stopped.")
+```
+
+- 运行Demo：`python demo_movies.py`
+- 预期输出：
+```bash
+Starting Milvus Lite server...
+Connected to Milvus. Port: 19530
+Server is running: v2.2.16-lite
+Collection 'demo_movies' created.
+Index on 'embedding' field created.
+Inserted 5 movies.
+Collection loaded into memory.
+
+--- Starting Vector Search ---
+Search for movies similar to 'Inception':
+Query 1 results:
+  Title: Inception, Distance: 0.0000
+  Title: The Matrix, Distance: 0.0700
+  Title: The Dark Knight, Distance: 0.0800
+
+--- Starting Hybrid Search (with filter) ---
+Hybrid search for movies similar to 'Inception' but not 'Pulp Fiction':
+Query 1 results:
+  Title: Inception, Distance: 0.0000
+  Title: The Matrix, Distance: 0.0700
+  Title: The Dark Knight, Distance: 0.0800
+
+Cleaning up...
+Demo finished!
+Stopping Milvus Lite server...
+Server stopped.
+```
 
