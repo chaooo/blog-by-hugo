@@ -1,9 +1,9 @@
 ---
 title: 「学习笔记」Cocos Creator 3.8 基础入门
 date: 2024-03-16 18:25:30 +0800
-tags: [TypeScript, Cocos游戏, 学习笔记]
-categories: [Cocos游戏]
-series: Cocos游戏
+tags: [TypeScript, Web游戏, 学习笔记]
+categories: [Web游戏]
+series: Web游戏
 toc: true
 ---
 

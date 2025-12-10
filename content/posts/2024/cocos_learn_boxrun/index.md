@@ -1,9 +1,9 @@
 ---
 title: 「工程实践」Cocos Creator 3.8 实现《方块先生》3D小游戏
 date: 2024-05-03 18:25:30 +0800
-tags: [TypeScript, Cocos游戏, 工程实践]
-categories: [Cocos游戏]
-series: Cocos游戏
+tags: [TypeScript, Web游戏, 工程实践]
+categories: [Web游戏]
+series: Web游戏
 toc: true
 ---
 
@@ -13,7 +13,7 @@ toc: true
 - COCOS CREATOR 版本：`Cocos Creator 3.8`。
 
 ## 游戏效果
-- DEMO试玩：[https://www.itdn.top/game/BoxRun/](https://www.itdn.top/game/BoxRun/)
+- DEMO试玩：[https://www.itdn.top/demo/BoxRun/](https://www.itdn.top/demo/BoxRun/)
 
 ![20240826092656.png](20240826092656.png)
 

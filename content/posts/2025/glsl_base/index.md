@@ -1,9 +1,9 @@
 ---
 title: 「学习笔记」WebGL 与 Shader 着色器渲染实践
 date: 2025-03-23 18:25:30 +0800
-tags: [TypeScript, Cocos游戏, WebGL, Shader, 学习笔记]
-categories: [Cocos游戏]
-series: Cocos游戏
+tags: [TypeScript, Web游戏, WebGL, Shader, 学习笔记]
+categories: [Web游戏]
+series: Web游戏
 toc: true
 ---
 

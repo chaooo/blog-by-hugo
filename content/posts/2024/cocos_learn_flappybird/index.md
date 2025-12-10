@@ -1,9 +1,9 @@
 ---
 title: 「工程实践」Cocos Creator 3.8 实现《Flappy Bird》2D小游戏
 date: 2024-05-22 15:25:30 +0800
-tags: [TypeScript, Cocos游戏, 工程实践]
-categories: [Cocos游戏]
-series: Cocos游戏
+tags: [TypeScript, Web游戏, 工程实践]
+categories: [Web游戏]
+series: Web游戏
 toc: true
 ---
 
@@ -13,7 +13,7 @@ toc: true
 - COCOS CREATOR 版本：`Cocos Creator 3.8`。
 
 ## 游戏效果
-- DEMO试玩：[https://www.itdn.top/game/FlappyBird/](https://www.itdn.top/game/FlappyBird/)
+- DEMO试玩：[https://www.itdn.top/demo/FlappyBird/](https://www.itdn.top/demo/FlappyBird/)
 
 ![20240802141906.jpg](20240802141906.jpg)
 

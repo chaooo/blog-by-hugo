@@ -1,9 +1,9 @@
 ---
 title: 「工程实践」Cocos Creator 3.8 2D物理切割实践
 date: 2024-06-12 15:30:06 +0800
-tags: [TypeScript, Cocos游戏, 工程实践]
-categories: [Cocos游戏]
-series: Cocos游戏
+tags: [TypeScript, Web游戏, 工程实践]
+categories: [Web游戏]
+series: Web游戏
 toc: true
 ---
 
@@ -15,7 +15,7 @@ COCOS CREATOR 版本：`Cocos Creator 3.8`。
 4. 根据分割的顶点重新绘制两个多边形碰撞体。
 
 ## 游戏效果
-- DEMO试玩：[https://www.itdn.top/game/Physicalcut/](https://www.itdn.top/game/Physicalcut/)
+- DEMO试玩：[https://www.itdn.top/demo/Physicalcut/](https://www.itdn.top/demo/Physicalcut/)
 
 ![2.gif](2.gif)
 
