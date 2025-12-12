@@ -1,5 +1,5 @@
 ---
-title: 「工程实践」 Three.js + GeoJSON 实现3D地球
+title: 「工程实践」 Three.js + GeoJSON 实现3D地球边界
 date: 2025-03-26T13:58:27+08:00
 tags: [TypeScript, Web游戏, ThreeJs, 工程实践]
 categories: [Web游戏]
@@ -7,7 +7,7 @@ series: Web游戏
 toc: true
 draft: false
 ---
-这是一篇使用 Three.js 和 GeoJSON 实现 3D 地球的学习笔记。结合了现代前端技术栈（Vue 3 + TypeScript + Vite）和地理数据可视化技术，旨在创建一个交互式的 3D 地球模型。
+这是一篇使用 Three.js 和 GeoJSON 实现 3D 地球边界的学习笔记。结合了现代前端技术栈（Vue 3 + TypeScript + Vite）和地理数据可视化技术，旨在创建一个交互式的 3D 地球边界模型。
 
 ## 项目初始化
 首先，使用`Vite`创建一个`Vue`项目：
@@ -167,7 +167,7 @@ onMounted(() => {
 - 星空背景：自定义 `StarField` 类创建沉浸式宇宙环境。
 
 项目资源
-- 源代码：[Three.js 3D 地球项目](https://gitee.com/chaoo/threejs-3d-earth.git)
+- 源代码：[Three.js 3D 地球项目](https://gitee.com/chaoo/threejs-3d-earth/tree/v1/)
 - 在线演示：[3D 地球演示](https://www.itdn.top/demo/Earth3D/)
 
-![20250326171650.png](20250326171650.png)
+![](20250326171650.jpg)
