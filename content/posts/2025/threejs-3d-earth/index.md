@@ -1,6 +1,6 @@
 ---
 title: 「工程实践」 Three.js + GeoJSON 实现3D地球边界
-date: 2025-03-26T13:58:27+08:00
+date: 2025-12-10T13:58:27+08:00
 tags: [TypeScript, Web游戏, ThreeJs, 工程实践]
 categories: [Web游戏]
 series: Web游戏
@@ -167,7 +167,7 @@ onMounted(() => {
 - 星空背景：自定义 `StarField` 类创建沉浸式宇宙环境。
 
 项目资源
-- 源代码：[Three.js 3D 地球项目](https://gitee.com/chaoo/threejs-3d-earth/tree/v1/)
+- 源代码：[Three.js 3D 地球项目](https://gitee.com/chaoo/threejs-3d-earth/tags)
 - 在线演示：[3D 地球演示](https://www.itdn.top/demo/Earth3D/)
 
 ![](20250326171650.jpg)

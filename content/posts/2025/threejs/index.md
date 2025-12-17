@@ -1,6 +1,6 @@
 ---
 title: 「学习笔记」Web图形库 Three.js 入门
-date: 2025-03-25T13:58:27+08:00
+date: 2025-12-09T13:58:27+08:00
 tags: [TypeScript, Web游戏, ThreeJs, 学习笔记]
 categories: [Web游戏]
 series: Web游戏

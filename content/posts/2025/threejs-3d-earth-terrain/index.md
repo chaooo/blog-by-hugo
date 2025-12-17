@@ -1,6 +1,6 @@
 ---
 title: 「工程实践」 Three.js+GeoJSON+8K高清贴图+地形高度图 实现交互式3D地球
-date: 2025-03-28T18:55:25+08:00
+date: 2025-12-12T18:55:25+08:00
 tags: [TypeScript, Web游戏, ThreeJs, 工程实践]
 categories: [Web游戏]
 series: Web游戏
