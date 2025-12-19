@@ -166,4 +166,4 @@ npm run dev
 - 源代码：[Three.js 3D 地球项目](https://gitee.com/chaoo/threejs-3d-earth/tags)
 - 在线演示：[3D 地球演示](https://www.itdn.top/demo/Earth3DTerrain/)
 
-![](20250328165141.jpg)
+![](20251212164906.webp)

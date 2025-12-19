@@ -103,4 +103,4 @@ renderer.render(scene, camera);
 - 太阳系各大行星3D展开贴图资源：[https://www.solarsystemscope.com/textures/](https://www.solarsystemscope.com/textures/)
 - 在线演示：[3D 地球演示](https://www.itdn.top/demo/EarthSunMoon/)
 
-![](20251217142607.jpg)
+![](20251217164552.webp)

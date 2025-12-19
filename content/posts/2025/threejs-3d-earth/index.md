@@ -170,4 +170,4 @@ onMounted(() => {
 - 源代码：[Three.js 3D 地球项目](https://gitee.com/chaoo/threejs-3d-earth/tags)
 - 在线演示：[3D 地球演示](https://www.itdn.top/demo/Earth3D/)
 
-![](20250326171650.jpg)
+![](20251210165022.webp)
