@@ -9,7 +9,9 @@ draft: false
 ---
 
 ## 项目概述
-本文将带你从零开始构建一个功能完整的3D太阳系应用，涵盖行星运动、卫星系统、星空背景等核心功能，并深入探讨如何解决实际开发中的技术挑战。
+基于 Vue 3 + TypeScript + Three.js 的 3D 天文可视化项目，从零开始构建一个功能完整的3D太阳系应用，涵盖行星运动、卫星系统、星空背景等核心功能，并深入探讨如何解决实际开发中的技术挑战。
+
+![](20251218170932.webp)
 
 采用模块化设计，主要包含以下几个核心组件：
 - **SolarSystem**: 负责行星系统的逻辑管理
@@ -317,4 +319,3 @@ dispose(): void {
 - 太阳系各大行星3D展开贴图资源：[https://www.solarsystemscope.com/textures/](https://www.solarsystemscope.com/textures/)
 - 在线演示：[3D 地球演示](https://www.itdn.top/demo/SolarSystem/)
 
-![](20251218170932.webp)

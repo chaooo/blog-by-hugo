@@ -22,90 +22,123 @@
     <link rel="alternate" type="application/rss+xml" href="https://blog.itdn.top/index.xml" title="知行 - 大道至简，知易行难；道阻且长，行则将至。" />
     <link rel="alternate" type="application/json" href="https://blog.itdn.top/index.json" title="知行 - 大道至简，知易行难；道阻且长，行则将至。" />
     <style>
+        :root{--bg-gradient:linear-gradient(135deg, #0f2027, #203a43, #2c5364);--card-bg:rgba(30, 41, 59, 0.75);--text-primary:#e0e0e0;--text-secondary:#a0aec0;--text-muted:#718096;--accent:#4facfe;--accent-light:#00f2fe;--border-color:rgba(255, 255, 255, 0.1);--shadow-hover:0 12px 30px rgba(0, 0, 0, 0.45);--radius:16px;--transition:all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1)}
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);color:#e0e0e0;line-height:1.6}
-        header{text-align:center;padding:3rem 1.5rem;background:rgba(0,0,0,0.3)}
-        h1{font-size:2.8rem;margin-bottom:0.5rem;background:linear-gradient(to right,#4facfe,#00f2fe);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .tagline{font-size:1.2rem;color:#a0aec0;max-width:600px;margin:0 auto}
-        .projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;padding:0 1.5rem 3rem;max-width:1200px;margin:0 auto}
-        .project-card{background:rgba(30,41,59,0.7);border-radius:12px;overflow:hidden;transition:transform 0.3s ease,box-shadow 0.3s ease;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1)}
-        .project-card:hover{transform:translateY(-8px);box-shadow:0 10px 30px rgba(0,0,0,0.4)}
-        .project-image{width:100%;height:200px;object-fit:cover;display:block}
-        .project-content{padding:1.5rem}
-        .project-title{font-size:1.4rem;margin-bottom:0.75rem;color:#63b3ed}
-        .project-desc{color:#cbd5e0;margin-bottom:1rem;font-size:0.95rem}
-        .tech-tags{display:flex;flex-wrap:wrap;gap:0.5rem}
-        .tech-tag{background:rgba(99,179,237,0.2);color:#63b3ed;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.8rem;font-weight:500}
-        footer{text-align:center;padding:2rem;color:#718096;font-size:0.9rem;border-top:1px solid rgba(255,255,255,0.05);}
-        footer a{color:#ffffff}
-        @media (max-width:600px){
-            h1{font-size:2rem}
-            .projects{grid-template-columns:1fr;padding:0 1rem 2rem}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg-gradient);color:var(--text-primary);line-height:1.7;min-height:100vh;display:flex;flex-direction:column}
+        header{text-align:center;padding:4rem 1.5rem 3rem;background:rgba(0,0,0,.25);backdrop-filter:blur(8px);position:relative}
+        header::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(to right,transparent,var(--accent),transparent)}
+        h1{font-size:3.2rem;margin-bottom:1rem;background:linear-gradient(to right,var(--accent),var(--accent-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;letter-spacing:-.5px;text-shadow:0 2px 4px rgba(0,0,0,.2)}
+        a{text-decoration:none}
+        .tagline{font-size:1.25rem;color:var(--text-secondary);max-width:650px;margin:0 auto;font-weight:400;line-height:1.6}
+        main{flex:1;display:flex;flex-direction:column;align-items:center;padding:2rem 1.5rem 4rem}
+        .projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2.5rem;width:100%;max-width:1200px;margin-top:1.5rem}
+        .project-card{background:var(--card-bg);border-radius:var(--radius);overflow:hidden;transition:var(--transition);backdrop-filter:blur(12px);border:1px solid var(--border-color);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+        .project-card:hover{transform:translateY(-10px);box-shadow:var(--shadow-hover)}
+        .project-image{width:100%;height:200px;object-fit:cover;display:block;transition:opacity .3s ease}
+        .project-card:hover .project-image{opacity:.92}
+        .project-content{padding:1.75rem}
+        .project-title{font-size:1.45rem;margin-bottom:.85rem;color:#63b3ed;font-weight:600}
+        .project-desc{color:var(--text-secondary);margin-bottom:1.2rem;font-size:.98rem;line-height:1.6}
+        .tech-tags{display:flex;flex-wrap:wrap;gap:.6rem}
+        .tech-tag{background:rgba(99,179,237,.18);color:#63b3ed;padding:.35rem .9rem;border-radius:50px;font-size:.82rem;font-weight:600;letter-spacing:.5px;transition:background .25s ease}
+        .project-card:hover .tech-tag{background:rgba(99,179,237,.28)}
+        footer{text-align:center;padding:2.2rem 1.5rem 1.8rem;color:var(--text-muted);font-size:.95rem;border-top:1px solid rgba(255,255,255,.06);margin-top:auto}
+        footer a{color:#fff;text-decoration:none;transition:color .2s ease}
+        footer a:hover{color:var(--accent-light);text-decoration:underline}
+        @media (max-width:768px){h1{font-size:2.4rem}
+            .tagline{font-size:1.1rem;padding:0 1rem}
+            .projects{grid-template-columns:1fr;gap:2rem;padding:0 1rem}
+            .project-content{padding:1.5rem}
+        }
+        @media (max-width:480px){h1{font-size:2rem}
+            .tagline{font-size:1rem}
+            footer p{font-size:.9rem}
+        }
+        .project-card{opacity:0;animation:fadeInUp .6s ease forwards}
+        .project-card:first-child{animation-delay:.1s}
+        .project-card:nth-child(2){animation-delay:.2s}
+        .project-card:nth-child(3){animation-delay:.3s}
+        .project-card:nth-child(4){animation-delay:.4s}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}
+            to{opacity:1;transform:translateY(0)}
         }
     </style>
 </head>
 <body>
 <header>
-    <h1>Charles Zheng 的 个人站</h1>
+    <h1>Charles Zheng 的个人站</h1>
     <p class="tagline">全栈工程师 | WebGL 爱好者 | 宇宙与代码的交响</p>
 </header>
-<main class="projects">
-    <div class="project-card">
-        <img src="https://blog.itdn.top/posts/2025/threejs-3d-solar-system/20251218170932.webp" alt="3D太阳系" class="project-image" />
-        <div class="project-content">
-            <h2 class="project-title">沉浸式 3D 太阳系可视化</h2>
-            <p class="project-desc">基于 Three.js + Vue3 构建的交互式太阳系，支持行星真实运动、月球潮汐锁定、相机跟随和星空背景。</p>
-            <div class="tech-tags">
-                <span class="tech-tag">Three.js</span>
-                <span class="tech-tag">Vue3</span>
-                <span class="tech-tag">TypeScript</span>
-                <span class="tech-tag">WebGL</span>
-            </div>
-        </div>
-    </div>
-    <div class="project-card">
-        <img src="https://blog.itdn.top/posts/2025/threejs-3d-earth-terrain/20250328165141.jpg" alt="3D地球地形" class="project-image" />
-        <div class="project-content">
-            <h2 class="project-title">交互式 3D 地球地形</h2>
-            <p class="project-desc">基于 Three.js + Vue3 构建的动态纹理合成构建交互式3D地球可视化项目。</p>
-            <div class="tech-tags">
-                <span class="tech-tag">Three.js</span>
-                <span class="tech-tag">Vue3</span>
-                <span class="tech-tag">TypeScript</span>
-                <span class="tech-tag">WebGL</span>
-            </div>
-        </div>
-    </div>
-    <div class="project-card">
-        <img src="https://blog.itdn.top/posts/2024/cocos_learn_flappybird/20240802141906.jpg" alt="2D小游戏" class="project-image" />
-        <div class="project-content">
-            <h2 class="project-title">《Flappy Bird》2D小游戏</h2>
-            <p class="project-desc">基于 TypeScript + Cocos Creator 3.8 实现基本的 Flappy Bird 游戏功能。</p>
-            <div class="tech-tags">
-                <span class="tech-tag">TypeScript</span>
-                <span class="tech-tag">Cocos Creator</span>
-            </div>
-        </div>
-    </div>
-    <div class="project-card">
-        <img src="https://blog.itdn.top/posts/2024/cocos_learn_physicalcut/2.gif" alt="2D物理切割" class="project-image" />
-        <div class="project-content">
-            <h2 class="project-title">2D 物理切割实践</h2>
-            <p class="project-desc">基于 Cocos Creator 的 2D刚体、碰撞体、射线检测 的 2D 物理切割实践。</p>
-            <div class="tech-tags">
-                <span class="tech-tag">TypeScript</span>
-                <span class="tech-tag">Cocos Creator</span>
-            </div>
-        </div>
+
+<main>
+    <div class="projects">
+        <article class="project-card" role="article" aria-labelledby="proj1">
+            <a href="https://blog.itdn.top/posts/2025/threejs-3d-solar-system/" target="_blank">
+                <img src="https://blog.itdn.top/posts/2025/threejs-3d-solar-system/20251218170932.webp" alt="3D太阳系可视化项目截图" class="project-image" loading="lazy" />
+                <div class="project-content">
+                    <h2 id="proj1" class="project-title">沉浸式 3D 太阳系可视化</h2>
+                    <p class="project-desc">基于 Three.js + Vue3 构建的交互式太阳系，支持行星真实运动、月球潮汐锁定、相机跟随和星空背景。</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Three.js</span>
+                        <span class="tech-tag">Vue3</span>
+                        <span class="tech-tag">TypeScript</span>
+                        <span class="tech-tag">WebGL</span>
+                    </div>
+                </div>
+            </a>
+        </article>
+
+        <article class="project-card" role="article" aria-labelledby="proj2">
+            <a href="https://blog.itdn.top/posts/2025/threejs-3d-earth-terrain/" target="_blank">
+                <img src="https://blog.itdn.top/posts/2025/threejs-3d-earth-terrain/20250328165141.jpg" alt="3D地球地形可视化项目截图" class="project-image" loading="lazy" />
+                <div class="project-content">
+                    <h2 id="proj2" class="project-title">交互式 3D 地球地形</h2>
+                    <p class="project-desc">基于 Three.js + Vue3 构建的动态纹理合成构建交互式3D地球可视化项目。</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Three.js</span>
+                        <span class="tech-tag">Vue3</span>
+                        <span class="tech-tag">TypeScript</span>
+                        <span class="tech-tag">WebGL</span>
+                    </div>
+                </div>
+            </a>
+        </article>
+
+        <article class="project-card" role="article" aria-labelledby="proj3">
+            <a href="https://blog.itdn.top/posts/2024/cocos_learn_flappybird/" target="_blank">
+                <img src="https://blog.itdn.top/posts/2024/cocos_learn_flappybird/20240802141906.jpg" alt="Flappy Bird 2D小游戏截图" class="project-image" loading="lazy" />
+                <div class="project-content">
+                    <h2 id="proj3" class="project-title">《Flappy Bird》2D小游戏</h2>
+                    <p class="project-desc">基于 TypeScript + Cocos Creator 3.8 实现基本的 Flappy Bird 游戏功能。</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">TypeScript</span>
+                        <span class="tech-tag">Cocos Creator</span>
+                    </div>
+                </div>
+            </a>
+        </article>
+
+        <article class="project-card" role="article" aria-labelledby="proj4">
+            <a href="https://blog.itdn.top/posts/2024/cocos_learn_physicalcut/" target="_blank">
+                <img src="https://blog.itdn.top/posts/2024/cocos_learn_physicalcut/2.gif" alt="2D物理切割效果演示GIF" class="project-image" loading="lazy" />
+                <div class="project-content">
+                    <h2 id="proj4" class="project-title">2D 物理切割实践</h2>
+                    <p class="project-desc">基于 Cocos Creator 的 2D刚体、碰撞体、射线检测 的 2D 物理切割实践。</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">TypeScript</span>
+                        <span class="tech-tag">Cocos Creator</span>
+                    </div>
+                </div>
+            </a>
+        </article>
     </div>
 </main>
+
 <footer>
-    <p>© 2025 Charles Zheng | <a href='https://blog.itdn.top/'>技术博客</a></p>
-    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #a0aec0;">
-        备案号：<a href="https://beian.miit.gov.cn" target="_blank" rel="nofollow">粤ICP备19039226号</a>
+    <p>© 2025 Charles Zheng | <a href="https://blog.itdn.top/" target="_blank" rel="noopener">技术博客</a></p>
+    <p style="margin-top: 0.6rem; font-size: 0.88rem; color: var(--text-secondary);">
+        备案号：<a href="https://beian.miit.gov.cn" target="_blank" rel="noopener nofollow">粤ICP备19039226号</a>
     </p>
 </footer>
-</body>
-</html>
 </body>
 </html>

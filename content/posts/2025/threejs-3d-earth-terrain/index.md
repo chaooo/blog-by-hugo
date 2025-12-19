@@ -16,6 +16,8 @@ draft: false
 - 将合成后的纹理映射到球体几何体上。
 - 既保留了高清地球纹理的细节，又叠加了清晰的地理边界和河流。
 
+![](20251212164906.webp)
+
 ## 核心功能实现
 ### 1. 地球渲染与地形高度
 地球的渲染采用了基于着色器的高度图：
@@ -165,5 +167,3 @@ npm run dev
 ## 项目资源
 - 源代码：[Three.js 3D 地球项目](https://gitee.com/chaoo/threejs-3d-earth/tags)
 - 在线演示：[3D 地球演示](https://www.itdn.top/demo/Earth3DTerrain/)
-
-![](20251212164906.webp)

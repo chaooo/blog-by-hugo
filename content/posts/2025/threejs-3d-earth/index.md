@@ -9,6 +9,8 @@ draft: false
 ---
 这是一篇使用 Three.js 和 GeoJSON 实现 3D 地球边界的学习笔记。结合了现代前端技术栈（Vue 3 + TypeScript + Vite）和地理数据可视化技术，旨在创建一个交互式的 3D 地球边界模型。
 
+![](20251210165022.webp)
+
 ## 项目初始化
 首先，使用`Vite`创建一个`Vue`项目：
 ```bash
@@ -169,5 +171,3 @@ onMounted(() => {
 项目资源
 - 源代码：[Three.js 3D 地球项目](https://gitee.com/chaoo/threejs-3d-earth/tags)
 - 在线演示：[3D 地球演示](https://www.itdn.top/demo/Earth3D/)
-
-![](20251210165022.webp)
