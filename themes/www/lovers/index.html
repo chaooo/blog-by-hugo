@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <title>HELLO，LOVERS!</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    #map-container,body,html{height:100%;width:100%;position:relative;margin:0;padding:0;font-size:14px}
+    .marker-icon{width: 25px;height: 34px;}
+
+    .container{width:100%;position:absolute;left:0;top:0;z-index:990}
+    .info-note{width:300px;max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:12px}
+    .info-note .info-tit{height:50px;line-height:50px;position:relative;padding:0 20px;font-size:16px;font-weight:600;color:#333;border-bottom:1px dashed #ccc}
+    .info-note .info-tit i:before{float:right;content:"\2716";font-style:normal}
+    .info-note .info-content{padding:20px;color:#ff69b4;font-size:16px}
+    .info-note .info-content img{display:block;margin-top:15px;width:100%;max-width:100%}
+
+    .list-note{position:absolute;left:15px;top:80px;border:1px solid rgba(0,0,0,.1);border-radius:12px;background:rgba(255,255,255,.5);padding:20px}
+    .list-note li{list-style:none;border-top:1px dashed #ccc}
+    .list-note li:first-child{border:none}
+    .list-note li a{display:block;width:100%;text-decoration:none;font-size:14px;text-align:center;height:32px;line-height:32px;color:#333;}
+    .list-note li a b{color:#ff69b4;}
+    .list-note li a:hover{text-decoration:underline}
+
+    h1{margin:0;width:100%;margin:20px 0;line-height:30px;font-size:18px;text-align:center;background-image:linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1), rgba(255, 0, 0, 0));}
+    h1 b{margin:0 5px; color:#ff69b4;}
+    /*模态框：放大查看图片时显示*/
+    @keyframes zoom{0%{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+    #modalImage{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100vh;line-height:100vh;background-color:rgba(0,0,0,.8);text-align:center;animation-name:zoom;animation-duration:.6s}
+    #modalImage .image{margin:0;padding:0;width:auto;height:auto;max-width:100%;max-height:100%;vertical-align:middle}
+    #modalImage .close{position:fixed;top:20px;right:20px;color:#f1f1f1;height:20px;line-height:20px;font-size:20px;font-weight:700;cursor:pointer}
+    #modalImage .close:hover{color:#bbb}
+  </style>
+</head>
+
+<body>
+
+<div id="map-container"></div>
+<div class="container">
+  <h1>
+    <a href="https://weibo.com/u/1700139362" target="_blank">@秋过冬漫长</a> 与 <a href="https://weibo.com/u/2294882570" target="_blank">@一觉大天亮</a> 相识的
+    <br><span id="clock"></span>
+  </h1>
+  <ul class="list-note">
+    <li><a href="javascript:void(0);" onclick="openInfoWindow(0);">2018年06月23日 <b>初遇</b></a></li>
+    <li><a href="javascript:void(0);" onclick="openInfoWindow(1);">2018年08月03日 <b>初识</b></a></li>
+    <li><a href="javascript:void(0);" onclick="openInfoWindow(2);">2020年10月24日 <b>初见</b></a></li>
+    <li><a href="javascript:void(0);" onclick="openInfoWindow(3);">2020年12月24日 <b>表白</b></a></li>
+    <li><a href="javascript:void(0);" onclick="openInfoWindow(4);">2021年12月24日 <b>1周年</b></a></li>
+    <li><a href="javascript:void(0);" onclick="openInfoWindow(5);">2022年12月24日 <b>2周年</b></a></li>
+    <li><a href="javascript:void(0);" onclick="openInfoWindow(6);">2023年12月24日 <b>3周年</b></a></li>
+    <li><a href="javascript:void(0);" onclick="openInfoWindow(7);">2024年12月24日 <b>4周年</b></a></li>
+  </ul>
+</div>
+<!-- 模态框：放大查看图片时显示 -->
+<div id="modalImage">
+  <img class="image" alt="" src="">
+  <span class="close">&times;</span>
+</div>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=7eeb46bd3071dfd6162c1f19ac9b8caa"></script>
+<script type="text/javascript">
+  /************************************************************************************************************************************************************************************************************************/
+  // 创建地图实例
+  var mapObj = new AMap.Map("map-container", {
+    zoom: 12,
+    center: [114.030513, 22.603162],
+    resizeEnable: true
+  });
+  // 地图点击事件 -- 打印锚点信息
+  mapObj.on("click", function (ev) {
+    console.log(ev);
+    mapObj.clearInfoWindow();
+  });
+  // 删除地图上所有的覆盖物
+  mapObj.clearMap();
+  // 地图 marker标记 和 信息窗体
+  const markerNotes = []; // 所有marker标记
+  const infoNotes = []; // 所有信息窗体
+  const markerIcon = '<img class="marker-icon" src="https://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png">';
+  const markerOffset = new AMap.Pixel(-13, -30); //以 icon 的 [center bottom] 为原点
+  // 创建marker标记
+  function createMarker(index, lng, lat){
+    let marker = new AMap.Marker({                    
+      map: mapObj,                   
+      position: new AMap.LngLat(lng, lat), //位置
+      content: markerIcon, //图标
+      offset: markerOffset,
+      topWhenClick: true,
+    });
+    marker.on("click",()=>{// 添加marker点击事件
+      openInfoWindow(index);
+    });
+    markerNotes[index] = marker;
+  }
+  // 创建地图信息窗体
+  function createInfoWindow(index, title, content){
+    let infoWindow = new AMap.InfoWindow({
+      isCustom:true,  //使用自定义窗体
+      content:createInfoDom(title, content),
+      offset: markerOffset,
+    });
+    infoNotes[index] = infoWindow;
+  }
+  // 构建自定义信息窗体DOM 
+  function createInfoDom(title, content){
+    let infoDom = document.createElement("div");
+    infoDom.className = "info-note";
+    // 定义顶部标题
+    let top = document.createElement("div");
+    top.className = "info-tit";
+    top.innerText = title;
+    let closeIcon = document.createElement("i");
+    closeIcon.onclick = closeInfoWindow;
+    top.appendChild(closeIcon);
+    infoDom.appendChild(top);
+    // 定义中部内容
+    let middle = document.createElement("div");
+    middle.className = "info-content";
+    middle.innerHTML = content;
+    infoDom.appendChild(middle);
+    return infoDom;
+  }  
+  // 打开地图信息窗体
+  function openInfoWindow(index){
+    mapObj.clearInfoWindow();
+    infoNotes[index].open(mapObj, markerNotes[index].getPosition()); //打开
+    bindImageZoom(); // 绑定事件 - 点击放大图片
+  }
+  // 关闭地图信息窗体
+  function closeInfoWindow(){
+    mapObj.clearInfoWindow();
+  }
+
+  /************************************************************************************************************************************************************************************************************************/
+  // 创建marker标记 和 信息窗体
+  createMarker(0, 114.178483, 27.452087); //位置-江西武功山
+  createInfoWindow(0, '2018年06月23日 初遇','我们在微博上第一次互动，关于绿色的武功山。<img class="zoom" src="20180623.jpg" alt=""/>');
+
+  createMarker(1, 114.033441, 22.665403); //位置-深圳清湖  
+  createInfoWindow(1, '2018年08月03日 初识','我们第一次添加微信，开始有一句没一句的聊天 ~');
+
+  createMarker(2, 113.889918, 22.561324); //位置-万科生活广场（中影星趴影城） 
+  createInfoWindow(2, '2020年10月24日 初见','线上认识两年多，我们第一次见面，一起看了电影《金刚川》。');
+
+  createMarker(3, 113.911298, 22.499603), //位置-大南山
+  createInfoWindow(3, '2020年12月24日 表白','圣诞夜，第一次表白，说了我喜欢你，问你是否愿意和我一起历经余生的点滴，一起去看最美的风景！<img class="zoom" src="20201224.jpg" alt=""/>');
+
+  createMarker(4, 113.911298, 22.499603), //位置-大南山 
+  createInfoWindow(4, '2021年12月24日 1周年','圣诞夜，已共你一年，记忆亦同样新鲜。<img class="zoom" src="20211224.jpg" alt=""/>');
+
+  createMarker(5, 114.033441, 22.665403); //位置-深圳清湖  
+  createInfoWindow(5, '2022年12月24日 2周年','圣诞夜，相爱两周年，感觉不知不觉日子已经过得像老夫老妻了，虽然偶尔也有矛盾小吵架，但都能够相互理解让感情升温。<img class="zoom" src="20221224.jpg" alt=""/>');
+
+  createMarker(6, 114.033441, 22.665403); //位置-深圳清湖  
+  createInfoWindow(6, '2023年12月24日 3周年','圣诞夜，相爱三周年，已经持证上岗，希望往后的生活，温暖又有趣，平凡又温馨！<img class="zoom" src="20231224.jpg" alt=""/>');
+
+  createMarker(7, 114.033441, 22.665403); //位置-深圳清湖  
+  createInfoWindow(7, '2024年12月24日 4周年','圣诞夜，相爱四周年，结婚已一年有余，一路走来，有磕磕绊绊，也有快乐与美好，不负当下，也对未来充满希望！<img class="zoom" src="20241224.jpg" alt=""/>');
+
+  /************************************************************************************************************************************************************************************************************************/
+  // 添加marker点击事件
+  for (let i = 0; i < markerNotes.length; i++) {
+    markerNotes[i].on("click",()=>{
+      openInfoWindow(index);
+    });
+  }
+
+  /************************************************************************************************************************************************************************************************************************/
+  // 计时
+  let clock = document.getElementById("clock");
+  setInterval(function(){
+    // 创建目标时间对象
+    var target_time = new Date("2018/08/03 21:36:00");
+    // 计算目标时间对象到当前时间的毫秒数
+    var reduce_ms = Date.now() - target_time.getTime();
+    // 返回需要的数据
+    clock.innerHTML = `第<b>${parseInt(reduce_ms / 1000 / 3600 / 24)}</b>天<b>${parseInt(reduce_ms / 1000 / 3600 % 24)}</b>小时<b>${parseInt(reduce_ms / 1000 / 60 % 60 )}</b>分钟<b>${Math.round(reduce_ms / 1000 % 60)}</b>秒`;
+  },1000);
+
+  //----------------------------------------------------
+  // 绑定事件 - 点击放大图片
+  function bindImageZoom(){
+    // 获取post_content所有图片
+    let images = document.querySelectorAll(".zoom");
+    // 为每张图片添加点击事件监听器
+    images.forEach(function (image) {
+      image.addEventListener("click", function () {
+        modalImg.src = this.src; // 将点击的图片路径设置到模态框的图片中
+        modal.style.display = "block"; // 显示模态框
+      });
+    });
+  }
+  // 模态框：放大查看图片时显示
+  const modal = document.getElementById("modalImage");
+  const modalImg = modal.querySelector(".image");
+  const modalClose = modal.querySelector(".close");
+  modalClose.addEventListener("click", function () {
+    modal.style.display = "none"; // 当用户点击关闭按钮时，隐藏模态框
+  });
+  modal.addEventListener("click", function (event) {
+    if (event.target === modal) {// 当用户点击模态框外部区域时，隐藏模态框
+      modal.style.display = "none";
+    }
+  });
+</script>
+
+</body>
+</html>

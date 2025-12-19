@@ -1,0 +1,490 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <title>旅行地图</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    h1{position:fixed;left:0;top:0;z-index:990;width:100%;line-height:24px;font-size:14px;text-align:center;color:#405d63;background-image:linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1), rgba(255,255,255,0))}
+    #map-container,body,html{height:100%;width:100%;position:relative;margin:0;padding:0;font-size:14px}
+    /*地图marker*/
+    .marker-icon{display:block;width:25px;height:34px}
+    /*地图信息窗体*/
+    .info-note{width:350px;max-width:100%;background:#405d63;color:#c4a18d;border-radius:12px;box-shadow: 0 4px 6px #84a2a3}
+    .info-note .info-tit{height:50px;line-height:50px;position:relative;padding-left:20px;font-size:16px;font-weight:600;border-bottom:1px dashed #c4a18d}
+    .info-note .info-tit i{float:right;font-style:normal;color:#84a2a3;cursor:pointer;width:50px;text-align:center;}
+    .info-note .info-tit i:before{content:"\2716"}
+    .info-note .info-tit i:hover{color:#fff}
+    .info-note .info-content{padding:20px}
+    .info-note .info-content .info-img{display:flex;justify-content:center}
+    .info-note .info-content .info-img img{width:60px;height:80px;border-radius:5px;-o-object-fit:cover;object-fit:cover;aspect-ratio:1/1;margin-left:3px;cursor:pointer}
+    .info-note .info-content .info-img img:first-child{margin-left:0}
+    .info-note .info-content p{padding-top:15px;font-size:14px;text-align:center}
+    /*模态框：放大查看图片时显示*/
+    @keyframes zoom{0%{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+    #modalImage{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100vh;line-height:100vh;background-color:rgba(0,0,0,.8);text-align:center;animation-name:zoom;animation-duration:.6s}
+    #modalImage .image{margin:0;padding:0;width:auto;height:auto;max-width:100%;max-height:100%;vertical-align:middle}
+    #modalImage .btn{display:inline-block;background:#405d6363;color:#c4a18d;/* color:#84a2a3; */cursor:pointer;width:36px;height:36px;border-radius:6px;line-height:34px;text-align:center;font-size:20px;font-weight:700;cursor:pointer;text-decoration:none}
+    #modalImage .btn:hover{color:#fff}
+    #modalImage .close{position:fixed;top:20px;right:20px;}
+    #modalImage .left{position:fixed;bottom:20px;left:20px;}
+    #modalImage .right{position:fixed;bottom:20px;right:20px;}
+    /*时间轴*/
+    #timeline{position:fixed;top:0;right:0;z-index:990;height:100%;overflow-y:auto}
+    #timeline .wrap{position:relative;min-height:100%;padding:100px 0}
+    #timeline .wrap:before{content:"";position:absolute;top:0;bottom:0;right:16px;width:4px;background-image:linear-gradient(to bottom,rgba(255,255,255,0),#fff,#fff,rgba(255,255,255,0))}
+    #timeline .wrap .year{position:relative;height:46px}
+    #timeline .wrap .year .text{float:right;width:38px;line-height:12px;padding:2px 0 4px 0;text-align:center;border-radius:19px;border:4px solid #405d63;background-color:#c4a18d;color:#405d63;font-size:12px;font-weight:700;cursor:pointer}
+    #timeline .wrap .item{position:relative;padding-right:35px;margin-bottom:15px;height:40px;cursor:pointer}
+    #timeline .wrap .item:before{content:"";position:absolute;width:6px;height:6px;border:4px solid #405d63;background-color:#c4a18d;border-radius:100%;top:12px;right:11px;z-index:99}
+    #timeline .wrap .item.active:before{border-color:#c4a18d;background-color:#405d63}
+    #timeline .wrap .item .text{float:right;background:#405d63;border-radius:6px;box-shadow:0 4px 6px #84a2a3;color:#c4a18d;padding:10px 20px;text-align:right;font-size:16px;line-height:20px;display:none}
+    #timeline .wrap .item.active .text{background:#c4a18d;color:#405d63}
+    #timeline .wrap .item:hover .text.pc{display:block}
+  </style>
+</head>
+<body>
+<!-- 标题 -->
+<h1><a href="https://weibo.com/u/1700139362" target="_blank">@秋过冬漫长</a> 与 <a href="https://weibo.com/u/2294882570" target="_blank">@一觉大天亮</a> 的 旅行地图</h1>
+<!-- 地图 -->
+<div id="map-container"></div>
+<!-- 时间轴 -->
+<div id="timeline">
+  <div id="timeData" class="wrap"></div>
+</div>
+<!-- 模态框：放大查看图片时显示 -->
+<div id="modalImage">
+  <img class="image" alt="" src="">
+  <a class="btn close" href="javascript:void(0);" onclick="closeImages()">&times;</a>
+  <a class="btn left" href="javascript:void(0);" onclick="clickToSlide(-1)">&Ll;</a>
+  <a class="btn right" href="javascript:void(0);" onclick="clickToSlide(1)">&Gg;</a>
+</div>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=7eeb46bd3071dfd6162c1f19ac9b8caa"></script>
+<script type="text/javascript">
+  /** 地图实例 *******************************************************************************************************************/
+  // 创建地图实例
+  const mapObj = new AMap.Map("map-container", {
+    zoom: 5,
+    center: [108, 33],
+    resizeEnable: true
+  });
+  // 地图点击事件 -- 打印锚点信息
+  mapObj.on("click", function(event){
+    console.log(event);
+    // mapObj.clearInfoWindow();
+  });
+
+  /** 旅游数据 *******************************************************************************************************************/
+  const infoData = [
+    {
+      tit: '陆河·梅花',
+      date: '2021/01/16',
+      imgs: ['20210116_01.jpg','20210116_02.jpg','20210116_03.jpg','20210116_04.jpg','20210116_05.jpg'],
+      desc: '陆河·梅花，花期如约而至～',
+      lng: 115.773358,
+      lat: 23.273202,
+    },{
+      tit: '黔东南·荔波小七孔',
+      date: '2021/05/02',
+      imgs: ['20210502_01.jpg','20210502_02.jpg','20210502_03.jpg','20210502_04.jpg','20210502_05.jpg'],
+      desc: '黔东南·荔波小七孔，所见即所得，惊叹于大自然的鬼斧神工～',
+      lng: 107.745749,
+      lat: 25.249511
+    },{
+      tit: '黔东南·加榜梯田',
+      date: '2021/05/03',
+      imgs: ['20210503_01.jpg','20210503_02.jpg','20210503_03.jpg','20210503_04.jpg','20210503_05.jpg'],
+      desc: '黔东南·加榜梯田，漫步于田间，感受炙热的阳光与凉爽的山风～',
+      lng: 108.591279,
+      lat: 25.59907
+    },{
+      tit: '黔东南·肇兴侗寨',
+      date: '2021/05/04',
+      imgs: ['20210504_01.jpg','20210504_02.jpg','20210504_03.jpg','20210504_04.jpg','20210504_05.jpg'],
+      desc: '黔东南·肇兴侗寨，算比较原始的状态，虽然节假日，但客流量并不多，走在这里，时间都慢了下来～',
+      lng: 109.177636,
+      lat: 25.907021
+    },{
+      tit: '阿坝·若尔盖草原',
+      date: '2021/06/03',
+      imgs: ['20210603_01.jpg','20210603_02.jpg','20210603_03.jpg','20210603_04.jpg','20210603_05.jpg'],
+      desc: '阿坝·若尔盖大草原，没带够衣服，猪猪冷得遭不住～',
+      lng: 102.500509,
+      lat: 33.359023
+    },{
+      tit: '阿坝·九寨沟',
+      date: '2021/06/04',
+      imgs: ['20210604_01.jpg','20210604_02.jpg','20210604_03.jpg','20210604_04.jpg','20210604_05.jpg'],
+      desc: '阿坝·九寨沟，天上人间，人间天上，九寨归来不看水～',
+      lng: 103.912767,
+      lat: 33.152561
+    },{
+      tit: '阿坝·黄龙',
+      date: '2021/06/05',
+      imgs: ['20210605_01.jpg','20210605_02.jpg','20210605_03.jpg','20210605_04.jpg','20210605_05.jpg'],
+      desc: '阿坝·黄龙景区，人间瑶池，可惜不让泡澡～',
+      lng: 103.83257,
+      lat: 32.744551
+    },{
+      tit: '汕尾',
+      date: '2021/07/24',
+      imgs: ['20210724_01.jpg','20210724_02.jpg','20210724_03.jpg','20210724_04.jpg','20210724_05.jpg'],
+      desc: '汕尾·红海湾，夏了个夏天，彩虹和夏天更配～',
+      lng: 115.570309,
+      lat: 22.659792
+    },{
+      tit: '巴寨土匪窝',
+      date: '2021/12/04',
+      imgs: ['20211204_01.jpg','20211204_02.jpg','20211204_03.jpg','20211204_04.jpg','20211204_05.jpg'],
+      desc: '韶关·巴寨土匪窝，徒步～',
+      lng: 113.682103,
+      lat: 25.002174
+    },{
+      tit: '南雄帽子峰',
+      date: '2021/12/05',
+      imgs: ['20211205_01.jpg','20211205_02.jpg','20211205_03.jpg','20211205_04.jpg','20211205_05.jpg'],
+      desc: '韶关·南雄帽子峰，赶上了帽子峰银杏叶凋落的最后时刻～',
+      lng: 114.172515,
+      lat: 25.278968
+    },{
+      tit: '梧桐山',
+      date: '2022/03/30',
+      imgs: ['20220330_01.jpg','20220330_02.jpg','20220330_03.jpg','20220330_04.jpg','20220330_05.jpg'],
+      desc: '深圳·梧桐山，漫山遍野的杜鹃花～',
+      lng: 114.216563,
+      lat: 22.576965
+    },{
+      tit: '双月湾',
+      date: '2022/06/13',
+      imgs: ['20220613_01.jpg','20220613_02.jpg','20220613_03.jpg','20220613_04.jpg','20220613_05.jpg'],
+      desc: '惠州·双月湾，潜水与冲浪初体验～',
+      lng: 114.901612,
+      lat: 22.550794
+    },{
+      tit: '顺德',
+      date: '2022/08/09',
+      imgs: ['20220809_01.jpg','20220809_02.jpg','20220809_03.jpg','20220809_04.jpg','20220809_05.jpg'],
+      desc: '广州·佛山，寻味顺德～',
+      lng: 113.255023,
+      lat: 22.835582
+    },{
+      tit: '柚柑湾',
+      date: '2022/09/23',
+      imgs: ['20220923_01.jpg','20220923_02.jpg','20220923_03.jpg','20220923_04.jpg','20220923_05.jpg'],
+      desc: '深圳·柚柑湾，承包一整片海的“夏天”～',
+      lng: 114.489651,
+      lat: 22.480331
+    },{
+      tit: '丽江',
+      date: '2023/01/31',
+      imgs: ['20230131_01.jpg','20230131_02.jpg','20230131_03.jpg','20230131_04.jpg','20230131_05.jpg'],
+      desc: '云南·丽江，家庭出游，准备旅行婚礼仪式～',
+      lng: 100.235167,
+      lat: 26.870583
+    },{
+      tit: '西安',
+      date: '2023/02/06',
+      imgs: ['20230206_01.jpg','20230206_02.jpg','20230206_03.jpg','20230206_04.jpg','20230206_05.jpg'],
+      desc: '第一次来西安，虽然过完年了，但这里还是过年的氛围～',
+      lng: 108.947326,
+      lat: 34.261203
+    },{
+      tit: '西宁',
+      date: '2023/02/09',
+      imgs: ['20230209_01.jpg','20230209_02.jpg','20230209_03.jpg','20230209_04.jpg','20230209_05.jpg'],
+      desc: '一路来到了大西北～',
+      lng: 101.746927,
+      lat: 36.629569
+    },{
+      tit: '青海湖',
+      date: '2023/02/10',
+      imgs: ['20230210_01.jpg','20230210_02.jpg','20230210_03.jpg','20230210_04.jpg','20230210_05.jpg'],
+      desc: '冰冻的青海湖，淡季出行，独享整片天地～',
+      lng: 100.22749,
+      lat: 36.8958
+    },{
+      tit: '兰州',
+      date: '2023/02/12',
+      imgs: ['20230212_01.jpg','20230212_02.jpg','20230212_03.jpg','20230212_04.jpg','20230212_05.jpg'],
+      desc: '旅途中总有些小惊喜和小意外，感谢灰机的热情款待，四年上下铺的兄弟，毕业后还是第一次见～',
+      lng: 103.817052,
+      lat: 36.064477
+    },{
+      tit: '敦煌',
+      date: '2023/02/15',
+      imgs: ['20230215_01.jpg','20230215_02.jpg','20230215_03.jpg','20230215_04.jpg','20230215_05.jpg'],
+      desc: '从大西南到大西北，虽然一路上也有故地重游，但从一个人的奔途变成两人人的漫游～',
+      lng: 94.680225,
+      lat: 40.088821
+    },{
+      tit: '大鹏婚姻登记处',
+      date: '2023/02/23',
+      imgs: ['20230223_01.jpg','20230223_02.jpg','20230223_03.jpg','20230223_04.jpg','20230223_05.jpg'],
+      desc: '深圳·大鹏婚姻登记处(旧址)，领取结婚证～',
+      lng: 114.41678,
+      lat: 22.639741
+    },{
+      tit: '光明田园小镇',
+      date: '2023/07/15',
+      imgs: ['20230715_01.jpg','20230715_02.jpg','20230715_03.jpg','20230715_04.jpg','20230715_05.jpg'],
+      desc: '深圳·光明田园小镇，稻子熟了～',
+      lng: 113.961942,
+      lat: 22.778645
+    },{
+      tit: '四姑娘山',
+      date: '2023/10/06',
+      imgs: ['20231006_01.jpg','20231006_02.jpg','20231006_03.jpg','20231006_04.jpg','20231006_05.jpg'],
+      desc: '下着雨夹雪的四姑娘山也很美～',
+      lng: 102.883325,
+      lat: 31.099141
+    },{
+      tit: '鱼子西',
+      date: '2023/10/07',
+      imgs: ['20231007_01.jpg','20231007_02.jpg','20231007_03.jpg','20231007_04.jpg','20231007_05.jpg'],
+      desc: '甘孜甘孜藏族自治州·鱼子西，邂逅雪山的一天，体会眼睛的天堂身体的地狱～',
+      lng: 101.583659,
+      lat: 30.20583
+    },{
+      tit: '木格措',
+      date: '2023/10/08',
+      imgs: ['20231008_01.jpg','20231008_02.jpg','20231008_03.jpg','20231008_04.jpg','20231008_05.jpg'],
+      desc: '甘孜藏族自治州·康定情歌（木格措），秋意胜浓~',
+      lng: 101.871981,
+      lat: 30.170139
+    },{
+      tit: '澳门',
+      date: '2024/02/04',
+      imgs: ['20240204_01.jpg','20240204_02.jpg','20240204_03.jpg','20240204_04.jpg','20240204_05.jpg'],
+      desc: '城市漫步，澳门～',
+      lng: 113.545888,
+      lat: 22.194626
+    },{
+      tit: '宜宾',
+      date: '2024/02/14',
+      imgs: ['20240214_01.jpg','20240214_02.jpg','20240214_03.jpg','20240214_04.jpg','20240214_05.jpg'],
+      desc: '猪猪的老家，宜宾～',
+      lng: 104.79893,
+      lat: 28.806093
+    },{
+      tit: '乐山',
+      date: '2024/02/16',
+      imgs: ['20240216_01.jpg','20240216_02.jpg','20240216_03.jpg','20240216_04.jpg','20240216_05.jpg'],
+      desc: '城市漫步，乐山～',
+      lng: 103.768792,
+      lat: 29.550429
+    },{
+      tit: '峨眉山',
+      date: '2024/02/17',
+      imgs: ['20240217_01.jpg','20240217_02.jpg','20240217_03.jpg','20240217_05.jpg','20240217_04.jpg'],
+      desc: '峨眉山难得的好天气，不仅领到了寺院师傅结缘的新年红包，还遇见了云海、金顶、雪山、猴子～',
+      lng: 103.338431,
+      lat: 29.520204
+    },{
+      tit: '香港',
+      date: '2024/05/03',
+      imgs: ['20240503_01.jpg','20240503_02.jpg','20240503_03.jpg','20240503_04.jpg','20240503_05.jpg'],
+      desc: '城市漫步，香港～',
+      lng: 114.150207,
+      lat: 22.270803
+    },{
+      tit: '漳州·云水谣',
+      date: '2024/07/12',
+      imgs: ['20240712_01.jpg','20240712_02.jpg','20240712_03.jpg','20240712_04.jpg','20240712_05.jpg'],
+      desc: '探寻一个可以让时光慢下来的古老村落～',
+      lng: 117.094354,
+      lat: 24.665712
+    },{
+      tit: '沈阳',
+      date: '2024/12/05',
+      imgs: ['20241205_01.jpg','20241205_02.jpg','20241205_03.jpg','20241205_04.jpg','20241205_05.jpg'],
+      desc: '说走就走的周末旅行，沈阳 ~',
+      lng: 123.455591,
+      lat: 41.7984
+    },{
+      tit: '东北亚滑雪场',
+      date: '2024/12/06',
+      imgs: ['20241206_01.jpg','20241206_02.jpg','20241206_03.jpg','20241206_04.jpg','20241206_05.jpg'],
+      desc: '东北亚滑雪场滑雪，猪猪滑第一次滑雪，我第一次滑单板，我成功挑战了高级道 ~',
+      lng: 123.729113,
+      lat: 42.046272
+    },{
+      tit: '丹东',
+      date: '2024/12/08',
+      imgs: ['20241208_01.jpg','20241208_02.jpg','20241208_03.jpg','20241208_04.jpg','20241208_05.jpg'],
+      desc: '夕阳下的边陲小城 ~',
+      lng: 124.394181,
+      lat: 40.118653
+    }
+  ];
+  
+  /** 模态框：放大查看图片时显示 ***************************************************************************************************/
+  const modalPanel = document.getElementById("modalImage");
+  const modalImg = modalPanel.querySelector(".image");
+  let slideImages = []; //多张切换时用
+  let slideIndex = 0; //当前图片下标
+  modalPanel.addEventListener("click", function(){
+    if (event.target === modalPanel) {// 当用户点击模态框外部区域时，隐藏模态框
+      modalPanel.style.display = "none";
+    }
+  });
+  // 绑定事件 - 点击放大图片
+  function bindImageZoom(slides){
+    // 获取post_content所有图片
+    let allImages = document.querySelectorAll(".zoom");
+    // 为每张图片添加点击事件监听器
+    allImages.forEach(function (image) {
+      image.addEventListener("click", function(){
+        modalImg.src = this.src; // 将点击的图片路径设置到模态框的图片中
+        modalPanel.style.display = "block"; // 显示模态框
+        let children = Array.from(this.parentElement.children);
+        slideIndex = children.indexOf(this);
+        console.log("当前下标：", slideIndex);
+      });
+    });
+    slideImages = slides;// 可多张切换
+  }
+  // 绑定事件 - 隐藏模态框
+  function closeImages(){
+    modalPanel.style.display = "none"; // 当用户点击关闭按钮时，隐藏模态框
+  }
+  // 绑定事件 - 切换显示图片
+  function clickToSlide(idx){
+    slideIndex += idx;
+    if (slideIndex  >= slideImages.length) {
+      slideIndex = 0
+    } else if (slideIndex <= -1) {
+      slideIndex = slideImages.length -1;
+    }
+    modalImg.src = slideImages[slideIndex];
+  }
+
+  /** 地图标记 *******************************************************************************************************************/
+  const markerAll = []; // 所有marker标记
+  const infoWindowAll = []; // 所有信息窗体
+  // 删除地图上所有的覆盖物
+  mapObj.clearMap();
+  const markerOffset = new AMap.Pixel(-13, -30); //以 icon 的 [center bottom] 为原点
+  const markerContent = '<img class="marker-icon" src="https://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png">';//标记内容（图标）
+  // 创建 marker标记 和 信息窗体
+  for (let i = 0; i < infoData.length; i++) {
+    const data = infoData[i];
+    // 创建marker标记
+    let marker = new AMap.Marker({                    
+      map: mapObj,                   
+      position: new AMap.LngLat(data.lng, data.lat), //位置
+      content: markerContent, //标记内容（图标）
+      offset: markerOffset,
+      topWhenClick: true,
+    });
+    // 创建信息窗体
+    let infoWindow = new AMap.InfoWindow({
+      isCustom:true,  //使用自定义窗体
+      content: createInfoDom(data.date, data.tit, data.imgs, data.desc),
+      offset: markerOffset,
+    });
+    // 添加marker点击事件
+    marker.on("click",()=>{
+      // mapObj.clearInfoWindow();
+      closeInfoWindow();
+      infoWindow.open(mapObj, marker.getPosition()); //打开
+      bindImageZoom(data.imgs); // 绑定事件 - 点击放大图片
+    });
+    markerAll.push(marker);
+    infoWindowAll.push(infoWindow);
+  }
+  // 构建自定义信息窗体DOM 
+  function createInfoDom(date, title, images, describe){
+    let infoDom = document.createElement("div");
+    infoDom.className = "info-note";
+    // 定义顶部标题
+    let top = document.createElement("div");
+    top.className = "info-tit";
+    top.innerText =  date + ' - ' + title;
+    let closeIcon = document.createElement("i");
+    closeIcon.onclick = closeInfoWindow;
+    top.appendChild(closeIcon);
+    infoDom.appendChild(top);
+    // 定义中部内容
+    let middle = document.createElement("div");
+    middle.className = "info-content";
+    let imageBox = document.createElement("div");
+    imageBox.className = "info-img";
+    let imageHtml = "";
+    for (let i = 0; i < images.length; i++) {
+      imageHtml+=`<img class="zoom" src="${images[i]}" alt=""/>`;
+    }
+    imageBox.innerHTML = imageHtml;
+    middle.appendChild(imageBox);
+    let desc = document.createElement("p");
+    desc.innerText = describe;
+    middle.appendChild(desc);
+    infoDom.appendChild(middle);
+    return infoDom;
+  }
+  // 关闭地图信息窗体
+  function closeInfoWindow(){
+    mapObj.clearInfoWindow();
+    // 取消时间线高亮
+    const items = document.getElementById('timeData').children;
+    for (let i = 0; i < items.length; i++) {
+      items[i].classList.remove("active");
+    }
+  }
+
+  /** 时间轴 **********************************************************************************************************************/
+  (function createTimeline(){
+    const isPC = !(/Mobi|Android|iPhone/i.test(navigator.userAgent));
+    const box = document.getElementById('timeData');
+    let beforeYear = 0;
+    // 倒序，最近日期在前
+    for (let i = infoData.length-1; i>=0; i--) {
+      const data = infoData[i];
+      // year
+      const year = new Date(data.date).getFullYear().toString();
+      if (Math.abs(beforeYear - year) > 0) {
+        let yearBox = document.createElement("div");
+        yearBox.className = "year";
+        let yearTxt = document.createElement("div");
+        yearTxt.className = "text";
+        yearTxt.innerHTML = `${year.slice(0,2)}<br/>${year.slice(2,4)}`;
+        yearTxt.onclick = ()=>{
+          sublings = box.querySelectorAll(`.y${year}`);
+          for (let j = 0; j < sublings.length; j++) {
+            sublings[j].style.display = (sublings[j].style.display === 'none') ? 'block' : 'none';
+          }
+        };
+        yearBox.appendChild(yearTxt);
+        box.appendChild(yearBox);
+      }
+      beforeYear = year;
+      // item
+      let item = document.createElement("div");
+      item.className = `item y${year}`;
+      if (isPC) {
+        item.innerHTML = `<div class="text pc">${data.tit} - ${data.date}</div>`;
+      } else {
+        item.innerHTML = `<div class="text">${data.tit} - ${data.date}</div>`;
+      }
+      item.onclick = ()=>{
+        closeInfoWindow();
+        infoWindowAll[i].open(mapObj, markerAll[i].getPosition()); //打开
+        bindImageZoom(data.imgs); // 绑定事件 - 点击放大图片
+        // 样式-添加高亮
+        item.classList.add("active");
+      };
+      box.appendChild(item);
+    }
+  }());
+  // if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+  //   // 当前设备是移动设备
+  //   document.getElementById('timeline').style.display='none';
+  // }
+  /********************************************************************************************************************************/
+  
+</script>
+
+</body>
+</html>
