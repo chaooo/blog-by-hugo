@@ -1,210 +1,244 @@
-<!doctype html>
-<html>
-
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-  <title>HELLO，LOVERS!</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    #map-container,body,html{height:100%;width:100%;position:relative;margin:0;padding:0;font-size:14px}
-    .marker-icon{width: 25px;height: 34px;}
-
-    .container{width:100%;position:absolute;left:0;top:0;z-index:990}
-    .info-note{width:300px;max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:12px}
-    .info-note .info-tit{height:50px;line-height:50px;position:relative;padding:0 20px;font-size:16px;font-weight:600;color:#333;border-bottom:1px dashed #ccc}
-    .info-note .info-tit i:before{float:right;content:"\2716";font-style:normal}
-    .info-note .info-content{padding:20px;color:#ff69b4;font-size:16px}
-    .info-note .info-content img{display:block;margin-top:15px;width:100%;max-width:100%}
-
-    .list-note{position:absolute;left:15px;top:80px;border:1px solid rgba(0,0,0,.1);border-radius:12px;background:rgba(255,255,255,.5);padding:20px}
-    .list-note li{list-style:none;border-top:1px dashed #ccc}
-    .list-note li:first-child{border:none}
-    .list-note li a{display:block;width:100%;text-decoration:none;font-size:14px;text-align:center;height:32px;line-height:32px;color:#333;}
-    .list-note li a b{color:#ff69b4;}
-    .list-note li a:hover{text-decoration:underline}
-
-    h1{margin:0;width:100%;margin:20px 0;line-height:30px;font-size:18px;text-align:center;background-image:linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1), rgba(255, 0, 0, 0));}
-    h1 b{margin:0 5px; color:#ff69b4;}
-    /*模态框：放大查看图片时显示*/
-    @keyframes zoom{0%{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-    #modalImage{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100vh;line-height:100vh;background-color:rgba(0,0,0,.8);text-align:center;animation-name:zoom;animation-duration:.6s}
-    #modalImage .image{margin:0;padding:0;width:auto;height:auto;max-width:100%;max-height:100%;vertical-align:middle}
-    #modalImage .close{position:fixed;top:20px;right:20px;color:#f1f1f1;height:20px;line-height:20px;font-size:20px;font-weight:700;cursor:pointer}
-    #modalImage .close:hover{color:#bbb}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>致吾爱：我们的故事</title>
+    <style>
+        :root{--primary-color:#ff6b6b;--text-color:#2f3542;--light-bg:#f9f9f9;--border-radius:12px;--transition:all 0.3s ease}
+        *{margin:0;padding:0;box-sizing:border-box}
+        #three-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+        body{position:relative;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;line-height:1.8;color:var(--text-color);background:linear-gradient(135deg,#fdfcfb 0,#e2d1c3 100%);padding:20px;max-width:900px;margin:0 auto}
+        header{text-align:center;padding:40px 20px;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23ff6b6b" opacity="0.1"/></svg>');border-radius:var(--border-radius);margin-bottom:40px;backdrop-filter:blur(10px)}
+        h1{font-size:2.5em;color:var(--primary-color);margin-bottom:10px;font-weight:300}
+        .subtitle{color:#666;font-style:italic}
+        .timeline{position:relative;list-style:none}
+        .timeline::before{content:'';position:absolute;top:0;bottom:0;width:4px;background:var(--primary-color);left:50%;margin-left:-2px;border-radius:2px}
+        .timeline-item{position:relative;width:50%;padding:10px 40px;opacity:0;transform:translateY(30px);transition:var(--transition)}
+        .timeline-item.visible{opacity:1;transform:translateY(0)}
+        .timeline-item:nth-child(odd){left:0}
+        .timeline-item:nth-child(2n){left:50%}
+        .timeline-item::before{content:'';position:absolute;width:20px;height:20px;background:#fff;border:4px solid var(--primary-color);border-radius:50%;top:20px;z-index:1}
+        .timeline-item:nth-child(odd)::before{right:-14px}
+        .timeline-item:nth-child(2n)::before{left:-14px}
+        .timeline-content{background:#fff;padding:30px;border-radius:var(--border-radius);box-shadow:0 10px 30px rgba(0,0,0,.1);position:relative;cursor:pointer;transition:var(--transition)}
+        .timeline-content:hover{transform:scale(1.02);box-shadow:0 20px 40px rgba(255,107,107,.2)}
+        .date{display:block;color:var(--primary-color);font-weight:700;margin-bottom:10px;font-size:.9em}
+        h2{margin-bottom:15px;color:var(--text-color)}
+        p{color:#555;margin-bottom:15px}
+        .timeline-img{max-width:100%;border-radius:8px;margin-top:15px;display:block;transition:var(--transition)}
+        .timeline-content:hover .timeline-img{border-radius:12px;overflow:hidden;}
+        .timeline-content:hover .timeline-img img {width: 100%;}
+        footer{text-align:center;padding:30px;color:#999;font-size:.9em;margin-top:50px}
+        .heart{color:var(--primary-color);font-size:1.2em;margin:0 5px}
+        @media (max-width:768px){.timeline::before{left:31px}
+            .timeline-item{width:100%;padding-left:70px;padding-right:20px}
+            .timeline-item:nth-child(2n){left:0}
+            .timeline-item:nth-child(2n)::before,.timeline-item:nth-child(odd)::before{left:21px}
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r127/three.min.js"></script>
 </head>
-
 <body>
 
-<div id="map-container"></div>
-<div class="container">
-  <h1>
-    <a href="https://weibo.com/u/1700139362" target="_blank">@秋过冬漫长</a> 与 <a href="https://weibo.com/u/2294882570" target="_blank">@一觉大天亮</a> 相识的
-    <br><span id="clock"></span>
-  </h1>
-  <ul class="list-note">
-    <li><a href="javascript:void(0);" onclick="openInfoWindow(0);">2018年06月23日 <b>初遇</b></a></li>
-    <li><a href="javascript:void(0);" onclick="openInfoWindow(1);">2018年08月03日 <b>初识</b></a></li>
-    <li><a href="javascript:void(0);" onclick="openInfoWindow(2);">2020年10月24日 <b>初见</b></a></li>
-    <li><a href="javascript:void(0);" onclick="openInfoWindow(3);">2020年12月24日 <b>表白</b></a></li>
-    <li><a href="javascript:void(0);" onclick="openInfoWindow(4);">2021年12月24日 <b>1周年</b></a></li>
-    <li><a href="javascript:void(0);" onclick="openInfoWindow(5);">2022年12月24日 <b>2周年</b></a></li>
-    <li><a href="javascript:void(0);" onclick="openInfoWindow(6);">2023年12月24日 <b>3周年</b></a></li>
-    <li><a href="javascript:void(0);" onclick="openInfoWindow(7);">2024年12月24日 <b>4周年</b></a></li>
-  </ul>
-</div>
-<!-- 模态框：放大查看图片时显示 -->
-<div id="modalImage">
-  <img class="image" alt="" src="">
-  <span class="close">&times;</span>
-</div>
-<script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=7eeb46bd3071dfd6162c1f19ac9b8caa"></script>
-<script type="text/javascript">
-  /************************************************************************************************************************************************************************************************************************/
-  // 创建地图实例
-  var mapObj = new AMap.Map("map-container", {
-    zoom: 12,
-    center: [114.030513, 22.603162],
-    resizeEnable: true
-  });
-  // 地图点击事件 -- 打印锚点信息
-  mapObj.on("click", function (ev) {
-    console.log(ev);
-    mapObj.clearInfoWindow();
-  });
-  // 删除地图上所有的覆盖物
-  mapObj.clearMap();
-  // 地图 marker标记 和 信息窗体
-  const markerNotes = []; // 所有marker标记
-  const infoNotes = []; // 所有信息窗体
-  const markerIcon = '<img class="marker-icon" src="https://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png">';
-  const markerOffset = new AMap.Pixel(-13, -30); //以 icon 的 [center bottom] 为原点
-  // 创建marker标记
-  function createMarker(index, lng, lat){
-    let marker = new AMap.Marker({                    
-      map: mapObj,                   
-      position: new AMap.LngLat(lng, lat), //位置
-      content: markerIcon, //图标
-      offset: markerOffset,
-      topWhenClick: true,
-    });
-    marker.on("click",()=>{// 添加marker点击事件
-      openInfoWindow(index);
-    });
-    markerNotes[index] = marker;
-  }
-  // 创建地图信息窗体
-  function createInfoWindow(index, title, content){
-    let infoWindow = new AMap.InfoWindow({
-      isCustom:true,  //使用自定义窗体
-      content:createInfoDom(title, content),
-      offset: markerOffset,
-    });
-    infoNotes[index] = infoWindow;
-  }
-  // 构建自定义信息窗体DOM 
-  function createInfoDom(title, content){
-    let infoDom = document.createElement("div");
-    infoDom.className = "info-note";
-    // 定义顶部标题
-    let top = document.createElement("div");
-    top.className = "info-tit";
-    top.innerText = title;
-    let closeIcon = document.createElement("i");
-    closeIcon.onclick = closeInfoWindow;
-    top.appendChild(closeIcon);
-    infoDom.appendChild(top);
-    // 定义中部内容
-    let middle = document.createElement("div");
-    middle.className = "info-content";
-    middle.innerHTML = content;
-    infoDom.appendChild(middle);
-    return infoDom;
-  }  
-  // 打开地图信息窗体
-  function openInfoWindow(index){
-    mapObj.clearInfoWindow();
-    infoNotes[index].open(mapObj, markerNotes[index].getPosition()); //打开
-    bindImageZoom(); // 绑定事件 - 点击放大图片
-  }
-  // 关闭地图信息窗体
-  function closeInfoWindow(){
-    mapObj.clearInfoWindow();
-  }
+<div id="three-bg"></div>
 
-  /************************************************************************************************************************************************************************************************************************/
-  // 创建marker标记 和 信息窗体
-  createMarker(0, 114.178483, 27.452087); //位置-江西武功山
-  createInfoWindow(0, '2018年06月23日 初遇','我们在微博上第一次互动，关于绿色的武功山。<img class="zoom" src="20180623.jpg" alt=""/>');
+<header>
+    <h1>❤️致吾爱</h1>
+    <p class="subtitle">从微博上的惊鸿一瞥，到雪山下的深情相拥。这是一封写给时光的情书，记录我们走过的每一个春夏秋冬。</p>
+</header>
 
-  createMarker(1, 114.033441, 22.665403); //位置-深圳清湖  
-  createInfoWindow(1, '2018年08月03日 初识','我们第一次添加微信，开始有一句没一句的聊天 ~');
+<ul class="timeline" id="timeline">
+    <!-- 1. 初遇 -->
+    <li class="timeline-item">
+        <div class="timeline-content" onclick="toggleImage(this)">
+            <span class="date">2018年06月23日</span>
+            <h2>初遇 · 缘分的开始</h2>
+            <p>一个普通的夏日，我们在微博的字里行间相遇，关于绿色的武功山。</p>
+            <img src="20180623.jpg" alt="武功山的绿意" class="timeline-img" style="display: none;">
+        </div>
+    </li>
+    <!-- 2. 初识 -->
+    <li class="timeline-item">
+        <div class="timeline-content" onclick="toggleImage(this)">
+            <span class="date">2018年08月03日</span>
+            <h2>初识 · 微信的涟漪</h2>
+            <p>我们第一次添加微信，虽然只是有一句没一句的闲聊，但那是两颗心在小心翼翼地在靠近。</p>
+        </div>
+    </li>
+    <!-- 3. 初见 -->
+    <li class="timeline-item">
+        <div class="timeline-content" onclick="toggleImage(this)">
+            <span class="date">2020年10月24日</span>
+            <h2>初见 · 电影金刚川</h2>
+            <p>跨越了两年的线上时光，我们终于在现实中相见，一起看了电影《金刚川》。</p>
+        </div>
+    </li>
+    <!-- 4. 表白 -->
+    <li class="timeline-item">
+        <div class="timeline-content" onclick="toggleImage(this)">
+            <span class="date">2020年12月24日</span>
+            <h2>圣诞 · 心跳的告白</h2>
+            <p>那个夜晚，我终于鼓足了勇气用文字向你袒露了心迹。</p>
+            <img src="20201224.jpg" alt="心跳的告白" class="timeline-img" style="display: none;">
+        </div>
+    </li>
+    <!-- 5. 求婚 -->
+    <li class="timeline-item">
+        <div class="timeline-content" onclick="toggleImage(this)">
+            <span class="date">2022年09月14日</span>
+            <h2>求婚 · 唯你一生</h2>
+            <p>那个夜晚，紧张到不行，虽然戒指不太合适，但也看到了你眼中的泪光。那一刻，我觉得自己是世界上最幸福的人。</p>
+            <img src="IMG_20220914_172954.webp" alt="求婚" class="timeline-img" style="display: none;">
+        </div>
+    </li>
+    <!-- 6. 婚礼 -->
+    <li class="timeline-item">
+        <div class="timeline-content" onclick="toggleImage(this)">
+            <span class="date">2023年2月1日</span>
+            <h2>雪山婚礼 · 天地为证</h2>
+            <p>这一天，你是最美的新娘。我们在圣洁的雪山下许下誓言，交换了戒指。这不仅是仪式，更是灵魂的合二为一，是“无论贫穷富贵”的庄严承诺。</p>
+            <img src="DZ_07966.webp" alt="雪山婚礼" class="timeline-img" style="display: none;">
+        </div>
+    </li>
+    <!-- 7. 领证 -->
+    <li class="timeline-item">
+        <div class="timeline-content" onclick="toggleImage(this)">
+            <span class="date">2023年02月23日</span>
+            <h2>领证 · 合页的幸福</h2>
+            <p>两张红底照片，两本红色的证书。这不仅是法律的认证，更是我们爱情的官方文档。从此，柴米油盐，锅碗瓢盆，我们正式成为了彼此生命中最亲密的家人。</p>
+            <img src="IMG_20230514_004336.webp" alt="领证" class="timeline-img" style="display: none;">
+        </div>
+    </li>
+    <!-- 8. 未来 -->
+    <li class="timeline-item">
+        <div class="timeline-content" onclick="toggleImage(this)">
+            <span class="date">未来的 · 每一年</span>
+            <h2>未来 · 时光不老</h2>
+            <p>时光会继续流淌，我们的故事未完待续。也许容颜会老去，也许激情会沉淀，但我知道，只要牵着你的手，每一个明天都值得期待。愿我们年年岁岁，岁岁年年，都能在这一天，重温此刻的感动。</p>
+            <img src="20251224183216_44_20.webp" alt="幸福生活" class="timeline-img" style="display: none;">
+        </div>
+    </li>
+</ul>
 
-  createMarker(2, 113.889918, 22.561324); //位置-万科生活广场（中影星趴影城） 
-  createInfoWindow(2, '2020年10月24日 初见','线上认识两年多，我们第一次见面，一起看了电影《金刚川》。');
+<footer>
+    <p>写给最爱的你 ❤️ 代码或许会过时，但爱永不宕机。</p>
+</footer>
 
-  createMarker(3, 113.911298, 22.499603), //位置-大南山
-  createInfoWindow(3, '2020年12月24日 表白','圣诞夜，第一次表白，说了我喜欢你，问你是否愿意和我一起历经余生的点滴，一起去看最美的风景！<img class="zoom" src="20201224.jpg" alt=""/>');
-
-  createMarker(4, 113.911298, 22.499603), //位置-大南山 
-  createInfoWindow(4, '2021年12月24日 1周年','圣诞夜，已共你一年，记忆亦同样新鲜。<img class="zoom" src="20211224.jpg" alt=""/>');
-
-  createMarker(5, 114.033441, 22.665403); //位置-深圳清湖  
-  createInfoWindow(5, '2022年12月24日 2周年','圣诞夜，相爱两周年，感觉不知不觉日子已经过得像老夫老妻了，虽然偶尔也有矛盾小吵架，但都能够相互理解让感情升温。<img class="zoom" src="20221224.jpg" alt=""/>');
-
-  createMarker(6, 114.033441, 22.665403); //位置-深圳清湖  
-  createInfoWindow(6, '2023年12月24日 3周年','圣诞夜，相爱三周年，已经持证上岗，希望往后的生活，温暖又有趣，平凡又温馨！<img class="zoom" src="20231224.jpg" alt=""/>');
-
-  createMarker(7, 114.033441, 22.665403); //位置-深圳清湖  
-  createInfoWindow(7, '2024年12月24日 4周年','圣诞夜，相爱四周年，结婚已一年有余，一路走来，有磕磕绊绊，也有快乐与美好，不负当下，也对未来充满希望！<img class="zoom" src="20241224.jpg" alt=""/>');
-
-  /************************************************************************************************************************************************************************************************************************/
-  // 添加marker点击事件
-  for (let i = 0; i < markerNotes.length; i++) {
-    markerNotes[i].on("click",()=>{
-      openInfoWindow(index);
-    });
-  }
-
-  /************************************************************************************************************************************************************************************************************************/
-  // 计时
-  let clock = document.getElementById("clock");
-  setInterval(function(){
-    // 创建目标时间对象
-    var target_time = new Date("2018/08/03 21:36:00");
-    // 计算目标时间对象到当前时间的毫秒数
-    var reduce_ms = Date.now() - target_time.getTime();
-    // 返回需要的数据
-    clock.innerHTML = `第<b>${parseInt(reduce_ms / 1000 / 3600 / 24)}</b>天<b>${parseInt(reduce_ms / 1000 / 3600 % 24)}</b>小时<b>${parseInt(reduce_ms / 1000 / 60 % 60 )}</b>分钟<b>${Math.round(reduce_ms / 1000 % 60)}</b>秒`;
-  },1000);
-
-  //----------------------------------------------------
-  // 绑定事件 - 点击放大图片
-  function bindImageZoom(){
-    // 获取post_content所有图片
-    let images = document.querySelectorAll(".zoom");
-    // 为每张图片添加点击事件监听器
-    images.forEach(function (image) {
-      image.addEventListener("click", function () {
-        modalImg.src = this.src; // 将点击的图片路径设置到模态框的图片中
-        modal.style.display = "block"; // 显示模态框
-      });
-    });
-  }
-  // 模态框：放大查看图片时显示
-  const modal = document.getElementById("modalImage");
-  const modalImg = modal.querySelector(".image");
-  const modalClose = modal.querySelector(".close");
-  modalClose.addEventListener("click", function () {
-    modal.style.display = "none"; // 当用户点击关闭按钮时，隐藏模态框
-  });
-  modal.addEventListener("click", function (event) {
-    if (event.target === modal) {// 当用户点击模态框外部区域时，隐藏模态框
-      modal.style.display = "none";
+<script>
+    // === Three.js 动画逻辑
+    let scene, camera, renderer, hearts;
+    // 🛠️ 1. 在这里定义变量，确保 animate 函数能访问到
+    let mouseX = 0, mouseY = 0;
+    function init() {
+        const container = document.getElementById('three-bg');
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 500;
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+        createHearts();
+        // 🔗 2. 绑定鼠标移动事件
+        window.addEventListener('resize', onWindowResize);
+        document.addEventListener('mousemove', onMouseMove); // 修复：使用 document 避免元素遮挡
+        animate();
     }
-  });
+    function createHearts() {
+        hearts = [];
+        const geometry = new THREE.PlaneGeometry(10, 10);
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        ctx.font = '60px Arial';
+        ctx.fillStyle = 'rgba(255, 107, 157, 0.8)';
+        ctx.fillText('❤', 2, 55);
+        const texture = new THREE.CanvasTexture(canvas);
+        const material = new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            depthTest: false,
+            blending: THREE.AdditiveBlending
+        });
+        for (let i = 0; i < 150; i++) {
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(
+                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * 1000,
+                (Math.random() - 0.5) * 1000
+            );
+            mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+            const scale = 0.5 + Math.random() * 1.5;
+            mesh.scale.set(scale, scale, scale);
+            mesh.userData.rotationSpeed = (Math.random() - 0.5) * 0.01;
+            scene.add(mesh);
+            hearts.push(mesh);
+        }
+    }
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    // 🖱️ 3. 更新变量值
+    function onMouseMove(event) {
+        // 将鼠标坐标归一化为设备坐标 (-1 到 +1)
+        mouseX = (event.clientX - window.innerWidth / 2) * 0.01; // 乘以灵敏度系数
+        mouseY = (event.clientY - window.innerHeight / 2) * 0.01;
+    }
+    function animate() {
+        requestAnimationFrame(animate);
+        // 让场景跟随鼠标缓慢移动 (产生视差)
+        // 这里使用了简单的阻尼效果，让移动更顺滑
+        scene.rotation.y += (mouseX - scene.rotation.y) * 0.02;
+        scene.rotation.x += (mouseY - scene.rotation.x) * 0.02;
+        // 心形自转
+        hearts.forEach(heart => {
+            heart.rotation.y += heart.userData.rotationSpeed;
+        });
+        renderer.render(scene, camera);
+    }
+
+    // 启动
+    window.addEventListener('load', init);
+
+    // 页面加载完成后，滚动时显示时间轴项
+    document.addEventListener('DOMContentLoaded', function() {
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        // 检查元素是否在视口中
+        const isInViewport = (el) => {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        };
+        // 处理滚动事件
+        const handleScroll = () => {
+            timelineItems.forEach(item => {
+                if (isInViewport(item)) {
+                    item.classList.add('visible');
+                }
+            });
+        };
+        // 初始检查
+        handleScroll();
+        // 监听滚动
+        window.addEventListener('scroll', handleScroll);
+    });
+    // 点击卡片切换显示/隐藏图片
+    function toggleImage(element) {
+        const img = element.querySelector('.timeline-img');
+        if (img.style.display === 'none' || !img.style.display) {
+            img.style.display = 'block';
+        } else {
+            img.style.display = 'none';
+        }
+    }
 </script>
 
 </body>
