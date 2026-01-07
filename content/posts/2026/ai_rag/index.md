@@ -1,6 +1,6 @@
 ---
 title: 「学习笔记」大模型RAG（检索增强生成）
-date: 2025-12-02 13:45:05
+date: 2026-01-02 13:45:05
 tags: [AI大模型, RAG, 学习笔记]
 categories: [AI大模型]
 series: AI大模型
@@ -86,6 +86,18 @@ RAG Pipeline通常分为两个主要阶段：**检索（Retrieval）** 和 **增
    - 实时同步：监听数据源变更，自动触发切分→向量化→索引更新。
    - 版本管理：保留历史索引支持回溯（如Milvus的Time Travel功能）。
 
+### 3.2 RAG优势与局限
+**优势**：
+- 减少幻觉：基于事实信息生成
+- 知识更新方便：更新文档库即可
+- 可追溯性：可以引用来源文档
+
+**局限**：
+- 检索粒度问题：chunk过大或过小都影响效果
+- 跨chunk信息丢失：分散在不同chunk的信息无法关联
+- 缺乏语义理解：简单的相似性检索可能错过深层关联
+- 关系推理能力弱：难以处理复杂的关系查询
+
 
 ## 4. RAG优化方向
 1. **检索优化**
@@ -104,9 +116,35 @@ RAG Pipeline通常分为两个主要阶段：**检索（Retrieval）** 和 **增
 | 生成质量      | 答案忠实度（Faithfulness）      | 答案是否基于检索内容，避免幻觉            |  
 | 综合性能      | 响应延迟（Latency）           | 端到端处理时间（目标<2秒）                |
 
-### 4.1 延伸方向
-- 多模态RAG：检索图片、表格、音频等信息来生成答案（如Donut模型）。
-- 安全增强：检索结果过滤敏感信息（如PII识别）。
-- 更智能的检索：端到端训练检索器，使其更懂LLM需要什么上下文。
-- 自省与自我修正：LLM可以判断检索到的信息质量，并迭代检索。
 
+## 5. 经典RAG架构示例
+```python
+# 简化版RAG实现逻辑
+class BasicRAG:
+    def __init__(self, llm, vector_store):
+        self.llm = llm
+        self.vector_store = vector_store
+    
+    def query(self, question):
+        # 1. 检索相关文档
+        relevant_docs = self.vector_store.search(
+            query=question,
+            top_k=5
+        )
+        
+        # 2. 构建提示
+        context = "\n".join([doc.content for doc in relevant_docs])
+        prompt = f"""
+        基于以下信息回答问题：
+        
+        {context}
+        
+        问题：{question}
+        
+        答案：
+        """
+        
+        # 3. 生成答案
+        answer = self.llm.generate(prompt)
+        return answer
+```
