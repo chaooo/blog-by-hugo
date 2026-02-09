@@ -12,7 +12,7 @@ GoFrame 是一款模块化、高性能的 Go 语言开发框架。
 ## 准备工作
 1. 前置条件：已安装Go语言开发环境，已配置好GOROOT、GOPATH环境变量；GoFrame文档：[https://goframe.org/](https://goframe.org/)。
 2. 安装框架工具：GoFrame 框架提供了功能强大的 gf 命令行开发辅助工具，工具地址：[https://github.com/gogf/gf/releases](https://github.com/gogf/gf/releases)。
-下载对应的包安装。推荐安装到GOROOT的bin目录中
+下载对应的包安装。推荐安装到GOROOT的bin目录中,详见[官方文档-工具安装-install](https://goframe.org/docs/cli/install)
 ```shell
 gf -v ## 查看是否安装成功
 ```
@@ -309,3 +309,131 @@ func (c *Controller) Api(ctx context.Context, req *api.ApiReq) (res *api.ApiRes,
 ```
 以上数据格式是通过中间件`ghttp.MiddlewareHandlerResponse`实现的，实际应用当中可以仿照这一中间件自行定义中间件来确定需要的数据返回格式。
 
+
+## 数据库ORM
+GoFrame 框架的 ORM 功能由 gdb 模块实现，用于常用关系型数据库的 ORM 操作。
+默认并且推荐的配置文件数据格式为 yaml
+
+简化配置通过配置项 link 指定，格式如下：`类型:账号:密码@协议(地址)/数据库名称?特性配置`
+
+配置示例：
+```yaml
+database:
+  default:
+    link: "mysql:root:123456@tcp(127.0.0.1:3306)/test_db"
+  user:
+    link: "mysql:root:123456@tcp(127.0.0.1:3306)/user_db"
+```
+
+### ORM原生操作
+原生操作允许你直接使用SQL语句进行数据库操作，提供了更大的灵活性和控制力。这对于复杂的查询或特定的优化非常有用。
+
+1. ORM 对象
+```golang
+db := g.DB()       // 获取默认配置的数据库对象(配置名称为"default")
+db := g.DB("user") // 获取配置分组名称为"user"的数据库对象
+// 使用原生单例管理方法获取数据库对象单例
+db, err := gdb.Instance()
+db, err := gdb.Instance("user")
+```
+> 数据库引擎底层采用了链接池设计，当链接不再使用时会自动关闭。注意，参数域支持并建议使用预处理模式（使用 ? 占位符）进行输入，避免 SQL 注入风险。
+
+2. 数据操作
+```golang
+// 数据写入
+r, err := db.Insert(ctx, "user", gdb.Map {
+    "name": "john",
+})
+
+// 数据查询(列表)
+list, err := db.GetAll(ctx, "select * from user limit 2")
+list, err := db.GetAll(ctx, "select * from user where age > ? and name like ?", g.Slice{18, "%john%"})
+list, err := db.GetAll(ctx, "select * from user where status=?", g.Slice{1})
+
+// 数据查询(单条)
+one, err := db.GetOne(ctx, "select * from user where uid=?", 1)
+
+// 数据保存
+r, err := db.Save(ctx, "user", gdb.Map {
+    "uid"  :  1,
+    "name" : "john",
+})
+
+// 批量操作, 其中 batch 参数用于指定批量操作中分批写入条数数量（默认是 10）。
+_, err := db.Insert(ctx, "user", gdb.List {
+    {"name": "john_1"},
+    {"name": "john_2"},
+    {"name": "john_3"},
+    {"name": "john_4"},
+}, 10)
+
+// 数据更新/删除, db.Update/db.Delete 同理
+r, err := db.Update(ctx, "user", gdb.Map {"name": "john"}, "uid=?", 10000) // UPDATE `user` SET `name`='john' WHERE `uid`=10000
+r, err := db.Update(ctx, "user", "name='john'", "uid=10000") // UPDATE `user` SET `name`='john' WHERE `uid`=10000
+r, err := db.Update(ctx, "user", "name=?", "uid=?", "john", 10000) // UPDATE `user` SET `name`='john' WHERE `uid`=10000
+```
+
+### ORM链式操作
+链式操作是一种更简洁灵活、更直观的方式来构建SQL查询。是 GoFrame 框架官方推荐的数据库操作方式。链式操作可以通过数据库对象的 db.Model 方法或者事务对象的 tx.Model 方法，基于指定的数据表返回一个链式操作对象 *Model。
+
+1. 模型创建
+```golang
+g.Model("user")
+// 或者
+g.DB().Model("user")
+```
+gdb 是**非链式安全**的，也就是说链式操作的每一个方法都将对当前操作的 Model 属性进行修改，因此该 Model 对象 **不可以重复使用**。
+
+2. 实现链式安全
+```golang
+// Clone 方法
+user := g.Model("user")// 定义一个用户模型单例
+m := user.Clone()// 克隆一个新的用户模型
+// Safe 方法
+user := g.Model("user").Safe() // 通过 Safe 方法设置当前模型为 链式安全 的对象，后续的每一个链式操作都将返回一个新的 Model 对象，该 Model 对象可重复使用。
+```
+
+3. 数据操作
+```golang
+// 数据写入
+g.Model("user").Insert(g.Map{"name": "john"}) // INSERT INTO `user`(`name`) VALUES('john')
+g.Model("user").Replace(g.Map{"uid": 10000, "name": "john"})// REPLACE INTO `user`(`uid`,`name`) VALUES(10000,'john')
+g.Model("user").Save(g.Map{"uid": 10001, "name": "john"})// INSERT INTO `user`(`uid`,`name`) VALUES(10001,'john') ON DUPLICATE KEY UPDATE `uid`=VALUES(`uid`),`name`=VALUES(`name`)
+
+// 批量保存
+g.Model("user").Data(g.List{ // INSERT INTO `user`(`uid`,`name`) VALUES(10000,'john_1'),(10001,'john_2'),(10002,'john_3') ON DUPLICATE KEY UPDATE `uid`=VALUES(`uid`),`name`=VALUES(`name`)
+    {"uid":10000, "name": "john_1"},
+    {"uid":10001, "name": "john_2"},
+    {"uid":10002, "name": "john_3"},
+}).Save()
+
+// 更新与删除
+g.Model("user").Update(g.Map{"name" : "john guo"}, "name", "john")// UPDATE `user` SET `name`='john guo' WHERE name='john'
+g.Model("user").Where("uid", 10).Delete()// DELETE FROM `user` WHERE `uid`=10
+g.Model("user").Delete("uid", 10)// DELETE FROM `user` WHERE `uid`=10
+
+// 使用Fields方法查询指定字段，不使用默认*
+g.Model("user").Fields("uid,name").Where("uid > ?", 1).Limit(0, 10).All() // SELECT uid,name FROM user WHERE uid>1 LIMIT 0,10
+g.Model("user").Where("uid", 1).Where("name", "john").One()// SELECT * FROM user WHERE (uid=1) AND (name='john') LIMIT 1
+g.Model("user").Where("uid=?", 1).Where("name=?", "john").One()
+g.Model("user").Where("uid=?", 1).WhereOr("name=?", "john").One()// SELECT * FROM user WHERE (uid=1) OR (name='john') LIMIT 1
+```
+4. 数据查询比较常用的几个方法：
+   - All 用于查询并返回多条记录的列表/数组。
+   - One 用于查询并返回单条记录。
+   - Array 用于查询指定字段列的数据，返回数组。
+   - Value 用于查询并返回一个字段值，往往需要结合 Fields 方法使用。
+   - Count 用于查询并返回记录数。
+
+```golang
+// SELECT * FROM `user` WHERE `score`>60
+Model("user").Where("score>?", 60).All()
+// SELECT * FROM `user` WHERE `score`>60 LIMIT 1
+Model("user").Where("score>?", 60).One()
+// SELECT `name` FROM `user` WHERE `score`>60
+Model("user").Fields("name").Where("score>?", 60).Array()
+// SELECT `name` FROM `user` WHERE `uid`=1 LIMIT 1
+Model("user").Fields("name").Where("uid", 1).Value()
+// SELECT COUNT(1) FROM `user` WHERE `status` IN(1,2,3)
+Model("user").Where("status", g.Slice{1,2,3}).Count()
+```
