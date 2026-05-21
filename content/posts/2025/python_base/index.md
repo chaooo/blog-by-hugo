@@ -69,9 +69,9 @@ score = int(input("请输入一个0~100整数:"))
 if score >= 90:
     grade = 'A' # 缩进推荐4个半角空格
 elif score >= 60:
-    grade ='B
+    grade ='B'
 else:
-    grade ='F
+    grade ='F'
 print("Grade ="+ grade)
 ```
 
@@ -83,7 +83,7 @@ while i*i < 10:
     i += 1
     if i == 3:
         break # 在i==3时终止循环
-    print(str(i) + '*' str(i) + '=', i*i)
+    print(str(i) + '*' + str(i) + '=', i*i)
 else: # else子语句只有在循环体正常结束时才执行，这里while被break中断,else不会执行
     print('While Over!')
 ```
@@ -261,33 +261,30 @@ def 函数名(参数列表):
 返回值处理：return语句可返回`单个值`、`多个值`（封装为`元组`）或`无值`（默认返回`None`）。
 
 ``` Python
+# 函数定义
 def rect_area(width, height):
      area = width * height
      print("width:{0},height:{1},面积:{2}".format(width,height,area))
      return area
+# 调用函数
+rect_area(50,60)  # 实参与形参按顺序匹配,打印：width:50,height:60,面积:3000
+rect_area(height=60,width=50) # 参数名=值,无需考虑顺序,打印：width:50,height:60,面积:3000
 
-rect_area(50,60)  # 实参与形参按顺序匹配
-width:50,height:60,面积:3000
-3000
-rect_area(height=60,width=50) # 参数名=值,无需考虑顺序
-width:50,height:60,面积:3000
-3000
+# 函数定义
 def sum(*nums):   # 元组可变参数
      total = 0.0
      for num in nums:
           total += num
      return total
+# 调用函数
+print(sum(100.0,20.0,60.0)) # 打印：180.0
 
-print(sum(100.0,20.0,60.0))
-180.0
+# 函数定义
 def show_info(**infos):   # 字典可变参数
      for key,value in infos.items():
           print("{0}：{1}".format(key,value))
-
-show_info(name="Tom", age=18, sex=True)
-name：Tom
-age：18
-sex：True
+# 调用函数
+show_info(name="Tom", age=18, sex=True) # 打印：name：Tom   age：18    sex：True
 ```
 
 ### 4.2 变量的作用域与函数类型
@@ -414,6 +411,7 @@ def start(obj): # 接收的obj对象具有speak()方法
 class Animal:
     def speak(self):
         print('动物叫...')
+
 class Dog(Animal):
     def speak(self):
         print('狗：旺旺叫...')
@@ -487,6 +485,7 @@ except ZeroDivisionError as e:
 except ValueError as e:
     raise myException('输入数字无效')
 
+# 打印：
 请输入数字：0
 Traceback (most recent call last):
   File "<python-input-0>", line 9, in <module>
@@ -912,54 +911,3 @@ exit
 控制线程结束。
 工作线程结束。
 ```
-
-
-## 12. 类型注解（Type Hints）
-从 `Python3.6` 开始，可以直接为变量添加类型注解。
-``` Python
-# 没有类型注解的代码
-name = "Alice"
-age = 30
-is_student = False
-scores = [95, 88, 91]
-def greet(name):
-    return f"Hello, {name}"
-
-# 有类型注解的代码
-name: str = "Alice"         # 注解为字符串 (str)
-age: int = 30               # 注解为整数 (int)
-is_student: bool = False    # 注解为布尔值 (bool)
-scores: list = [95, 88, 91] # 注解为列表 (list)
-def greet(name: str) -> str: # 有类型注解的函数,参数和返回值都是字符串
-    return f"Hello, {name}"
-```
-
-### 12.1 typing 模块
-基本的 str, int, bool, list 很好用，复杂类型注解需要`typing`模块提供。
-``` Python
-from typing import List, Dict, Tuple, Set, Optional, Union
-
-# List[int] 表示这是一个只包含整数的列表
-numbers: List[int] = [1, 2, 3, 4, 5]
-# Dict[str, int] 表示这是一个键为字符串、值为整数的字典
-student_scores: Dict[str, int] = {"Alice": 95, "Bob": 88}
-# Tuple[int, str, bool] 表示这是一个包含整数、字符串、布尔值的元组
-person_info: Tuple[int, str, bool] = (25, "Alice", True)
-# Set[str] 表示这是一个只包含字符串的集合
-unique_names: Set[str] = {"Alice", "Bob", "Charlie"}
-# 可选类型 Optional[str] 等价于 Union[str, None] 字符串或None
-name: Optional[str] = "Alice"
-# 联合类型 Union 当值可能是多种类型之一时使用 
-def process_input(data: Union[str, int, List[int]]) -> None:
-    """处理可能是字符串、整数或整数列表的输入"""
-    if isinstance(data, str):
-        print(f"字符串: {data}")
-    elif isinstance(data, int):
-        print(f"整数: {data}")
-    elif isinstance(data, list):
-        print(f"列表: {data}")
-process_input("hello")    # 输出：字符串: hello
-process_input(42)         # 输出：整数: 42  
-process_input([1, 2, 3])  # 输出：列表: [1, 2, 3]
-```
-
