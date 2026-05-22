@@ -1,5 +1,5 @@
 ---
-title: 【Code with SOLO】用 SOLO 快速构建 3D 地球旅行足迹记录
+title: 「工程实践」用 AI 编辑器(TRAE SOLO)  快速构建 3D 地球旅行足迹记录
 date: 2026-04-28 15:30:12
 tags: [AI大模型, 学习笔记]
 categories: [AI大模型]
