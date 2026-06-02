@@ -316,3 +316,100 @@ for token in chain.stream(
 Hello, what time is it now?
 ```
 
+### 3.4 结构化输出
+让 LLM 返回结构化数据，而不是自由文本，创建`test07.py`:
+```python
+from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+from typing import List
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import PydanticOutputParser
+load_dotenv()
+
+# temperature = 0 # temperature 代表模型创新的能力，值越大创造性越强
+llm = ChatOpenAI(model_name="deepseek-v4-pro", temperature=0)
+
+# 定义数据模型
+class ProductInfo(BaseModel):
+    """商品信息"""
+    name: str = Field(description="商品名称")
+    price: float = Field(description="价格")
+    category: str = Field(description="分类")
+    features: List[str] = Field(description="特点列表")
+
+# 创建解析器
+parser = PydanticOutputParser(pydantic_object=ProductInfo)
+
+# 构建 Prompt
+prompt = ChatPromptTemplate.from_template("""
+    {format_instructions}
+    请分析以下产品：{product}
+""")
+
+chain = prompt | llm | parser
+
+# 执行
+result = chain.invoke({
+    "product": "iPhone 17",
+    "format_instructions": parser.get_format_instructions()
+})
+
+# result 是 ProductInfo 对象
+print(result)
+print(result.price)     # 7999.0
+```
+打印内容:
+```text
+{"output":{"category":"智能手机","features":["A19芯片","6.7英寸 OLED 屏幕","4800万像素双摄系统","5G 支持","iOS 19 操作系统","面容 ID","USB-C 接口","MagSafe 无线充电"],"name":"iPhone 17","price":7999}}
+7999.0
+```
+
+## 四、LangSmith 可观测性平台
+LangSmith 是 LangChain 官方的可观测性平台，帮助你追踪 Agent 执行过程、监控性能、调试问题。当 Agent 在后台运行时，你看不到它内部发生了什么——调用了哪些模型、执行了哪些工具、每一步消耗了多少 Token。LangSmith 解决了这个"黑盒"问题。
+
+### 4.1 核心功能
+
+| 功能 | 说明 |
+| --- | --- |
+| 执行追踪 | 记录 Agent 每一步的执行轨迹 |
+| 性能监控 | 统计每次调用的耗时和 Token 消耗 |
+| 调试回放 | 查看历史执行的详细信息 |
+| 评估测试 | 创建测试集评估 Agent 表现 |
+
+### 4.2 快速开始
+
+首先安装 LangSmith：
+
+```powershell
+pip install langsmith
+```
+
+在 [smith.langchain.com](https://smith.langchain.com/) 注册账号，获取 API Key，然后在 `.env` 中配置：
+
+```text
+# .env 文件
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_API_KEY=lsv2_pt_your_key_here
+LANGCHAIN_PROJECT=my-agent-project
+```
+
+### 4.3 查看追踪记录
+随便执行一个上面的示例，然后在 LangSmith 控制台中，你可以看到每次 Agent 执行的完整轨迹：
+- **执行时间线**：模型调用 → 工具调用 → 模型再调用的完整时间线
+- **输入/输出**：每一步的输入消息和模型返回结果
+- **Token 用量**：每次模型调用的 Token 消耗和费用估算
+- **延迟分析**：每一步的耗时分布
+- **错误信息**：如果某步出错，可以看到完整的错误堆栈
+
+
+### 4.4 常用配置
+
+| 环境变量 | 说明 | 示例 |
+| --- | --- | --- |
+| `LANGCHAIN_TRACING_V2` | 启用追踪（必须设为 true） | `true` |
+| `LANGCHAIN_API_KEY` | LangSmith API Key | `lsv2_pt_xxx` |
+| `LANGCHAIN_PROJECT` | 项目名称（用于分组追踪） | `my-agent` |
+| `LANGCHAIN_ENDPOINT` | API 端点（默认即可） | `https://api.smith.langchain.com` |
+
+> **提示**：生产环境建议将 LangSmith 的追踪采样率设低一些（避免记录所有请求造成成本过高），只在需要调试时开启完整追踪。
