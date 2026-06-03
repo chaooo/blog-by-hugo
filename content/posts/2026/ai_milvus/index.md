@@ -8,80 +8,80 @@ toc: true
 ---
 
 
-## 1. 基础概念
-**Milvus** 是一款开源的、专注于**向量相似度搜索**和**AI应用开发**的数据库。它能够高效地处理由非结构化数据（如图片、音频、文本）转换而来的**嵌入向量**，并通过计算向量间的相似度，实现诸如“以图搜图”、“语义搜索”、“推荐系统”等功能。
-1. **集合 (Collection)**：
-    *   相当于传统数据库中的**表**，是存储向量的主要单元。
-    *   用于存放具有相同结构的向量数据。
-2. **分区 (Partition)**：
-    *   集合的物理分割，用于数据隔离和优化查询性能。
-    *   常见用法：按数据来源或日期分区（如 `partition_2023`, `partition_2024`）。
-3. **集合模式 (Schema)**：
-    *   集合的结构定义，描述了集合中包含哪些字段及其数据类型。每个 Schema 包含一个或多个字段，其中一个字段必须是主键（`Primary Key`）。
-4. **实体 (Entity)**：
-    *   一条完整的数据记录，**字段（Field）** 包含主键、向量和其关联的标量数据。
-    *   例如：`{id: 1, vector: [0.1, 0.2, ..., 0.8], book_name: "深入理解Milvus", price: 99}`
-5. **向量 (Vector)**：
-    *   一组描述非结构化数据特征的**数值数组**（例如，由 OpenAI Embedding 模型生成的 1536 维数组）。
-    *   是 Milvus 存储和操作的核心对象。
-6. **标量 (Scalar)**：
-    *   传统的结构化数据，如 `ID`, `书名`, `价格` 等。
-    *   在 Milvus 中，标量作为**元数据**与向量一起存储，可用于过滤。
-7. **索引 (Index)**：
-    *   Milvus **性能的核心**。为了加速大规模向量的相似性搜索，必须为向量字段创建专门的索引。
-    *   常用索引类型：`IVF_FLAT`, `HNSW`, `DISKANN`等。不同索引在**查询速度**、**准确率**和**资源消耗**上各有权衡。
-8. **度量类型 (Metric Type)**：
-    *   衡量两个向量相似度的计算方法。
-    *   `L2` (欧氏距离)：距离越小越相似。
-    *   `IP` (内积)：数值越大越相似。
-    *   `COSINE` (余弦相似度)：数值越大越相似（最常用于文本嵌入）。
-9. **向量搜索 (Search)**：进行向量相似性搜索。
-10. **标量查询 (Query)**：通过标量字段进行精确匹配查询。query 操作用于过滤满足特定条件的记录。
-11. **混合搜索 (Hybrid Search)**：结合向量搜索和标量查询，实现更复杂的检索需求。例如，先通过标量字段过滤一部分数据，再在这些数据中进行向量相似性搜索。
-12. **加载 (Load)**：将集合加载到内存中，以便进行查询。只有加载后的集合才能执行搜索等操作。
-13. **刷新 (Flush)**：将插入的数据持久化到磁盘，并更新索引。
+## 一、基础概念
+
+**Milvus** 是一款开源的、专注于**向量相似度搜索**和**AI 应用开发**的数据库。它能够高效地处理由非结构化数据（如图片、音频、文本）转换而来的**嵌入向量**，并通过计算向量间的相似度，实现诸如“以图搜图”、“语义搜索”、“推荐系统”等功能。
+
+### 1.1 核心概念
+
+| 概念 | 说明 | 示例 |
+| --- | --- | --- |
+| **集合 (Collection)** | 相当于传统数据库中的**表**，是存储向量的主要单元，用于存放具有相同结构的向量数据 | `movie_embeddings`（存储电影简介向量）、`product_images`（存储商品图片特征） |
+| **分区 (Partition)** | 集合的物理分割，用于数据隔离和优化查询性能 | 按日期分区：`partition_2023`, `partition_2024` |
+| **集合模式 (Schema)** | 集合的结构定义，描述了集合中包含哪些字段及其数据类型，其中一个字段必须是主键 | `{movie_id: INT64 (主键), title: VARCHAR, embedding: FLOAT_VECTOR (dim=1536)}` |
+| **实体 (Entity)** | 一条完整的数据记录，包含主键、向量和其关联的标量数据 | `{id: 1, vector: [0.1, 0.2, ...], book_name: "深入理解 Milvus", price: 99}` |
+| **向量 (Vector)** | 一组描述非结构化数据特征的**数值数组**，是 Milvus 存储和操作的核心对象 | OpenAI Embedding 生成的 1536 维数组 |
+| **标量 (Scalar)** | 传统的结构化数据，作为**元数据**与向量一起存储，可用于过滤 | `ID`, `书名`, `价格` |
+| **索引 (Index)** | Milvus **性能的核心**，为加速大规模向量的相似性搜索而创建 | `IVF_FLAT`, `HNSW`, `DISKANN` |
+| **度量类型 (Metric Type)** | 衡量两个向量相似度的计算方法 | `L2` (欧氏距离)、`IP` (内积)、`COSINE` (余弦相似度) |
+
+### 1.2 核心操作
+
+- **向量搜索 (Search)**：进行向量相似性搜索
+- **标量查询 (Query)**：通过标量字段进行精确匹配查询，用于过滤满足特定条件的记录
+- **混合搜索 (Hybrid Search)**：结合向量搜索和标量查询，实现更复杂的检索需求（例如，先通过标量字段过滤，再进行向量相似性搜索）
+- **加载 (Load)**：将集合加载到内存中，只有加载后的集合才能执行搜索等操作
+- **刷新 (Flush)**：将插入的数据持久化到磁盘，并更新索引
 
 
-## 2. 工作原理与流程
+## 二、工作原理与流程
+
 使用 Milvus 的典型工作流分为 **写入** 和 **查询** 两部分。
-- 数据写入 (Ingestion) 流程
+
+### 2.1 数据写入 (Ingestion) 流程
 
 ![](20251202174921.png)
 
-- 数据查询 (Query) 流程
+### 2.2 数据查询 (Query) 流程
 
 ![](20251202175243.png)
 
+## 三、本地部署 Milvus Lite
 
-## 3. 本地部署 Milvus Lite
-- 部署与选型：从`Lite`快速验证想法，再平滑升级到`Standalone`/`Distributed`，代码无需重写。
+部署与选型策略：从 `Lite` 快速验证想法，再平滑升级到 `Standalone`/`Distributed`，代码无需重写。
 
-| 部署模式       | 数据规模      | 特点                              | 适用场景               |
-|--------------------|-------------------|---------------------------------------|----------------------------|
-| Milvus Lite    | ≤百万级向量       | Python库形式，无需运维                | Jupyter原型开发 |
-| Standalone     | ≤1亿向量          | 单机Docker部署，HA支持                | 中小规模生产环境 |
-| Distributed    | 百亿级向量        | K8s集群部署，分片与负载均衡           | 大规模高并发场景 |
+| 部署模式 | 数据规模 | 特点 | 适用场景 |
+| --- | --- | --- | --- |
+| **Milvus Lite** | ≤百万级向量 | Python 库形式，无需运维 | Jupyter 原型开发 |
+| **Standalone** | ≤1亿向量 | 单机 Docker 部署，HA 支持 | 中小规模生产环境 |
+| **Distributed** | 百亿级向量 | K8s 集群部署，分片与负载均衡 | 大规模高并发场景 |
 
-1. 用`Conda`为`Milvus`项目创建独立的环境 (Python)
-   - `Conda`是一个强大的命令行工具，通过**环境隔离**和**依赖管理**彻底解决了多项目开发的版本冲突问题，已成为数据科学领域的标准工具，可在 Windows、macOS 和 Linux 上运行。
-   ```bash
-   conda create -n milvus_lite_env python=3.13
-   conda activate milvus_lite_env
-   ```
+### 3.1 使用 Conda 创建独立环境
 
-2. 安装`Milvus Lite`
-   - `Milvus Lite`可以通过`Python`的包管理工具`pip`直接安装。
-   ```bash
-   pip install milvus
-   pip install pymilvus
-   ```
-   - 验证安装：
-   ```bash
-   python -c "import pymilvus; print('pymilvus version:', pymilvus.__version__)"
-   ```
+`Conda` 是一个强大的命令行工具，通过**环境隔离**和**依赖管理**彻底解决了多项目开发的版本冲突问题，已成为数据科学领域的标准工具，可在 Windows、macOS 和 Linux 上运行。
 
-3. 测试`Milvus Lite`
-   - 安装完成后，创建一个简单的`test_milvus.py`脚本来测试`Milvus Lite`是否正常工作。
+```bash
+conda create -n milvus_lite_env python=3.13
+conda activate milvus_lite_env
+```
+
+### 3.2 安装 Milvus Lite
+
+`Milvus Lite` 可以通过 Python 的包管理工具 `pip` 直接安装：
+
+```bash
+pip install milvus
+pip install pymilvus
+```
+
+**验证安装**：
+```bash
+python -c "import pymilvus; print('pymilvus version:', pymilvus.__version__)"
+```
+
+### 3.3 测试 Milvus Lite
+
+安装完成后，创建一个简单的 `test_milvus.py` 脚本来测试 Milvus Lite 是否正常工作：
 ```python
 from milvus import default_server
 from pymilvus import connections, Collection, utility
