@@ -1,6 +1,6 @@
 ---
 title: 「工程实践」LangChain入门示例
-date: 2026-02-09 18:30:15
+date: 2026-03-09 18:30:15
 tags: [AI大模型, LangChain, 工程实践]
 categories: [AI大模型]
 series: AI大模型

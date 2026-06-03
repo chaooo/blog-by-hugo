@@ -1,6 +1,6 @@
 ---
 title: 「学习笔记」开源向量数据库 Milvus 入门
-date: 2026-01-06 15:30:12
+date: 2026-02-06 15:30:12
 tags: [AI大模型, 学习笔记, 向量数据库]
 categories: [AI大模型]
 series: AI大模型

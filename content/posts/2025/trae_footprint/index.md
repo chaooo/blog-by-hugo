@@ -1,6 +1,6 @@
 ---
 title: 「工程实践」用 AI 编辑器(TRAE SOLO) 快速构建 3D 地球旅行足迹记录
-date: 2026-04-28 15:30:12
+date: 2025-12-19 15:30:12
 tags: [AI大模型, 学习笔记, Vue3, Three.js]
 categories: [AI大模型]
 series: AI大模型
@@ -326,9 +326,5 @@ npm run build
 
 
 ## 🔗 项目链接
-
 - **Gitee 仓库**：[https://gitee.com/chaoo/trae-footprint](https://gitee.com/chaoo/trae-footprint)
 - **在线演示**：[https://www.itdn.top/demo/TraeFootprint/](https://www.itdn.top/demo/TraeFootprint/)
-
-
-> 🎉 感谢 TRAE × 脉脉「AI 无限职场」SOLO 挑战赛提供展示机会！

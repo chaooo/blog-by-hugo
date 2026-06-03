@@ -1,6 +1,6 @@
 ---
 title: 「学习笔记」大模型提示工程（Prompt Engineering）
-date: 2025-12-26 18:32:55
+date: 2026-01-26 18:32:55
 tags: [AI大模型, LLM, 学习笔记]
 categories: [AI大模型]
 series: AI大模型

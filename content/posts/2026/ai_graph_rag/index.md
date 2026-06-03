@@ -1,6 +1,6 @@
 ---
 title: 「学习笔记」大模型GraphRAG（知识图谱增强检索）
-date: 2026-01-10 19:22:25
+date: 2026-02-10 19:22:25
 tags: [AI大模型, RAG, 学习笔记]
 categories: [AI大模型]
 series: AI大模型

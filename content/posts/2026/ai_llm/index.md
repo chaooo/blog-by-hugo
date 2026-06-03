@@ -1,6 +1,6 @@
 ---
 title: 「学习笔记」大语言模型（LLM）原理
-date: 2025-12-24 16:42:47
+date: 2026-01-24 16:42:47
 tags: [AI大模型, LLM, 学习笔记]
 categories: [AI大模型]
 series: AI大模型

@@ -1,6 +1,6 @@
 ---
 title: 「学习笔记」AI大模型基础
-date: 2025-12-22 18:32:50
+date: 2026-01-22 18:32:50
 tags: [AI大模型, LLM, 学习笔记]
 categories: [AI大模型]
 series: AI大模型

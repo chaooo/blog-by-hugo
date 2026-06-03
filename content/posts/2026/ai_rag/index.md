@@ -1,6 +1,6 @@
 ---
 title: 「学习笔记」大模型RAG（检索增强生成）
-date: 2026-01-02 13:45:05
+date: 2026-02-02 13:45:05
 tags: [AI大模型, RAG, 学习笔记]
 categories: [AI大模型]
 series: AI大模型
