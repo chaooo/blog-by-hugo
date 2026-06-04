@@ -10,9 +10,7 @@ draft: true
 ---
 
 ## 一、项目结构
-
 良好的目录结构是工程化的地基。强烈建议采用 **src 布局（Src Layout）**，将源代码放入 `src/<package_name>/` 目录下，能有效避免本地未安装包时出现的路径"泄漏"问题，确保包解析逻辑与生产环境完全一致。
-
 一个标准的现代 Python 工程目录通常如下：
 
 ```text
@@ -24,10 +22,8 @@ my_project/
 │       ├── service/    # 业务逻辑层
 │       ├── models/     # 数据模型定义（Pydantic）
 │       ├── utils/      # 通用工具函数
-│       └── config.py   # 配置管理
 ├── tests/              # 测试代码（保持与 src 对称的结构）
-│   ├── __init__.py
-│   └── test_api/
+├── examples/           # 使用示例
 ├── docs/               # 项目文档（Sphinx/MkDocs）
 ├── scripts/            # 运维或自动化脚本
 ├── notebooks/          # Jupyter 笔记本（实验记录）
@@ -37,7 +33,7 @@ my_project/
 └── .gitignore          # 版本控制忽略规则
 ```
 
-通过分层设计（如 API、Service、Domain），明确模块间的依赖方向，可以大幅降低代码耦合度，让后续的扩展和重构变得从容不迫。
+通过分层设计（如 API、Service、...），明确模块间的依赖方向，可以大幅降低代码耦合度，让后续的扩展和重构变得从容不迫。
 
 
 
