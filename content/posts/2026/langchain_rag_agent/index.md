@@ -1,6 +1,6 @@
 ---
 title: 「工程实践」LangChain RAG + Agent 搭建多工具 AI 知识库问答助手系统
-date: 2026-06-04 15:30:15
+date: 2026-04-17 15:30:15
 tags: [AI大模型, LangChain, RAG, Agent, 知识库]
 categories: [AI大模型]
 series: AI大模型
@@ -45,30 +45,35 @@ PROJECT/
 ```
 
 ### 1.3 技术架构
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│                        用户层                                    │
-│                    CLI 命令行交互界面                              │
-└───────────────────────────┬─────────────────────────────────────┘
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        Agent 层                                 │
-│              create_agent + System Prompt + Tools              │
-│     核心能力：决策推理、工具选择、结果整合、自然语言回复                 │
-└───────────────────────────┬─────────────────────────────────────┘
-          ┌─────────────────┼─────────────────┬─────────────────┐
-          ▼                 ▼                 ▼                 ▼
-┌──────────────┐ ┌─────────────┐ ┌───────────────┐ ┌─────────────────┐
-│  retrieve_   │ │  calculate  │ │  get_weather  │ │ get_current_time│
-│   document   │ │             │ │               │ │   set_reminder  │
-│ (RAG检索工具)  │ │  (数学计算)  │ │   (天气查询)    │ │   (时间/提醒)    │
-└──────┬───────┘ └─────────────┘ └───────────────┘ └─────────────────┘
-       ▼
-┌───────────────────────────────────────────────┐
-│               向量数据库层                      │
-│      Chroma + DashScope Embeddings            │
-│ 文档加载 → 文本分割 → 向量化 → 向量存储 → 相似度检索  │
-└───────────────────────────────────────────────┘
+```mermaid
+graph TD
+    %% 定义样式
+    classDef userLayer fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000;
+    classDef agentLayer fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000;
+    classDef toolLayer fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000;
+    classDef dbLayer fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000;
+
+    %% 节点定义
+    User["👤 用户层 (CLI 命令行交互界面)"]:::userLayer
+    
+    Agent["🧠 Agent 层\n核心能力：决策推理 | 工具选择 | 结果整合 | 自然语言回复"]:::agentLayer
+    
+    Tool1["🔍 retrieve_document\n(RAG检索工具)"]:::toolLayer
+    Tool2["🧮 calculate\n(数学计算)"]:::toolLayer
+    Tool3["🌤️ get_weather\n(天气查询)"]:::toolLayer
+    Tool4["⏰ get_current_time / set_reminder\n(时间/提醒)"]:::toolLayer
+    
+    VectorDB["🗄️ 向量数据库层\n(Chroma + Embeddings)\n文档加载 ➔ 文本分割 ➔ 向量化 ➔ 向量存储 ➔ 相似度检索"]:::dbLayer
+
+    %% 连线关系
+    User -->|自然语言指令| Agent
+    Agent -->|调用| Tool1
+    Agent -->|调用| Tool2
+    Agent -->|调用| Tool3
+    Agent -->|调用| Tool4
+    
+    Tool1 -->|检索请求| VectorDB
+    VectorDB -->|返回相关文档片段| Tool1
 ```
 
 
@@ -471,6 +476,41 @@ python -m src.ai_personal_assistant.main
 | 并行工具调用 | 同时调用多个独立工具，提升响应效率 |
 
 
-### 5.4 总结
-通过将 RAG 的检索能力与 Agent 的决策能力相结合，系统能够提供更准确、更有依据的回答，适用于企业知识库问答、智能客服等多种场景。
 
+## 6. 扩展开发
+### 6.1 添加新工具
+```python
+# 在 utils/tools.py 中添加新工具
+@tool
+def get_news() -> str:
+    """获取最新新闻"""
+    news = ["AI 技术取得突破", "新能源汽车销量创新高"]
+    return "今日新闻：\n" + "\n".join(news)
+
+# 在 get_default_tools() 中注册
+def get_default_tools():
+    return [calculate, get_weather, get_current_time, set_reminder, get_news]
+
+# 更新 service/agent.py 中的系统提示词
+```
+
+### 6.2 支持更多文档格式
+```python
+# 在 utils/vector_db.py 中扩展文档加载器
+from langchain_community.document_loaders import DocxLoader, TextLoader
+
+def load_document(file_path: str) -> List[Document]:
+    """支持多种文档格式"""
+    ext = os.path.splitext(file_path)[1].lower()
+    
+    if ext == ".pdf":
+        loader = PyPDFLoader(file_path)
+    elif ext == ".docx":
+        loader = DocxLoader(file_path)
+    elif ext == ".txt":
+        loader = TextLoader(file_path, encoding="utf-8")
+    else:
+        raise ValueError(f"不支持的文件格式: {ext}")
+    
+    return loader.load()
+```

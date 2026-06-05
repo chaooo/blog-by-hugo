@@ -41,5 +41,13 @@
     {{- partialCached "footer/index" . }}
     {{- partialCached "scripts/index" . }}
     {{- partialCached "hooks/body-end" . }}
+    <!-- 必须放到最后在 （.Content 之下），因为这渲染钩子直到执行 .Content 之后才会被处理），否则.Page.Store.Get "hasMermaid"永远为false -->
+    {{ if .Page.Store.Get "hasMermaid" }}
+    <!-- 只有文章里写了 mermaid 才加载下面这些资源，节省性能 -->
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+    {{ end }}
   </body>
 </html>

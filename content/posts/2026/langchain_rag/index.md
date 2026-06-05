@@ -1,6 +1,6 @@
 ---
 title: 「工程实践」LangChain RAG 深度解析与实战
-date: 2026-03-15 18:30:15
+date: 2026-04-15 18:30:15
 tags: [AI大模型, LangChain, RAG, 工程实践]
 categories: [AI大模型]
 series: AI大模型
