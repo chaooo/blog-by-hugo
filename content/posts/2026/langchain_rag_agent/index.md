@@ -514,3 +514,6 @@ def load_document(file_path: str) -> List[Document]:
     
     return loader.load()
 ```
+
+## 项目资源
+- 源代码：[https://gitee.com/chaoo/lang-chain-rag-agent](https://gitee.com/chaoo/lang-chain-rag-agent)
